@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポケモンしりとりヘルパー</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>ポケモンしりとりヘルパー</h1>
+    </header>
+
+    <main>
+        <section id="search-section">
+            <div class="search-container">
+                <div class="input-wrapper">
+                    <input type="text" id="search-input" placeholder="文字を入力してください">
+                    <div class="input-status"></div>
+                </div>
+                <div id="search-results" class="results-container"></div>
+            </div>
+        </section>
+
+        <section id="game-info">
+            <div class="game-stats">
+                <div id="used-pokemon" class="stat-card">
+                    <h2>使用済みポケモン</h2>
+                    <div class="used-pokemon-container">
+                        <ul id="used-pokemon-list"></ul>
+                    </div>
+                </div>
+                <div id="game-status" class="stat-card">
+                    <h2>ゲーム状況</h2>
+                    <div class="status-container">
+                        <div id="remaining-count">
+                            <span class="label">残り選択可能数:</span>
+                            <span id="remaining-number" class="value">0</span>
+                        </div>
+                        <div id="last-char" class="hidden">
+                            <span class="label">次の文字:</span>
+                            <span id="next-char" class="value"></span>
+                        </div>
+                        <div id="warning-container"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pokemon-detail" class="hidden">
+            <div class="detail-container">
+                <div id="pokemon-info">
+                    <img id="pokemon-image" class="silhouette" alt="">
+                    <div class="info-content">
+                        <h3 id="pokemon-name"></h3>
+                        <div id="pokemon-types"></div>
+                        <p id="pokemon-classification"></p>
+                        <p id="pokemon-generation"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

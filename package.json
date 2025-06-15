@@ -1,0 +1,21 @@
+{
+  "name": "pokemon-word-chain-helper",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "check": "biome check --apply ."
+  },
+  "keywords": [],
+  "author": "progfay",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "jsdom": "26.1.0",
+    "vitest": "3.2.3"
+  }
+}
