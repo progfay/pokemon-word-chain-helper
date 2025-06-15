@@ -29,3 +29,6 @@ build/
 # Logs
 logs
 *.log
+
+# database
+/src/pokemon_database.json

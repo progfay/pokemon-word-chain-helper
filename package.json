@@ -10,7 +10,8 @@
     "format": "biome format --write .",
     "lint": "npm run typecheck && biome lint .",
     "lint:fix": "npm run typecheck && biome check --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate:pokemon_database": "node scripts/generate_pokemon_database.js"
   },
   "keywords": [],
   "author": "progfay",
