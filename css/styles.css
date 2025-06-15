@@ -280,3 +280,83 @@ h2 {
     padding: 0.5rem;
   }
 }
+
+@media (max-width: 768px) {
+  :root {
+    --spacing: 0.75rem;
+  }
+
+  main {
+    padding: var(--spacing);
+  }
+
+  h1 {
+    font-size: 1.25rem;
+  }
+
+  .game-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .pokemon-card {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .pokemon-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .pokemon-details {
+    font-size: 0.9em;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --spacing: 0.5rem;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pokemon-info {
+    gap: calc(var(--spacing) * 0.3);
+  }
+
+  #search-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 0.6rem;
+  }
+
+  .pokemon-name {
+    font-size: 1.1em;
+  }
+}
+
+/* Improve scrollbar style */
+.used-pokemon-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.used-pokemon-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.used-pokemon-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.used-pokemon-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.results-grid {
+  display: grid;
+  gap: var(--spacing);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  padding: var(--spacing);
+}
