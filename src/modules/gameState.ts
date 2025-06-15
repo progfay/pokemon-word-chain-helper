@@ -1,6 +1,15 @@
-import { PokemonData } from "./pokemonData.js";
+import type { Pokemon } from "../types";
+import { initialPokemonData } from "./data.js";
+
+// Store used Pokemon names for tracking
+const usedPokemonNames = new Set<string>();
 
 export function initGameState(): void {
+  updateGameState();
+}
+
+export function addUsedPokemon(pokemon: Pokemon): void {
+  usedPokemonNames.add(pokemon.name);
   updateGameState();
 }
 
@@ -13,19 +22,27 @@ export function updateGameState(): void {
     return;
   }
 
-  // Update used Pokemon list
-  const usedPokemon = Array.from(PokemonData.usedPokemon);
+  // Update used Pokemon list with full details
+  const usedPokemon = Array.from(usedPokemonNames)
+    .map((name) => initialPokemonData.find((p) => p.name === name))
+    .filter((p): p is Pokemon => p !== undefined);
+
   usedPokemonList.innerHTML = usedPokemon
-    .map((name) => `<li class="used-pokemon">${name}</li>`)
+    .map(
+      (pokemon) => `<li class="used-pokemon">
+      <span class="name">${pokemon.name}</span>
+      <span class="details">(${pokemon.types.join("・")})</span>
+    </li>`
+    )
     .join("");
 
   // Update remaining count
-  const remaining = PokemonData.database.length - PokemonData.usedPokemon.size;
+  const remaining = initialPokemonData.length - usedPokemonNames.size;
   remainingNumber.textContent = `残り: ${remaining}匹`;
 
   // Check for and display 'ん' ending Pokemon
-  const nEndingPokemon = PokemonData.database.filter(
-    (p) => !PokemonData.usedPokemon.has(p.name) && p.lastChar === "ン"
+  const nEndingPokemon = initialPokemonData.filter(
+    (p) => !usedPokemonNames.has(p.name) && p.lastChar === "ん"
   );
 
   const warningContainer =

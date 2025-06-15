@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run clean && tsc && npm run copy-assets",
     "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "copy-assets": "cp src/pokemon_database.json dist/",
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "biome format --write .",

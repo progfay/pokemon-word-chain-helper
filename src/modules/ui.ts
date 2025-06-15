@@ -1,11 +1,16 @@
 import type { Pokemon } from "../types";
-import { CharacterUtils } from "./characterUtils.js";
-import { PokemonData } from "./pokemonData.js";
+import { initialPokemonData } from "./data.js";
+
+/**
+ * Generate Pokemon image URL from Pokedex number
+ */
+function getPokemonImageUrl(pokedexNumber: number): string {
+  return `https://img.yakkun.com/poke/icon96/n${pokedexNumber}.gif`;
+}
 
 export function initUI(): void {
   initInputValidation();
   initPokemonDetail();
-  updateGameState();
 }
 
 function initInputValidation(): void {
@@ -25,8 +30,12 @@ function initInputValidation(): void {
       return;
     }
 
-    const firstChar = value.charAt(0);
-    if (!CharacterUtils.isJapaneseChar(firstChar)) {
+    const code = value.charCodeAt(0);
+    const isJapanese =
+      (code >= 0x3040 && code <= 0x309f) || // Hiragana
+      (code >= 0x30a0 && code <= 0x30ff); // Katakana
+
+    if (!isJapanese) {
       status.textContent = "❌";
       status.title = "日本語で入力してください";
     } else {
@@ -47,12 +56,12 @@ function initPokemonDetail(): void {
 
   searchResults.addEventListener("mouseover", (e: MouseEvent) => {
     const target = e.target as HTMLElement;
-    const item = target.closest(".pokemon-item");
+    const item = target.closest(".pokemon-card");
     if (item) {
-      const pokemonName = item.getAttribute("data-name");
-      if (pokemonName) {
-        const pokemon = PokemonData.database.find(
-          (p) => p.name === pokemonName
+      const pokemonData = JSON.parse(item.getAttribute("data-pokemon") || "{}");
+      if (pokemonData.name) {
+        const pokemon = initialPokemonData.find(
+          (p) => p.name === pokemonData.name
         );
         if (pokemon) {
           updatePokemonDetail(pokemon);
@@ -67,47 +76,26 @@ function initPokemonDetail(): void {
   });
 }
 
-export function updateGameState(): void {
-  const usedPokemonList = document.getElementById("used-pokemon-list");
-  const remainingNumber = document.getElementById("remaining-number");
-  const warningContainer = document.getElementById("warning-container");
-
-  if (!usedPokemonList || !remainingNumber) {
-    console.error("Required DOM elements not found");
-    return;
-  }
-
-  // Update used Pokemon list
-  const usedPokemon = Array.from(PokemonData.usedPokemon);
-  usedPokemonList.innerHTML = usedPokemon
-    .map((name) => `<li>${name}</li>`)
-    .join("");
-
-  // Update remaining count
-  const remaining = PokemonData.database.length - PokemonData.usedPokemon.size;
-  remainingNumber.textContent = remaining.toString();
-
-  // Check for and display 'ん' ending Pokemon
-  const nEndingPokemon = PokemonData.database.filter(
-    (p) => !PokemonData.usedPokemon.has(p.name) && p.lastChar === "ン"
-  );
-
-  if (nEndingPokemon.length > 0 && warningContainer) {
-    warningContainer.className = "warning";
-    warningContainer.textContent = `注意: ${nEndingPokemon.length}匹の「ん」で終わるポケモンが残っています`;
-  } else if (warningContainer) {
-    warningContainer.textContent = "";
-  }
-}
-
 function updatePokemonDetail(pokemon: Pokemon): void {
   const detailSection = document.getElementById("pokemon-detail");
   if (!detailSection) return;
 
+  const imageUrl = getPokemonImageUrl(pokemon.pokedex_number);
   detailSection.innerHTML = `
-    <h3>${pokemon.name}</h3>
-    <p>タイプ: ${pokemon.types.join("・")}</p>
-    <p>世代: ${pokemon.generation}</p>
-    <p>分類: ${pokemon.classification}</p>
+    <img 
+      src="${imageUrl}" 
+      alt="${pokemon.name}" 
+      class="pokemon-image"
+      loading="lazy"
+    />
+    <div class="pokemon-info">
+      <h3 class="pokemon-name">${pokemon.name}</h3>
+      <div class="pokemon-details">
+        <div class="pokemon-types">${pokemon.types.join("・")}</div>
+        <div>世代: ${pokemon.generation_id}</div>
+        <div>図鑑番号: #${String(pokemon.pokedex_number).padStart(3, "0")}</div>
+        <div>${pokemon.genus}</div>
+      </div>
+    </div>
   `;
 }

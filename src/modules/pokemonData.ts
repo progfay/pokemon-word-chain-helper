@@ -19,7 +19,7 @@ export const PokemonData: PokemonDatabase = {
       ...pokemon,
       name,
       firstChar: CharacterUtils.normalize(name.charAt(0)),
-      lastChar: CharacterUtils.normalize(name.charAt(name.length - 1)),
+      lastChar: CharacterUtils.normalize(name.charAt(name.length - 1))
     });
   },
 
