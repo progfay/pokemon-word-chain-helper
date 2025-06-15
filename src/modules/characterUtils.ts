@@ -1,4 +1,6 @@
-const kanaMap = {
+import type { CharacterMap } from "../types";
+
+const kanaMap: CharacterMap = {
   あ: "ア",
   い: "イ",
   う: "ウ",
@@ -80,34 +82,36 @@ const kanaMap = {
   ょ: "ョ",
 };
 
-const katakanaMap = Object.fromEntries(
+const katakanaMap: CharacterMap = Object.fromEntries(
   Object.entries(kanaMap).map(([hira, kata]) => [kata, hira])
 );
 
 export const CharacterUtils = {
-  isJapaneseChar(char) {
+  isJapaneseChar(char: string): boolean {
     return /^[\u3040-\u309F\u30A0-\u30FF]$/.test(char);
   },
 
-  toHiragana(char) {
-    return katakanaMap[char] || char;
+  toHiragana(text: string): string {
+    return Array.from(text)
+      .map((char) => katakanaMap[char] || char)
+      .join("");
   },
 
-  toKatakana(char) {
-    return kanaMap[char] || char;
+  toKatakana(text: string): string {
+    return Array.from(text)
+      .map((char) => kanaMap[char] || char)
+      .join("");
   },
 
-  normalize(char) {
-    // For search, we'll normalize to katakana since Pokemon names are in katakana
+  normalize(char: string): string {
     return this.toKatakana(this.toHiragana(char));
   },
 };
 
-// Additional utility functions
-export const isEndingWithN = (str) => {
+export const isEndingWithN = (str: string): boolean => {
   return str.endsWith("ん") || str.endsWith("ン");
 };
 
-export const isValidJapanese = (str) => {
+export const isValidJapanese = (str: string): boolean => {
   return Array.from(str).every((char) => CharacterUtils.isJapaneseChar(char));
 };

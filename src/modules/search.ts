@@ -1,13 +1,22 @@
-import { PokemonData } from "./pokemonData.js";
+import type { Pokemon } from "../types";
 import { CharacterUtils } from "./characterUtils.js";
 import { updateGameState } from "./gameState.js";
+import { PokemonData } from "./pokemonData.js";
 
-export function initSearchHandler() {
-  const searchInput = document.getElementById("search-input");
+export function initSearchHandler(): void {
+  const searchInput = document.getElementById(
+    "search-input"
+  ) as HTMLInputElement;
   const searchResults = document.getElementById("search-results");
 
-  searchInput.addEventListener("input", (e) => {
-    const searchTerm = e.target.value;
+  if (!searchInput || !searchResults) {
+    console.error("Required DOM elements not found");
+    return;
+  }
+
+  searchInput.addEventListener("input", (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const searchTerm = target.value;
     if (!searchTerm) {
       searchResults.innerHTML = "";
       return;
@@ -25,7 +34,11 @@ export function initSearchHandler() {
   });
 }
 
-function displaySearchResults(pokemon, container, searchInput) {
+function displaySearchResults(
+  pokemon: Pokemon[],
+  container: HTMLElement,
+  searchInput: HTMLInputElement
+): void {
   if (pokemon.length === 0) {
     container.innerHTML = "該当するポケモンが見つかりません";
     return;
@@ -56,11 +69,13 @@ function displaySearchResults(pokemon, container, searchInput) {
   const pokemonItems = container.querySelectorAll(".pokemon-item");
   for (const item of pokemonItems) {
     item.addEventListener("click", () => {
-      const pokemonName = item.dataset.name;
-      PokemonData.markAsUsed(pokemonName);
-      searchInput.value = "";
-      container.innerHTML = "";
-      updateGameState();
+      const pokemonName = item.getAttribute("data-name");
+      if (pokemonName) {
+        PokemonData.markAsUsed(pokemonName);
+        searchInput.value = "";
+        container.innerHTML = "";
+        updateGameState();
+      }
     });
   }
 }

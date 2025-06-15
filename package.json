@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "biome format --write .",
-    "lint": "biome lint .",
-    "check": "biome check --apply ."
+    "lint": "npm run typecheck && biome lint .",
+    "lint:fix": "npm run typecheck && biome check --write .",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "progfay",
@@ -15,7 +18,9 @@
   "description": "",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@types/node": "24.0.1",
     "jsdom": "26.1.0",
+    "typescript": "5.8.3",
     "vitest": "3.2.3"
   }
 }

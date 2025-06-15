@@ -1,12 +1,17 @@
 import { PokemonData } from "./pokemonData.js";
 
-export function initGameState() {
+export function initGameState(): void {
   updateGameState();
 }
 
-export function updateGameState() {
+export function updateGameState(): void {
   const usedPokemonList = document.getElementById("used-pokemon-list");
   const remainingNumber = document.getElementById("remaining-number");
+
+  if (!usedPokemonList || !remainingNumber) {
+    console.error("Required DOM elements not found");
+    return;
+  }
 
   // Update used Pokemon list
   const usedPokemon = Array.from(PokemonData.usedPokemon);
@@ -36,6 +41,9 @@ export function updateGameState() {
   }
 
   if (!document.getElementById("warning-container")) {
-    document.getElementById("game-container").appendChild(warningContainer);
+    const gameContainer = document.getElementById("game-container");
+    if (gameContainer) {
+      gameContainer.appendChild(warningContainer);
+    }
   }
 }
