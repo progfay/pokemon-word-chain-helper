@@ -215,12 +215,7 @@ h2 {
   background: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  cursor: pointer;
   transition: transform 0.2s;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--spacing);
-  align-items: center;
 }
 
 .pokemon-card:hover {
@@ -259,6 +254,234 @@ h2 {
   display: flex;
   gap: 0.5rem;
   margin-top: 0.25rem;
+}
+
+/* Hint System Styles */
+.hint-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: var(--spacing);
+  flex-wrap: wrap;
+}
+
+.hint-button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  background: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.hint-button.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.hint-button:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.hint-content {
+  display: grid;
+  gap: var(--spacing);
+  margin-top: var(--spacing);
+}
+
+.hint-item {
+  display: none;  /* Hide by default */
+  padding: 0.5rem;
+  background: #f8f8f8;
+  border-radius: var(--border-radius);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.hint-item.visible {
+  display: block;
+  opacity: 1;
+}
+
+.reveal-name-button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: var(--spacing);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reveal-name-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Search Results styles */
+.pokemon-count {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: var(--spacing);
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing);
+  margin-top: var(--spacing);
+}
+
+.pokemon-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: var(--spacing);
+}
+
+.hint-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hint-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  background: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.hint-button:hover {
+  background-color: var(--secondary-color);
+}
+
+.hint-button.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pokemon-image {
+  text-align: center;
+}
+
+.pokemon-image img {
+  width: 96px;
+  height: 96px;
+}
+
+.pokemon-image img.silhouette {
+  filter: brightness(0);
+}
+
+.pokemon-types {
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.pokemon-generation {
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.pokemon-genus {
+  color: var(--text-color);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.pokemon-name {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Confirmation Dialog styles */
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--card-bg);
+  padding: calc(var(--spacing) * 2);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  min-width: 300px;
+  text-align: center;
+}
+
+.confirmation-dialog h3 {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing);
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing);
+  margin-top: var(--spacing);
+}
+
+.dialog-button {
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.dialog-button.cancel {
+  background-color: var(--bg-color);
+  border: 1px solid #ccc;
+  color: var(--text-color);
+}
+
+.dialog-button.confirm {
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  color: white;
+}
+
+.dialog-button:hover {
+  opacity: 0.9;
+}
+
+/* Add overlay for confirmation dialog */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 /* Responsive design */
@@ -354,9 +577,52 @@ h2 {
   background: #a8a8a8;
 }
 
-.results-grid {
-  display: grid;
-  gap: var(--spacing);
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  padding: var(--spacing);
+.hint-button[data-phases="true"] {
+  position: relative;
+  padding-right: 2rem;
+}
+
+.hint-button[data-phases="true"]::after {
+  content: "非表示";
+  position: absolute;
+  right: 0.5rem;
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.hint-button[data-phases="true"].phase-1::after {
+  content: "シルエット";
+}
+
+.hint-button[data-phases="true"].phase-2::after {
+  content: "カラー";
+}
+
+.hint-button.phase-1 {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.hint-button.phase-2 {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.pokemon-image {
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+.pokemon-image.hidden {
+  display: none;
+}
+
+.pokemon-image img {
+  width: 96px;
+  height: 96px;
+  transition: filter 0.3s ease;
+}
+
+.pokemon-image img.silhouette {
+  filter: brightness(0);
 }
