@@ -56,10 +56,13 @@ export const createTypedView = <T>(
         throw new Error('Cannot update destroyed view');
       }
 
-      if (element) {
-        options.updateElement(data);
-        eventEmitter.emit('view:updated', data);
+      // Ensure element exists before updating
+      if (!element) {
+        this.render();
       }
+
+      options.updateElement(data);
+      eventEmitter.emit('view:updated', data);
     },
 
     destroy(): void {

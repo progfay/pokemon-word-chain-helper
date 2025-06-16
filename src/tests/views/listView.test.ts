@@ -42,8 +42,11 @@ describe('ListView', () => {
     const element = listView.render();
     const cards = element.querySelectorAll('.pokemon-card');
     expect(cards.length).toBe(2);
-    expect(element.textContent).toContain('ピカチュウ');
-    expect(element.textContent).toContain('ライチュウ');
+    // Pokemon names should be hidden by default, showing as "???"
+    expect(element.textContent).toContain('???');
+    // Should show Pokedex numbers
+    expect(element.textContent).toContain('#025');
+    expect(element.textContent).toContain('#026');
   });
 
   it('should emit item:click event when a card is clicked', () => {
@@ -77,8 +80,9 @@ describe('ListView', () => {
     });
 
     expect(element.querySelectorAll('.pokemon-card').length).toBe(1);
-    expect(element.textContent).toContain('ピカチュウ');
-    expect(element.textContent).not.toContain('ライチュウ');
+    // Check for Pokedex number instead of name since names are hidden
+    expect(element.textContent).toContain('#025');
+    expect(element.textContent).not.toContain('#026');
   });
 
   it('should handle disabled items', () => {

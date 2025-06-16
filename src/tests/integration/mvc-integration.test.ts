@@ -120,8 +120,8 @@ describe('MVC Integration Tests', () => {
       await controllers.searchController.initialize();
       await controllers.gameController.initialize();
 
-      // Simulate search input
-      controllers.searchController.handleSearch('ピ');
+      // Simulate character selection
+      controllers.searchController.handleCharacterSelect('ピ');
 
       // Verify search results are filtered
       const results = models.searchModel.getCachedResults();
@@ -147,7 +147,7 @@ describe('MVC Integration Tests', () => {
         );
 
         // Search should now show disabled items
-        controllers.searchController.handleSearch('');
+        controllers.searchController.handleCharacterSelect('');
         const usedPokemon = Array.from(models.gameStateModel.getUsedPokemon())
           .map((name) => models.pokemonModel.getPokemonByName(name))
           .filter((p): p is Pokemon => p !== null);
@@ -244,7 +244,7 @@ describe('MVC Integration Tests', () => {
       await controllers.gameController.initialize();
 
       // Search for Pokemon
-      controllers.searchController.handleSearch('ピ');
+      controllers.searchController.handleCharacterSelect('ピ');
 
       // Get search results
       const results = models.searchModel.getCachedResults();
@@ -257,7 +257,7 @@ describe('MVC Integration Tests', () => {
       expect(success).toBe(true);
 
       // Search should now reflect the used Pokemon
-      controllers.searchController.handleSearch('');
+      controllers.searchController.handleCharacterSelect('');
       const usedPokemon = Array.from(models.gameStateModel.getUsedPokemon())
         .map((name) => models.pokemonModel.getPokemonByName(name))
         .filter((p): p is Pokemon => p !== null);
@@ -302,7 +302,7 @@ describe('MVC Integration Tests', () => {
       await controllers.gameController.initialize();
 
       // Use controllers
-      controllers.searchController.handleSearch('test');
+      controllers.searchController.handleCharacterSelect('test');
 
       const pikachu = models.pokemonModel.getPokemonByName('ピカチュウ');
       if (pikachu) {

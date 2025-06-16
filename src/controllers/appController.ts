@@ -1,6 +1,7 @@
 import { createGameStateModel } from '../models/gameStateModel.js';
 import { createPokemonModel } from '../models/pokemonModel.js';
 import { createSearchModel } from '../models/searchModel.js';
+import pokemonDatabase from '../pokemon_database.json' with { type: 'json' };
 import type { Pokemon } from '../types/index.js';
 import {
   ErrorCategory,
@@ -17,7 +18,6 @@ import { createWarningView } from '../views/warningView.js';
 import { createController } from './createController.js';
 import { createGameController } from './gameController.js';
 import { createSearchController } from './searchController.js';
-import pokemonDatabase from '../pokemon_database.json' with { type: 'json' };
 
 export const createAppController = () => {
   // Initialize models
@@ -117,7 +117,7 @@ export const createAppController = () => {
         const success = gameController.handlePokemonUse(selectedPokemon);
         if (success) {
           // Refresh search results after successful Pokemon selection
-          searchController.handleSearch('');
+          searchController.handleCharacterSelect('');
         }
       });
 
@@ -125,7 +125,7 @@ export const createAppController = () => {
       gameStateModel.on('state:updated', () => {
         gameController.handleGameStateChange();
         // Refresh search results to reflect new disabled items
-        searchController.handleSearch('');
+        searchController.handleCharacterSelect('');
       });
 
       // Handle error propagation
@@ -141,7 +141,6 @@ export const createAppController = () => {
 
       // Initial setup
       gameStateModel.reset();
-      searchController.handleSearch('');
     },
 
     cleanupController: () => {

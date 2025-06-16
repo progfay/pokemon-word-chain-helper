@@ -12,94 +12,97 @@ describe('SearchView', () => {
     container.appendChild(searchView.render());
   });
 
-  it('should render search form with input', () => {
+  it('should render search header', () => {
     const element = searchView.render();
-    const input = element.querySelector('input');
-    expect(input).toBeTruthy();
-    expect(input?.className).toBe('search-input');
-    expect(input?.placeholder).toBe('ポケモンの名前を入力...');
+    const header = element.querySelector('.search-header');
+    expect(header).toBeTruthy();
+    expect(header?.textContent).toContain('ポケモン検索');
   });
 
-  it('should emit search:input event when typing', () => {
+  it('should render selected character display', () => {
+    const element = searchView.render();
+    const display = element.querySelector('.search-selected-display');
+    expect(display).toBeTruthy();
+    expect(display?.textContent).toContain('選択された文字');
+  });
+
+  it('should render accordion navigation', () => {
+    const element = searchView.render();
+    const accordion = element.querySelector('.accordion');
+    expect(accordion).toBeTruthy();
+
+    // Check that some Japanese row headers are present
+    expect(element.textContent).toContain('ア行');
+    expect(element.textContent).toContain('カ行');
+    expect(element.textContent).toContain('サ行');
+  });
+
+  it('should emit search:character-select event when character is selected', () => {
     const mockCallback = vi.fn();
-    searchView.on('search:input', mockCallback);
+    searchView.on('search:character-select', mockCallback);
 
-    const element = searchView.render();
-    const input = element.querySelector('input') as HTMLInputElement;
-
-    input.value = 'ピカ';
-    input.dispatchEvent(new Event('input'));
-
-    expect(mockCallback).toHaveBeenCalledWith('ピカ');
-  });
-
-  it('should emit search:submit event on form submit', () => {
-    const mockCallback = vi.fn();
-    searchView.on('search:submit', mockCallback);
-
-    const element = searchView.render();
-    const form = element.querySelector('form') as HTMLFormElement;
-    const input = element.querySelector('input') as HTMLInputElement;
-
-    input.value = 'ピカチュウ';
-    form.dispatchEvent(new Event('submit'));
-
-    expect(mockCallback).toHaveBeenCalledWith('ピカチュウ');
-  });
-
-  it('should show/hide clear button based on input value', () => {
+    // First need to open a row accordion
     searchView.update({
-      query: 'ピカチュウ',
+      openRowIndex: 0,
+      pokemonData: {},
+      usedPokemon: [],
       isLoading: false,
     });
 
     const element = searchView.render();
-    const clearButton = element.querySelector(
-      '.search-clear-button',
-    ) as HTMLButtonElement;
-    expect(clearButton.classList.contains('hidden')).toBe(false);
+    const charDetails = element.querySelector(
+      '[data-char="ア"]',
+    ) as HTMLDetailsElement;
 
-    searchView.update({
-      query: '',
-      isLoading: false,
-    });
+    expect(charDetails).toBeTruthy();
+    charDetails.open = true;
 
-    expect(clearButton.classList.contains('hidden')).toBe(true);
+    // Trigger the toggle event manually
+    const toggleEvent = new Event('toggle');
+    charDetails.dispatchEvent(toggleEvent);
+
+    expect(mockCallback).toHaveBeenCalledWith('ア');
   });
 
-  it('should emit search:clear event when clear button is clicked', () => {
+  it('should emit search:clear event when clear is triggered', () => {
     const mockCallback = vi.fn();
     searchView.on('search:clear', mockCallback);
 
-    searchView.update({
-      query: 'ピカチュウ',
-      isLoading: false,
-    });
-
-    const element = searchView.render();
-    const clearButton = element.querySelector(
-      '.search-clear-button',
-    ) as HTMLButtonElement;
-    clearButton.click();
+    // Note: There's no clear button in the accordion design currently
+    // This test verifies that the event can be emitted programmatically
+    // when clear functionality is needed
+    const typedView = searchView as unknown as {
+      emit: (event: string) => void;
+    };
+    typedView.emit('search:clear');
 
     expect(mockCallback).toHaveBeenCalled();
   });
 
-  it('should show/hide loading spinner', () => {
-    const element = searchView.render();
-    const spinner = element.querySelector('.search-spinner') as HTMLElement;
-
+  it('should update selected character display', () => {
     searchView.update({
-      query: 'ピカ',
-      isLoading: true,
-    });
-    expect(spinner.classList.contains('hidden')).toBe(false);
-
-    searchView.update({
-      query: 'ピカ',
+      openCharacter: 'ア',
+      pokemonData: {},
+      usedPokemon: [],
       isLoading: false,
     });
-    expect(spinner.classList.contains('hidden')).toBe(true);
+
+    const element = searchView.render();
+    const selectedDisplay = element.querySelector('.selected-char');
+    expect(selectedDisplay?.textContent).toBe('ア');
+  });
+
+  it('should show "なし" when no character is selected', () => {
+    searchView.update({
+      openCharacter: undefined,
+      pokemonData: {},
+      usedPokemon: [],
+      isLoading: false,
+    });
+
+    const element = searchView.render();
+    const selectedDisplay = element.querySelector('.selected-char');
+    expect(selectedDisplay?.textContent).toBe('なし');
   });
 
   it('should show error message when provided', () => {
@@ -107,20 +110,50 @@ describe('SearchView', () => {
     const error = element.querySelector('.search-error') as HTMLElement;
 
     searchView.update({
-      query: 'ピカ',
+      openCharacter: 'ア',
+      pokemonData: {},
+      usedPokemon: [],
       isLoading: false,
       errorMessage: 'エラーが発生しました',
     });
 
     expect(error.classList.contains('hidden')).toBe(false);
     expect(error.textContent).toBe('エラーが発生しました');
+  });
+
+  it('should hide error message when cleared', () => {
+    const element = searchView.render();
+    const error = element.querySelector('.search-error') as HTMLElement;
 
     searchView.update({
-      query: 'ピカ',
+      openCharacter: 'ア',
+      pokemonData: {},
+      usedPokemon: [],
       isLoading: false,
       errorMessage: undefined,
     });
 
     expect(error.classList.contains('hidden')).toBe(true);
+  });
+
+  it('should highlight selected character in accordion', () => {
+    searchView.update({
+      openRowIndex: 0,
+      openCharacter: 'ア',
+      pokemonData: {},
+      usedPokemon: [],
+      isLoading: false,
+    });
+
+    const element = searchView.render();
+    const selectedDetails = element.querySelector(
+      '[data-char="ア"]',
+    ) as HTMLDetailsElement;
+    const otherDetails = element.querySelector(
+      '[data-char="イ"]',
+    ) as HTMLDetailsElement;
+
+    expect(selectedDetails.open).toBe(true);
+    expect(otherDetails.open).toBe(false);
   });
 });

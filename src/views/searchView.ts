@@ -1,15 +1,20 @@
+import type { Pokemon } from '../types/index.js';
 import type { EventEmitter, EventMap } from '../utils/eventEmitter.js';
+import { createAccordionView } from './accordionView.js';
 import { type TypedView, createTypedView } from './createTypedView.js';
 
 interface SearchViewState {
-  query: string;
+  openRowIndex?: number;
+  openCharacter?: string;
+  pokemonData: { [char: string]: Pokemon[] };
+  usedPokemon: Pokemon[];
   isLoading: boolean;
   errorMessage?: string;
 }
 
 interface SearchViewEvents extends EventMap {
-  'search:input': [string];
-  'search:submit': [string];
+  'search:character-select': [string];
+  'search:pokemon-select': [Pokemon];
   'search:clear': [];
   [key: string]: unknown[];
 }
@@ -18,29 +23,20 @@ const createSearchElement = () => {
   const container = document.createElement('div');
   container.className = 'search-container';
 
-  const form = document.createElement('form');
-  form.className = 'search-form';
+  const header = document.createElement('div');
+  header.className = 'search-header';
+  header.innerHTML = '<h2>ポケモン検索</h2>';
 
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.className = 'search-input';
-  input.placeholder = 'ポケモンの名前を入力...';
-
-  const spinner = document.createElement('div');
-  spinner.className = 'search-spinner hidden';
-
-  const clearButton = document.createElement('button');
-  clearButton.type = 'button';
-  clearButton.className = 'search-clear-button hidden';
-  clearButton.textContent = '×';
+  const selectedDisplay = document.createElement('div');
+  selectedDisplay.className = 'search-selected-display';
+  selectedDisplay.innerHTML =
+    '<p>選択された文字: <span class="selected-char">なし</span></p>';
 
   const error = document.createElement('div');
   error.className = 'search-error hidden';
 
-  form.appendChild(input);
-  form.appendChild(spinner);
-  form.appendChild(clearButton);
-  container.appendChild(form);
+  container.appendChild(header);
+  container.appendChild(selectedDisplay);
   container.appendChild(error);
 
   return container;
@@ -50,20 +46,13 @@ const updateSearchElement = (
   container: HTMLElement,
   state: Partial<SearchViewState>,
 ) => {
-  const input = container.querySelector('.search-input') as HTMLInputElement;
-  const spinner = container.querySelector('.search-spinner');
-  const clearButton = container.querySelector('.search-clear-button');
+  const selectedCharDisplay = container.querySelector('.selected-char');
   const error = container.querySelector('.search-error');
 
-  if (!input || !spinner || !clearButton || !error) return;
+  if (!selectedCharDisplay || !error) return;
 
-  if (state.query !== undefined) {
-    input.value = state.query;
-    clearButton.classList.toggle('hidden', !state.query);
-  }
-
-  if (state.isLoading !== undefined) {
-    spinner.classList.toggle('hidden', !state.isLoading);
+  if (state.openCharacter !== undefined) {
+    selectedCharDisplay.textContent = state.openCharacter || 'なし';
   }
 
   if ('errorMessage' in state) {
@@ -73,48 +62,57 @@ const updateSearchElement = (
 };
 
 export const createSearchView = () => {
+  const accordionView = createAccordionView();
+
   const view = createTypedView<SearchViewState>({
-    createElement: createSearchElement,
+    createElement: () => {
+      const container = createSearchElement();
+      // Mount accordion view into the search container
+      container.appendChild(accordionView.render());
+      return container;
+    },
     updateElement: (state) => {
       const element = view.render();
       updateSearchElement(element, state);
+
+      // Update accordion view state
+      accordionView.update({
+        openCharacter: state.openCharacter,
+        openRowIndex: state.openRowIndex,
+        pokemonData: state.pokemonData || {},
+        usedPokemon: state.usedPokemon || [],
+        isLoading: state.isLoading,
+        errorMessage: state.errorMessage,
+      });
     },
     setupEventListeners: () => {
-      const element = view.render();
-      const form = element.querySelector('.search-form') as HTMLFormElement;
-      const input = element.querySelector('.search-input') as HTMLInputElement;
-      const clearButton = element.querySelector(
-        '.search-clear-button',
-      ) as HTMLButtonElement;
-
-      const handleInput = () => {
+      const handleCharacterSelect = (char: string) => {
         const typedView = view as TypedView<SearchViewState> &
           EventEmitter<SearchViewEvents>;
-        typedView.emit('search:input', input.value);
+        typedView.emit('search:character-select', char);
       };
 
-      const handleSubmit = (event: Event) => {
-        event.preventDefault();
+      const handlePokemonSelect = (pokemon: Pokemon) => {
         const typedView = view as TypedView<SearchViewState> &
           EventEmitter<SearchViewEvents>;
-        typedView.emit('search:submit', input.value);
+        typedView.emit('search:pokemon-select', pokemon);
       };
 
-      const handleClear = () => {
-        input.value = '';
+      const handleAccordionClear = () => {
         const typedView = view as TypedView<SearchViewState> &
           EventEmitter<SearchViewEvents>;
         typedView.emit('search:clear');
       };
 
-      input.addEventListener('input', handleInput);
-      form.addEventListener('submit', handleSubmit);
-      clearButton.addEventListener('click', handleClear);
+      accordionView.on('accordion:character-select', handleCharacterSelect);
+      accordionView.on('accordion:pokemon-select', handlePokemonSelect);
+      accordionView.on('accordion:clear', handleAccordionClear);
 
       return () => {
-        input.removeEventListener('input', handleInput);
-        form.removeEventListener('submit', handleSubmit);
-        clearButton.removeEventListener('click', handleClear);
+        accordionView.off('accordion:character-select', handleCharacterSelect);
+        accordionView.off('accordion:pokemon-select', handlePokemonSelect);
+        accordionView.off('accordion:clear', handleAccordionClear);
+        accordionView.destroy();
       };
     },
   });

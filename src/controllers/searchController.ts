@@ -1,4 +1,5 @@
 import type { Pokemon } from '../types/index.js';
+import { normalizeCharacters } from '../utils/characterUtils.js';
 import {
   ErrorCategory,
   ErrorSeverity,
@@ -54,23 +55,30 @@ export interface SearchControllerDependencies {
  * @returns SearchController instance with event handling and search management
  */
 export const createSearchController = (deps: SearchControllerDependencies) => {
-  const { searchModel, gameStateModel, pokemonModel, searchView, listView } =
-    deps;
+  const { searchModel, gameStateModel, pokemonModel, searchView } = deps;
 
   /**
-   * Handles search input and updates the list view with filtered results
-   * @param query - Search query string
+   * Handles character selection and updates the accordion view with Pokemon data
+   * @param char - Selected character from accordion (katakana)
    */
-  const handleSearch = (query: string) => {
+  const handleCharacterSelect = (char: string) => {
     try {
-      const results = searchModel.search(query);
+      // Convert katakana to hiragana for search since Pokemon model indexes by hiragana
+      const normalizedChar = normalizeCharacters(char);
+      const results = searchModel.search(normalizedChar);
       const usedPokemon = Array.from(gameStateModel.getUsedPokemon())
         .map((name) => pokemonModel.getPokemonByName(name))
         .filter((p): p is Pokemon => p !== null);
 
-      listView.update({
-        items: results,
-        disabledItems: usedPokemon,
+      // Group Pokemon by their first character for the accordion (using original katakana char)
+      const pokemonData: { [char: string]: Pokemon[] } = {};
+      pokemonData[char] = results;
+
+      searchView.update({
+        openCharacter: char,
+        pokemonData,
+        usedPokemon,
+        errorMessage: undefined,
       });
     } catch (error) {
       handleError(
@@ -78,7 +86,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
         ErrorCategory.CONTROLLER,
         ErrorSeverity.MEDIUM,
         '検索中にエラーが発生しました',
-        { operation: 'search', query },
+        { operation: 'search', char },
       );
       searchView.update({
         errorMessage: '検索中にエラーが発生しました',
@@ -87,7 +95,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
   };
 
   /**
-   * Handles Pokemon selection from the list view
+   * Handles Pokemon selection from the accordion view
    * @param pokemon - Selected Pokemon object
    */
   const handlePokemonSelect = (pokemon: Pokemon) => {
@@ -108,35 +116,31 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
 
     gameStateModel.markPokemonAsUsed(pokemon);
     searchView.update({
-      query: '',
+      openCharacter: undefined,
+      openRowIndex: undefined,
+      pokemonData: {},
+      usedPokemon: Array.from(gameStateModel.getUsedPokemon())
+        .map((name) => pokemonModel.getPokemonByName(name))
+        .filter((p): p is Pokemon => p !== null),
       errorMessage: undefined,
     });
 
-    // Refresh search with empty query to show all available Pokemon
-    handleSearch('');
-  };
-
-  const handleSearchSubmit = (_query: string) => {
-    const results = searchModel.getCachedResults();
-    const usedPokemon = gameStateModel.getUsedPokemon();
-
-    // Find first valid Pokemon from search results
-    const validPokemon = results.find((p) => {
-      return !usedPokemon.has(p.name);
-    });
-
-    if (validPokemon) {
-      handlePokemonSelect(validPokemon);
-    } else {
-      searchView.update({
-        errorMessage: '該当するポケモンが見つかりません',
-      });
-    }
+    // Clear selection to refresh the view
+    handleSearchClear();
   };
 
   const handleSearchClear = () => {
     searchModel.clearCache();
-    handleSearch('');
+    searchView.update({
+      openCharacter: undefined,
+      openRowIndex: undefined,
+      pokemonData: {},
+      usedPokemon: Array.from(gameStateModel.getUsedPokemon())
+        .map((name) => pokemonModel.getPokemonByName(name))
+        .filter((p): p is Pokemon => p !== null),
+      isLoading: false,
+      errorMessage: undefined,
+    });
   };
 
   const handleHintToggle = (pokemonId: string, hintType: string) => {
@@ -147,21 +151,19 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
   const controller = createController({
     setupController: async () => {
       // Set up search event handlers
-      searchView.on('search:input', ((...args: unknown[]) =>
-        handleSearch(args[0] as string)) as (...args: unknown[]) => void);
-      searchView.on('search:submit', ((...args: unknown[]) =>
-        handleSearchSubmit(args[0] as string)) as (...args: unknown[]) => void);
-      searchView.on('search:clear', ((..._args: unknown[]) =>
-        handleSearchClear()) as (...args: unknown[]) => void);
-
-      // Set up list view event handlers
-      listView.on('item:click', ((...args: unknown[]) =>
+      searchView.on('search:character-select', ((...args: unknown[]) =>
+        handleCharacterSelect(args[0] as string)) as (
+        ...args: unknown[]
+      ) => void);
+      searchView.on('search:pokemon-select', ((...args: unknown[]) =>
         handlePokemonSelect(args[0] as Pokemon)) as (
         ...args: unknown[]
       ) => void);
+      searchView.on('search:clear', ((..._args: unknown[]) =>
+        handleSearchClear()) as (...args: unknown[]) => void);
 
-      // Initialize with empty search (show all Pokemon)
-      handleSearch('');
+      // Initialize with clear state
+      handleSearchClear();
     },
 
     cleanupController: () => {
@@ -171,7 +173,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
 
   return {
     ...controller,
-    handleSearch,
+    handleCharacterSelect,
     handlePokemonSelect,
     handleHintToggle,
   };

@@ -61,31 +61,34 @@ describe('SearchController', () => {
     searchController = createSearchController(mockDependencies);
   });
 
-  describe('Search Handling', () => {
-    it('should handle search input', () => {
-      const query = 'ピ';
+  describe('Character Selection', () => {
+    it('should handle character selection', () => {
+      const char = 'ピ';
 
-      searchController.handleSearch(query);
+      searchController.handleCharacterSelect(char);
 
-      expect(mockDependencies.searchModel.search).toHaveBeenCalledWith(query);
-      expect(mockDependencies.listView.update).toHaveBeenCalledWith({
-        items: testPokemon,
-        disabledItems: [],
+      // Should search with normalized (hiragana) character
+      expect(mockDependencies.searchModel.search).toHaveBeenCalledWith('ぴ');
+      expect(mockDependencies.searchView.update).toHaveBeenCalledWith({
+        openCharacter: char, // But display original katakana character
+        pokemonData: { [char]: testPokemon },
+        usedPokemon: [],
+        errorMessage: undefined,
       });
     });
 
-    it('should filter out used Pokemon from results', () => {
+    it('should include used Pokemon in the usedPokemon array', () => {
       const usedPokemon = new Set(['ピカチュウ']);
       (mockDependencies.gameStateModel.getUsedPokemon as Mock).mockReturnValue(
         usedPokemon,
       );
 
-      searchController.handleSearch('test');
+      searchController.handleCharacterSelect('ピ');
 
-      const updateCall = (mockDependencies.listView.update as Mock).mock
+      const updateCall = (mockDependencies.searchView.update as Mock).mock
         .calls[0][0];
-      expect(updateCall.disabledItems).toHaveLength(1);
-      expect(updateCall.disabledItems[0].name).toBe('ピカチュウ');
+      expect(updateCall.usedPokemon).toHaveLength(1);
+      expect(updateCall.usedPokemon[0].name).toBe('ピカチュウ');
     });
   });
 
@@ -99,7 +102,10 @@ describe('SearchController', () => {
         mockDependencies.gameStateModel.markPokemonAsUsed,
       ).toHaveBeenCalledWith(pokemon);
       expect(mockDependencies.searchView.update).toHaveBeenCalledWith({
-        query: '',
+        openCharacter: undefined,
+        openRowIndex: undefined,
+        pokemonData: {},
+        usedPokemon: [],
         errorMessage: undefined,
       });
     });
@@ -122,44 +128,28 @@ describe('SearchController', () => {
     });
   });
 
-  describe('Search Submit', () => {
-    it('should select first valid Pokemon on submit', async () => {
+  describe('Search Clear', () => {
+    it('should handle search clear', async () => {
       await searchController.initialize();
 
-      // Find and call the search:submit event handler
-      const submitHandler = (
+      // Find and call the search:clear event handler
+      const clearHandler = (
         mockDependencies.searchView.on as Mock
-      ).mock.calls.find((call: unknown[]) => call[0] === 'search:submit')?.[1];
+      ).mock.calls.find((call: unknown[]) => call[0] === 'search:clear')?.[1];
 
-      if (submitHandler) {
-        submitHandler('test');
-        expect(
-          mockDependencies.gameStateModel.markPokemonAsUsed,
-        ).toHaveBeenCalledWith(testPokemon[0]);
-      } else {
-        throw new Error('Search submit handler not found');
-      }
-    });
-
-    it('should show error when no valid Pokemon found', async () => {
-      const usedPokemon = new Set(testPokemon.map((p) => p.name));
-      (mockDependencies.gameStateModel.getUsedPokemon as Mock).mockReturnValue(
-        usedPokemon,
-      );
-
-      await searchController.initialize();
-
-      const submitHandler = (
-        mockDependencies.searchView.on as Mock
-      ).mock.calls.find((call: unknown[]) => call[0] === 'search:submit')?.[1];
-
-      if (submitHandler) {
-        submitHandler('test');
+      if (clearHandler) {
+        clearHandler();
+        expect(mockDependencies.searchModel.clearCache).toHaveBeenCalled();
         expect(mockDependencies.searchView.update).toHaveBeenCalledWith({
-          errorMessage: '該当するポケモンが見つかりません',
+          openCharacter: undefined,
+          openRowIndex: undefined,
+          pokemonData: {},
+          usedPokemon: [],
+          isLoading: false,
+          errorMessage: undefined,
         });
       } else {
-        throw new Error('Search submit handler not found');
+        throw new Error('Search clear handler not found');
       }
     });
   });
@@ -169,27 +159,23 @@ describe('SearchController', () => {
       await searchController.initialize();
 
       expect(mockDependencies.searchView.on).toHaveBeenCalledWith(
-        'search:input',
+        'search:character-select',
         expect.any(Function),
       );
       expect(mockDependencies.searchView.on).toHaveBeenCalledWith(
-        'search:submit',
+        'search:pokemon-select',
         expect.any(Function),
       );
       expect(mockDependencies.searchView.on).toHaveBeenCalledWith(
         'search:clear',
         expect.any(Function),
       );
-      expect(mockDependencies.listView.on).toHaveBeenCalledWith(
-        'item:click',
-        expect.any(Function),
-      );
     });
 
-    it('should perform initial search on initialization', async () => {
+    it('should clear state on initialization', async () => {
       await searchController.initialize();
 
-      expect(mockDependencies.searchModel.search).toHaveBeenCalledWith('');
+      expect(mockDependencies.searchModel.clearCache).toHaveBeenCalled();
     });
   });
 
@@ -200,7 +186,7 @@ describe('SearchController', () => {
       });
 
       expect(() => {
-        searchController.handleSearch('test');
+        searchController.handleCharacterSelect('test');
       }).not.toThrow();
     });
   });
