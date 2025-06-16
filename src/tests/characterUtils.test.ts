@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CharacterUtils } from '../modules/characterUtils';
+import { CharacterUtils } from '../utils/characterUtils';
 
 describe('CharacterUtils', () => {
   describe('toHiragana', () => {

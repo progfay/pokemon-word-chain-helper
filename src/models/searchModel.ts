@@ -1,0 +1,73 @@
+import type { Pokemon } from '../types/index.js';
+import type { SearchModel } from '../types/mvc.js';
+import { createModel } from './createModel.js';
+
+export interface SearchModelState {
+  lastQuery: string;
+  results: Pokemon[];
+  isSearching: boolean;
+}
+
+export const createSearchModel = (pokemonModel: {
+  searchByFirstChar: (char: string) => Pokemon[];
+  getAllPokemon: () => Pokemon[];
+}) => {
+  const baseModel = createModel({
+    id: 'search-model',
+    initialState: {
+      lastQuery: '',
+      results: pokemonModel.getAllPokemon(), // Start with all Pokemon
+      isSearching: false,
+    } as SearchModelState,
+  });
+
+  const state = baseModel.getState() as SearchModelState;
+
+  return {
+    ...baseModel,
+
+    search(query: string): Pokemon[] {
+      try {
+        state.isSearching = true;
+        state.lastQuery = query;
+
+        if (query.trim() === '') {
+          // Empty query returns all Pokemon
+          state.results = pokemonModel.getAllPokemon();
+        } else {
+          const firstChar = query.charAt(0);
+          state.results = pokemonModel.searchByFirstChar(firstChar);
+        }
+
+        state.isSearching = false;
+        baseModel.setState(state);
+
+        return state.results;
+      } catch (error) {
+        baseModel.handleError(error as Error);
+        state.isSearching = false;
+        state.results = [];
+        baseModel.setState(state);
+        return [];
+      }
+    },
+
+    getCachedResults(): Pokemon[] {
+      return state.results;
+    },
+
+    clearCache(): void {
+      state.lastQuery = '';
+      state.results = pokemonModel.getAllPokemon(); // Reset to all Pokemon
+      baseModel.setState(state);
+    },
+
+    isSearchInProgress(): boolean {
+      return state.isSearching;
+    },
+
+    getLastQuery(): string {
+      return state.lastQuery;
+    },
+  } as SearchModel;
+};

@@ -1,22 +1,22 @@
 export type PokemonType =
-  | "grass"
-  | "poison"
-  | "fire"
-  | "flying"
-  | "water"
-  | "bug"
-  | "normal"
-  | "electric"
-  | "ground"
-  | "fairy"
-  | "fighting"
-  | "psychic"
-  | "rock"
-  | "steel"
-  | "ice"
-  | "ghost"
-  | "dragon"
-  | "dark";
+  | 'grass'
+  | 'poison'
+  | 'fire'
+  | 'flying'
+  | 'water'
+  | 'bug'
+  | 'normal'
+  | 'electric'
+  | 'ground'
+  | 'fairy'
+  | 'fighting'
+  | 'psychic'
+  | 'rock'
+  | 'steel'
+  | 'ice'
+  | 'ghost'
+  | 'dragon'
+  | 'dark';
 
 export interface Pokemon {
   /** Name of Pokemon (e.g.: "ピカチュウ") */
@@ -37,4 +37,16 @@ export interface Pokemon {
 
 export interface CharacterMap {
   [key: string]: string;
+}
+
+export interface GameWarning {
+  type: 'ending_with_n' | 'already_used' | 'invalid_chain';
+  message: string;
+  pokemon?: Pokemon;
+}
+
+export interface GameRuleViolation {
+  rule: string;
+  message: string;
+  pokemon?: Pokemon;
 }
