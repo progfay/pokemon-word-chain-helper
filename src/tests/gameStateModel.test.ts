@@ -64,34 +64,7 @@ describe('GameStateModel', () => {
     });
   });
 
-  describe('getWarnings', () => {
-    it('should warn about Pokemon ending with ん', () => {
-      gameStateModel.markPokemonAsUsed(testPokemon[0]); // Use ピカチュウ first
 
-      const warnings = gameStateModel.getWarnings();
-      const nEndingWarning = warnings.find((w) => w.type === 'ending_with_n');
-
-      expect(nEndingWarning).toBeDefined();
-      if (nEndingWarning?.pokemon) {
-        expect(nEndingWarning.pokemon.name).toBe('ウツドン');
-      } else {
-        throw new Error('Expected warning to have Pokemon reference');
-      }
-    });
-  });
-
-  describe('getLastUsedPokemon', () => {
-    it('should be null initially', () => {
-      expect(gameStateModel.getLastUsedPokemon()).toBeNull();
-    });
-
-    it('should return last used Pokemon', () => {
-      gameStateModel.markPokemonAsUsed(testPokemon[0]);
-      const lastUsed = gameStateModel.getLastUsedPokemon();
-      expect(lastUsed).not.toBeNull();
-      expect(lastUsed?.name).toBe('ピカチュウ');
-    });
-  });
 
   describe('reset', () => {
     it('should clear all state', () => {
@@ -99,7 +72,6 @@ describe('GameStateModel', () => {
       gameStateModel.reset();
 
       expect(gameStateModel.getUsedPokemon().size).toBe(0);
-      expect(gameStateModel.getLastUsedPokemon()).toBeNull();
       expect(gameStateModel.getRemainingCount()).toBe(
         pokemonModel.getAllPokemon().length,
       );
@@ -127,12 +99,5 @@ describe('GameStateModel', () => {
       expect(eventEmitted).toBe(true);
     });
 
-    it('should update lastUsedPokemon when Pokemon is used', () => {
-      gameStateModel.markPokemonAsUsed(testPokemon[0]);
-      expect(gameStateModel.getLastUsedPokemon()?.name).toBe('ピカチュウ');
-
-      gameStateModel.markPokemonAsUsed(testPokemon[1]);
-      expect(gameStateModel.getLastUsedPokemon()?.name).toBe('ウツドン');
-    });
   });
 });

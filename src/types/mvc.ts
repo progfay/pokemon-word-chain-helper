@@ -25,8 +25,6 @@ export interface GameStateModel extends Model {
   getUsedPokemon(): Set<string>;
   getRemainingCount(): number;
   markPokemonAsUsed(pokemon: PokemonObject): void;
-  getWarnings(): GameWarning[];
-  getLastUsedPokemon(): PokemonObject | null;
   reset(): void;
 }
 
@@ -58,7 +56,6 @@ export interface SearchView extends View {
 export interface GameStateView extends View {
   updateUsedPokemon(pokemon: PokemonObject[]): void;
   updateRemainingCount(count: number): void;
-  showWarnings(warnings: GameWarning[]): void;
 }
 
 // Controller Interfaces
@@ -76,21 +73,8 @@ export interface SearchController extends Controller {
 export interface GameController extends Controller {
   handlePokemonUse(pokemon: PokemonObject): void;
   handleGameReset(): void;
-  checkGameRules(pokemon: PokemonObject): GameRuleViolation[];
 }
 
-// Common Types
-export interface GameWarning {
-  type: 'ending_with_n' | 'already_used' | 'invalid_chain';
-  message: string;
-  pokemon?: PokemonObject;
-}
-
-export interface GameRuleViolation {
-  rule: string;
-  message: string;
-  pokemon?: PokemonObject;
-}
 
 // Event Types
 export type ModelEventMap = {

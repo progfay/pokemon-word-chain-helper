@@ -9,7 +9,6 @@ import { createGameStatusView } from '../../views/gameStatusView.js';
 import { createListView } from '../../views/listView.js';
 import { createSearchView } from '../../views/searchView.js';
 import { createUsedPokemonView } from '../../views/usedPokemonView.js';
-import { createWarningView } from '../../views/warningView.js';
 
 describe('MVC Integration Tests', () => {
   let models: {
@@ -23,7 +22,6 @@ describe('MVC Integration Tests', () => {
     listView: ReturnType<typeof createListView>;
     gameStatusView: ReturnType<typeof createGameStatusView>;
     usedPokemonView: ReturnType<typeof createUsedPokemonView>;
-    warningView: ReturnType<typeof createWarningView>;
   };
 
   let controllers: {
@@ -81,7 +79,6 @@ describe('MVC Integration Tests', () => {
       listView: createListView(),
       gameStatusView: createGameStatusView(),
       usedPokemonView: createUsedPokemonView(),
-      warningView: createWarningView(),
     };
 
     // Create controllers
@@ -109,7 +106,6 @@ describe('MVC Integration Tests', () => {
         usedPokemonView: views.usedPokemonView as {
           update: (data: unknown) => void;
         },
-        warningView: views.warningView as { update: (data: unknown) => void },
       }),
     };
   });
@@ -171,12 +167,7 @@ describe('MVC Integration Tests', () => {
         expect(success).toBe(true);
 
         // Check game state updates
-        expect(models.gameStateModel.getLastUsedPokemon()?.name).toBe(
-          'ピカチュウ',
-        );
-        // Current character is calculated from last used Pokemon's lastChar
-        const lastUsed = models.gameStateModel.getLastUsedPokemon();
-        expect(lastUsed?.lastChar).toBe('ウ');
+        expect(models.gameStateModel.getUsedPokemon().has('ピカチュウ')).toBe(true);
 
         // Try to select valid next Pokemon
         const windie = models.pokemonModel.getPokemonByName('ウインディ');
@@ -187,9 +178,6 @@ describe('MVC Integration Tests', () => {
           expect(success2).toBe(true);
 
           expect(models.gameStateModel.getUsedPokemon().size).toBe(2);
-          // Check that the new last used Pokemon ends with "ィ"
-          const newLastUsed = models.gameStateModel.getLastUsedPokemon();
-          expect(newLastUsed?.lastChar).toBe('ィ');
         }
       }
     });
@@ -208,15 +196,10 @@ describe('MVC Integration Tests', () => {
       expect(fushigidane).toBeDefined();
 
       if (fushigidane) {
-        const violations =
-          controllers.gameController.validatePokemonSelection(fushigidane);
-        expect(violations.length).toBe(1);
-        expect(violations[0].rule).toBe('character_chain');
-
-        // Should not allow selection
+        // Should allow selection (no validation)
         const success =
           controllers.gameController.handlePokemonUse(fushigidane);
-        expect(success).toBe(false);
+        expect(success).toBe(true);
       }
     });
 
@@ -234,7 +217,6 @@ describe('MVC Integration Tests', () => {
       controllers.gameController.handleGameReset();
 
       expect(models.gameStateModel.getUsedPokemon().size).toBe(0);
-      expect(models.gameStateModel.getLastUsedPokemon()).toBeNull();
     });
   });
 

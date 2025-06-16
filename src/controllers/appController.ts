@@ -14,7 +14,6 @@ import { createGameStatusView } from '../views/gameStatusView.js';
 import { createListView } from '../views/listView.js';
 import { createSearchView } from '../views/searchView.js';
 import { createUsedPokemonView } from '../views/usedPokemonView.js';
-import { createWarningView } from '../views/warningView.js';
 import { createController } from './createController.js';
 import { createGameController } from './gameController.js';
 import { createSearchController } from './searchController.js';
@@ -32,7 +31,6 @@ export const createAppController = () => {
   const listView = createListView();
   const gameStatusView = createGameStatusView();
   const usedPokemonView = createUsedPokemonView();
-  const warningView = createWarningView();
 
   // Initialize controllers
   const searchController = createSearchController({
@@ -57,7 +55,6 @@ export const createAppController = () => {
       on: (event: string, callback: (...args: unknown[]) => void) => void;
     },
     usedPokemonView: usedPokemonView as { update: (data: unknown) => void },
-    warningView: warningView as { update: (data: unknown) => void },
   });
 
   // Create root layout
@@ -76,7 +73,6 @@ export const createAppController = () => {
     main.appendChild(searchView.render());
     main.appendChild(gameStatusView.render());
     main.appendChild(usedPokemonView.render());
-    main.appendChild(warningView.render());
     main.appendChild(listView.render());
 
     container.appendChild(header);
@@ -151,7 +147,6 @@ export const createAppController = () => {
       listView.destroy();
       gameStatusView.destroy();
       usedPokemonView.destroy();
-      warningView.destroy();
 
       // Reset models
       gameStateModel.reset();

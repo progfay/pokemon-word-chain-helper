@@ -1,5 +1,4 @@
 import type { PokemonObject } from '../types/index.js';
-import { normalizeCharacters } from '../utils/characterUtils.js';
 import {
   ErrorCategory,
   ErrorSeverity,
