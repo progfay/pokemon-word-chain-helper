@@ -1,4 +1,4 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject } from '../types/index.js';
 import type { EventEmitter, EventMap } from '../utils/eventEmitter.js';
 import { createAccordionView } from './accordionView.js';
 import { type TypedView, createTypedView } from './createTypedView.js';
@@ -6,15 +6,15 @@ import { type TypedView, createTypedView } from './createTypedView.js';
 interface SearchViewState {
   openRowIndex?: number;
   openCharacter?: string;
-  pokemonData: { [char: string]: Pokemon[] };
-  usedPokemon: Pokemon[];
+  pokemonData: { [char: string]: PokemonObject[] };
+  usedPokemon: PokemonObject[];
   isLoading: boolean;
   errorMessage?: string;
 }
 
 interface SearchViewEvents extends EventMap {
   'search:character-select': [string];
-  'search:pokemon-select': [Pokemon];
+  'search:pokemon-select': [PokemonObject];
   'search:clear': [];
   [key: string]: unknown[];
 }
@@ -92,7 +92,7 @@ export const createSearchView = () => {
         typedView.emit('search:character-select', char);
       };
 
-      const handlePokemonSelect = (pokemon: Pokemon) => {
+      const handlePokemonSelect = (pokemon: PokemonObject) => {
         const typedView = view as TypedView<SearchViewState> &
           EventEmitter<SearchViewEvents>;
         typedView.emit('search:pokemon-select', pokemon);

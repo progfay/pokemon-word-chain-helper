@@ -2,7 +2,7 @@ import { createGameStateModel } from '../models/gameStateModel.js';
 import { createPokemonModel } from '../models/pokemonModel.js';
 import { createSearchModel } from '../models/searchModel.js';
 import pokemonDatabase from '../pokemon_database.json' with { type: 'json' };
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject, PokemonDatabase } from '../types/index.js';
 import {
   ErrorCategory,
   globalErrorHandler,
@@ -22,9 +22,7 @@ import { createSearchController } from './searchController.js';
 export const createAppController = () => {
   // Initialize models
   const pokemonModel = createPokemonModel();
-  for (const pokemon of pokemonDatabase) {
-    pokemonModel.addPokemon(pokemon as Pokemon);
-  }
+  pokemonModel.loadFromDatabase(pokemonDatabase as unknown as PokemonDatabase);
 
   const gameStateModel = createGameStateModel(pokemonModel);
   const searchModel = createSearchModel(pokemonModel);
@@ -113,7 +111,7 @@ export const createAppController = () => {
       await gameController.initialize();
 
       // Connect search and game controllers
-      listView.on('item:click', (selectedPokemon: Pokemon) => {
+      listView.on('item:click', (selectedPokemon: PokemonObject) => {
         const success = gameController.handlePokemonUse(selectedPokemon);
         if (success) {
           // Refresh search results after successful Pokemon selection

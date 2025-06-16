@@ -1,4 +1,4 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject } from '../types/index.js';
 import { normalizeCharacters } from '../utils/characterUtils.js';
 import {
   ErrorCategory,
@@ -15,9 +15,9 @@ export interface SearchControllerDependencies {
   /** Model for Pokemon search operations */
   searchModel: {
     /** Search for Pokemon by query string */
-    search: (query: string) => Pokemon[];
+    search: (query: string) => PokemonObject[];
     /** Get previously cached search results */
-    getCachedResults: () => Pokemon[];
+    getCachedResults: () => PokemonObject[];
     /** Clear the search cache */
     clearCache: () => void;
   };
@@ -26,12 +26,12 @@ export interface SearchControllerDependencies {
     /** Get set of Pokemon names that have been used */
     getUsedPokemon: () => Set<string>;
     /** Mark a Pokemon as used in the game */
-    markPokemonAsUsed: (pokemon: Pokemon) => void;
+    markPokemonAsUsed: (pokemon: PokemonObject) => void;
   };
   /** Model for Pokemon data access */
   pokemonModel: {
     /** Get Pokemon by name, returns null if not found */
-    getPokemonByName: (name: string) => Pokemon | null;
+    getPokemonByName: (name: string) => PokemonObject | null;
   };
   /** View for search input and error display */
   searchView: {
@@ -63,19 +63,46 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
    */
   const handleCharacterSelect = (char: string) => {
     try {
-      // Convert katakana to hiragana for search since Pokemon model indexes by hiragana
-      const normalizedChar = normalizeCharacters(char);
-      const results = searchModel.search(normalizedChar);
+      // The database uses katakana characters as keys, so search directly with katakana
+      const results = searchModel.search(char);
       const usedPokemon = Array.from(gameStateModel.getUsedPokemon())
         .map((name) => pokemonModel.getPokemonByName(name))
-        .filter((p): p is Pokemon => p !== null);
+        .filter((p): p is PokemonObject => p !== null);
 
       // Group Pokemon by their first character for the accordion (using original katakana char)
-      const pokemonData: { [char: string]: Pokemon[] } = {};
+      const pokemonData: { [char: string]: PokemonObject[] } = {};
       pokemonData[char] = results;
-
+      
+      // Find which row contains this character
+      const JAPANESE_ROWS = [
+        { name: 'ア行', chars: ['ア', 'イ', 'ウ', 'エ', 'オ'] },
+        { name: 'カ行', chars: ['カ', 'キ', 'ク', 'ケ', 'コ'] },
+        { name: 'ガ行', chars: ['ガ', 'ギ', 'グ', 'ゲ', 'ゴ'] },
+        { name: 'サ行', chars: ['サ', 'シ', 'ス', 'セ', 'ソ'] },
+        { name: 'ザ行', chars: ['ザ', 'ジ', 'ズ', 'ゼ', 'ゾ'] },
+        { name: 'タ行', chars: ['タ', 'チ', 'ツ', 'テ', 'ト'] },
+        { name: 'ダ行', chars: ['ダ', 'ヂ', 'ヅ', 'デ', 'ド'] },
+        { name: 'ナ行', chars: ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'] },
+        { name: 'ハ行', chars: ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ'] },
+        { name: 'バ行', chars: ['バ', 'ビ', 'ブ', 'ベ', 'ボ'] },
+        { name: 'パ行', chars: ['パ', 'ピ', 'プ', 'ペ', 'ポ'] },
+        { name: 'マ行', chars: ['マ', 'ミ', 'ム', 'メ', 'モ'] },
+        { name: 'ヤ行', chars: ['ヤ', 'ユ', 'ヨ'] },
+        { name: 'ラ行', chars: ['ラ', 'リ', 'ル', 'レ', 'ロ'] },
+        { name: 'ワ行', chars: ['ワ', 'ヲ', 'ン'] },
+      ];
+      
+      let openRowIndex: number | undefined = undefined;
+      for (let i = 0; i < JAPANESE_ROWS.length; i++) {
+        if (JAPANESE_ROWS[i].chars.includes(char)) {
+          openRowIndex = i;
+          break;
+        }
+      }
+      
       searchView.update({
         openCharacter: char,
+        openRowIndex,
         pokemonData,
         usedPokemon,
         errorMessage: undefined,
@@ -98,7 +125,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
    * Handles Pokemon selection from the accordion view
    * @param pokemon - Selected Pokemon object
    */
-  const handlePokemonSelect = (pokemon: Pokemon) => {
+  const handlePokemonSelect = (pokemon: PokemonObject) => {
     const usedPokemon = gameStateModel.getUsedPokemon();
 
     if (usedPokemon.has(pokemon.name)) {
@@ -121,7 +148,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
       pokemonData: {},
       usedPokemon: Array.from(gameStateModel.getUsedPokemon())
         .map((name) => pokemonModel.getPokemonByName(name))
-        .filter((p): p is Pokemon => p !== null),
+        .filter((p): p is PokemonObject => p !== null),
       errorMessage: undefined,
     });
 
@@ -137,7 +164,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
       pokemonData: {},
       usedPokemon: Array.from(gameStateModel.getUsedPokemon())
         .map((name) => pokemonModel.getPokemonByName(name))
-        .filter((p): p is Pokemon => p !== null),
+        .filter((p): p is PokemonObject => p !== null),
       isLoading: false,
       errorMessage: undefined,
     });
@@ -156,7 +183,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
         ...args: unknown[]
       ) => void);
       searchView.on('search:pokemon-select', ((...args: unknown[]) =>
-        handlePokemonSelect(args[0] as Pokemon)) as (
+        handlePokemonSelect(args[0] as PokemonObject)) as (
         ...args: unknown[]
       ) => void);
       searchView.on('search:clear', ((..._args: unknown[]) =>

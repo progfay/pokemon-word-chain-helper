@@ -1,9 +1,33 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject, PokemonType } from '../types/index.js';
 import { createTypedView } from './createTypedView.js';
 import type { TypedView } from './createTypedView.js';
 
+/**
+ * Map numeric type IDs to type names for display
+ */
+const TYPE_ID_TO_NAME: Record<PokemonType, string> = {
+  1: 'normal',
+  2: 'fire',
+  3: 'water',
+  4: 'electric',
+  5: 'grass',
+  6: 'ice',
+  7: 'fighting',
+  8: 'poison',
+  9: 'ground',
+  10: 'flying',
+  11: 'psychic',
+  12: 'bug',
+  13: 'rock',
+  14: 'ghost',
+  15: 'dragon',
+  16: 'dark',
+  17: 'steel',
+  18: 'fairy',
+};
+
 export type PokemonCardState = {
-  pokemon: Pokemon;
+  pokemon: PokemonObject;
   isHighlighted: boolean;
   isSelected: boolean;
   isDisabled: boolean;
@@ -24,7 +48,7 @@ type HintTogglePayload =
     };
 
 export type PokemonCardEvents = {
-  'card:click': [Pokemon];
+  'card:click': [PokemonObject];
   'hint:toggle': [HintTogglePayload];
 };
 
@@ -102,7 +126,7 @@ const updatePokemonCardElement = (
           <span class="pokemon-card__number">#${paddedNumber}</span>
           ${
             hints.showGenus
-              ? `<span class="pokemon-card__genus">${pokemon.genus}</span>`
+              ? `<span class="pokemon-card__genus">${pokemon.genus}ポケモン</span>`
               : ''
           }
           ${
@@ -117,8 +141,10 @@ const updatePokemonCardElement = (
           <div class="pokemon-card__types">
             ${pokemon.types
               .map(
-                (type) =>
-                  `<span class="type-label type-${type}">${type}</span>`,
+                (type) => {
+                  const typeName = TYPE_ID_TO_NAME[type] || 'unknown';
+                  return `<span class="type-label type-${typeName}">${typeName}</span>`;
+                }
               )
               .join('')}
           </div>
@@ -136,7 +162,7 @@ const updatePokemonCardElement = (
 
 export const createPokemonCardView = (): TypedView<PokemonCardState> => {
   const state: PokemonCardState = {
-    pokemon: undefined as unknown as Pokemon,
+    pokemon: undefined as unknown as PokemonObject,
     isHighlighted: false,
     isSelected: false,
     isDisabled: false,

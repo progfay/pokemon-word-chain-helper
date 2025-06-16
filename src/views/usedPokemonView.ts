@@ -1,8 +1,8 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject } from '../types/index.js';
 import { createTypedView } from './createTypedView.js';
 
 interface UsedPokemonViewState {
-  usedPokemon: Pokemon[];
+  usedPokemon: PokemonObject[];
 }
 
 const createUsedPokemonElement = () => {

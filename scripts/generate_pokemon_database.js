@@ -69,28 +69,54 @@ const main = async () => {
 
   const { data } = await response.json();
 
-  const transformed = data.pokemon_v2_pokemonspeciesname.map((pokemon) => [
-    pokemon.name || throwError("Name not found"),
-    (pokemon.genus || GENUS_MAP[pokemon.name]).replace(/ポケモン$/, "") ||
+  const transformed = data.pokemon_v2_pokemonspeciesname.map((pokemon) => ({
+    name: pokemon.name || throwError("Name not found"),
+    genus:
+      (pokemon.genus || GENUS_MAP[pokemon.name]).replace(/ポケモン$/, "") ||
       throwError(
         `Genus not found: ${pokemon.name}, ${pokemon.pokemon_v2_pokemonspecy.pokemon_v2_pokemondexnumbers[0]?.pokedex_number}`
       ),
-    pokemon.pokemon_v2_pokemonspecy.generation_id ||
+    generation_id:
+      pokemon.pokemon_v2_pokemonspecy.generation_id ||
       throwError(`Generation ID not found: ${pokemon.name}`),
-    pokemon.pokemon_v2_pokemonspecy.pokemon_v2_pokemondexnumbers[0]
-      ?.pokedex_number || throwError("Pokedex number not found"),
-    pokemon.pokemon_v2_pokemonspecy.pokemon_v2_pokemons[0].pokemon_v2_pokemontypes.map(
-      (type) =>
-        TYPE_SIGNATURE_MAP[type.pokemon_v2_type.name] ??
-        throwError(
-          `Type not found: ${pokemon.name}, ${type.pokemon_v2_type.name}`
-        )
-    ),
-  ]);
+    pokedex_number:
+      pokemon.pokemon_v2_pokemonspecy.pokemon_v2_pokemondexnumbers[0]
+        ?.pokedex_number || throwError("Pokedex number not found"),
+    types:
+      pokemon.pokemon_v2_pokemonspecy.pokemon_v2_pokemons[0].pokemon_v2_pokemontypes.map(
+        (type) =>
+          TYPE_SIGNATURE_MAP[type.pokemon_v2_type.name] ??
+          throwError(
+            `Type not found: ${pokemon.name}, ${type.pokemon_v2_type.name}`
+          )
+      ),
+  }));
+
+  const map = transformed.reduce((acc, pokemon) => {
+    if (pokemon.name.endsWith("ン")) {
+      console.log(`Skipping Pokémon with name ending in "ン": ${pokemon.name}`);
+      return acc;
+    }
+
+    const firstChar = pokemon.name.charAt(0);
+    return {
+      ...acc,
+      [firstChar]: [
+        ...(acc[firstChar] || []),
+        [
+          pokemon.name,
+          pokemon.genus,
+          pokemon.generation_id,
+          pokemon.pokedex_number,
+          pokemon.types,
+        ],
+      ],
+    };
+  }, {});
 
   await writeFile(
     path.resolve(import.meta.dirname, "../src/pokemon_database.json"),
-    JSON.stringify(transformed)
+    JSON.stringify(map)
   );
 };
 

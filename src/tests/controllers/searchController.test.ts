@@ -3,19 +3,19 @@ import {
   type SearchControllerDependencies,
   createSearchController,
 } from '../../controllers/searchController.js';
-import type { Pokemon } from '../../types/index.js';
+import type { PokemonObject } from '../../types/index.js';
 
 describe('SearchController', () => {
   let searchController: ReturnType<typeof createSearchController>;
   let mockDependencies: SearchControllerDependencies;
 
-  const testPokemon: Pokemon[] = [
+  const testPokemon: PokemonObject[] = [
     {
       name: 'ピカチュウ',
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 25,
-      types: ['electric'],
+      types: [4], // electric
       firstChar: 'ピ',
       lastChar: 'ウ',
     },
@@ -24,7 +24,7 @@ describe('SearchController', () => {
       genus: 'でんせつポケモン',
       generation_id: 1,
       pokedex_number: 59,
-      types: ['fire'],
+      types: [2], // fire
       firstChar: 'ウ',
       lastChar: 'ィ',
     },
@@ -67,10 +67,11 @@ describe('SearchController', () => {
 
       searchController.handleCharacterSelect(char);
 
-      // Should search with normalized (hiragana) character
-      expect(mockDependencies.searchModel.search).toHaveBeenCalledWith('ぴ');
+      // Should search with katakana character (database uses katakana keys)
+      expect(mockDependencies.searchModel.search).toHaveBeenCalledWith('ピ');
       expect(mockDependencies.searchView.update).toHaveBeenCalledWith({
         openCharacter: char, // But display original katakana character
+        openRowIndex: 10, // ピ belongs to パ行 (Pa-row) which is at index 10
         pokemonData: { [char]: testPokemon },
         usedPokemon: [],
         errorMessage: undefined,

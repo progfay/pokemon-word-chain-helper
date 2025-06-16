@@ -4,7 +4,7 @@ import { createSearchController } from '../../controllers/searchController.js';
 import { createGameStateModel } from '../../models/gameStateModel.js';
 import { createPokemonModel } from '../../models/pokemonModel.js';
 import { createSearchModel } from '../../models/searchModel.js';
-import type { Pokemon } from '../../types/index.js';
+import type { PokemonObject } from '../../types/index.js';
 import { createGameStatusView } from '../../views/gameStatusView.js';
 import { createListView } from '../../views/listView.js';
 import { createSearchView } from '../../views/searchView.js';
@@ -31,31 +31,31 @@ describe('MVC Integration Tests', () => {
     gameController: ReturnType<typeof createGameController>;
   };
 
-  const testPokemon: Pokemon[] = [
+  const testPokemon: PokemonObject[] = [
     {
       name: 'ピカチュウ',
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 25,
-      types: ['electric'],
+      types: [4], // electric
       firstChar: 'ピ',
-      lastChar: 'う',
+      lastChar: 'ウ',
     },
     {
       name: 'ウインディ',
       genus: 'でんせつポケモン',
       generation_id: 1,
       pokedex_number: 59,
-      types: ['fire'],
-      firstChar: 'う',
-      lastChar: 'ぃ',
+      types: [2], // fire
+      firstChar: 'ウ',
+      lastChar: 'ィ',
     },
     {
       name: 'フシギダネ',
       genus: 'たねポケモン',
       generation_id: 1,
       pokedex_number: 1,
-      types: ['grass', 'poison'],
+      types: [5, 8], // grass, poison
       firstChar: 'フ',
       lastChar: 'ネ',
     },
@@ -150,7 +150,7 @@ describe('MVC Integration Tests', () => {
         controllers.searchController.handleCharacterSelect('');
         const usedPokemon = Array.from(models.gameStateModel.getUsedPokemon())
           .map((name) => models.pokemonModel.getPokemonByName(name))
-          .filter((p): p is Pokemon => p !== null);
+          .filter((p): p is PokemonObject => p !== null);
 
         expect(usedPokemon.length).toBe(1);
         expect(usedPokemon[0].name).toBe('ピカチュウ');
@@ -176,7 +176,7 @@ describe('MVC Integration Tests', () => {
         );
         // Current character is calculated from last used Pokemon's lastChar
         const lastUsed = models.gameStateModel.getLastUsedPokemon();
-        expect(lastUsed?.lastChar).toBe('う');
+        expect(lastUsed?.lastChar).toBe('ウ');
 
         // Try to select valid next Pokemon
         const windie = models.pokemonModel.getPokemonByName('ウインディ');
@@ -189,7 +189,7 @@ describe('MVC Integration Tests', () => {
           expect(models.gameStateModel.getUsedPokemon().size).toBe(2);
           // Check that the new last used Pokemon ends with "ィ"
           const newLastUsed = models.gameStateModel.getLastUsedPokemon();
-          expect(newLastUsed?.lastChar).toBe('ぃ');
+          expect(newLastUsed?.lastChar).toBe('ィ');
         }
       }
     });
@@ -260,7 +260,7 @@ describe('MVC Integration Tests', () => {
       controllers.searchController.handleCharacterSelect('');
       const usedPokemon = Array.from(models.gameStateModel.getUsedPokemon())
         .map((name) => models.pokemonModel.getPokemonByName(name))
-        .filter((p): p is Pokemon => p !== null);
+        .filter((p): p is PokemonObject => p !== null);
 
       expect(usedPokemon.length).toBe(1);
       expect(usedPokemon[0].name).toBe('ピカチュウ');
@@ -277,12 +277,12 @@ describe('MVC Integration Tests', () => {
       await controllers.gameController.initialize();
 
       // Try to use invalid Pokemon
-      const invalidPokemon: Pokemon = {
+      const invalidPokemon: PokemonObject = {
         name: 'InvalidPokemon',
         genus: 'test',
         generation_id: 999,
         pokedex_number: 999,
-        types: ['normal'],
+        types: [1], // normal
         firstChar: 'テ',
         lastChar: 'ト',
       };

@@ -1,28 +1,28 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createGameStateModel } from '../models/gameStateModel';
 import { createPokemonModel } from '../models/pokemonModel';
-import type { Pokemon, PokemonType } from '../types';
+import type { PokemonObject } from '../types';
 
 describe('GameStateModel', () => {
   // Test data and dependencies
-  const testPokemon: Pokemon[] = [
+  const testPokemon: PokemonObject[] = [
     {
       name: 'ピカチュウ',
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 25,
-      types: ['electric'] as PokemonType[],
-      firstChar: 'ぴ',
-      lastChar: 'う',
+      types: [4], // electric
+      firstChar: 'ピ',
+      lastChar: 'ウ',
     },
     {
       name: 'ウツドン',
       genus: 'ハエとりポケモン',
       generation_id: 1,
       pokedex_number: 71,
-      types: ['grass', 'poison'] as PokemonType[],
-      firstChar: 'う',
-      lastChar: 'ん',
+      types: [5, 8], // grass, poison
+      firstChar: 'ウ',
+      lastChar: 'ン',
     },
   ];
 

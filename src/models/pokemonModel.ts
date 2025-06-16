@@ -1,6 +1,6 @@
-import type { Pokemon, PokemonType } from '../types/index.js';
+import type { Pokemon, PokemonType, PokemonObject, PokemonDatabase } from '../types/index.js';
 import type { PokemonModel } from '../types/mvc.js';
-import { normalizeCharacters } from '../utils/characterUtils.js';
+import { normalizeCharacters, CharacterUtils } from '../utils/characterUtils.js';
 import { createModel } from './createModel.js';
 
 /**
@@ -9,56 +9,63 @@ import { createModel } from './createModel.js';
  */
 export interface PokemonModelState {
   /** Array of all Pokemon */
-  allPokemon: Pokemon[];
+  allPokemon: PokemonObject[];
   /** Map of Pokemon grouped by first character for efficient search */
-  pokemonByFirstChar: Map<string, Pokemon[]>;
+  pokemonByFirstChar: Map<string, PokemonObject[]>;
   /** Map of Pokemon grouped by last character for chain validation */
-  pokemonByLastChar: Map<string, Pokemon[]>;
+  pokemonByLastChar: Map<string, PokemonObject[]>;
 }
 
 /**
- * Validate if a type is a valid Pokemon type
+ * Map numeric type IDs to type names
  */
-function isPokemonType(type: string): type is PokemonType {
-  const validTypes: PokemonType[] = [
-    'grass',
-    'poison',
-    'fire',
-    'flying',
-    'water',
-    'bug',
-    'normal',
-    'electric',
-    'ground',
-    'fairy',
-    'fighting',
-    'psychic',
-    'rock',
-    'steel',
-    'ice',
-    'ghost',
-    'dragon',
-    'dark',
-  ];
-  return validTypes.includes(type as PokemonType);
+const TYPE_ID_TO_NAME: Record<PokemonType, string> = {
+  1: 'normal',
+  2: 'fire',
+  3: 'water',
+  4: 'electric',
+  5: 'grass',
+  6: 'ice',
+  7: 'fighting',
+  8: 'poison',
+  9: 'ground',
+  10: 'flying',
+  11: 'psychic',
+  12: 'bug',
+  13: 'rock',
+  14: 'ghost',
+  15: 'dragon',
+  16: 'dark',
+  17: 'steel',
+  18: 'fairy',
+};
+
+/**
+ * Convert a Pokemon tuple to a PokemonObject
+ */
+function tupleToObject(tuple: Pokemon): PokemonObject {
+  const [name, genus, generation_id, pokedex_number, types] = tuple;
+  return {
+    name,
+    genus,
+    generation_id,
+    pokedex_number,
+    types,
+  };
 }
+
 
 /**
  * Process a Pokemon object to add first and last character information
  */
-function processPokemon(pokemon: Pokemon): Pokemon {
-  const normalizedName = normalizeCharacters(pokemon.name);
-  const validatedTypes = pokemon.types.filter(isPokemonType);
-
-  if (validatedTypes.length === 0) {
-    console.warn(`Pokemon ${pokemon.name} has no valid types`);
-  }
+function processPokemon(pokemon: PokemonObject): PokemonObject {
+  // Convert to katakana since database uses katakana keys
+  const katakanaName = CharacterUtils.toKatakana(pokemon.name);
 
   return {
     ...pokemon,
-    types: validatedTypes as PokemonType[],
-    firstChar: normalizedName[0],
-    lastChar: normalizedName[normalizedName.length - 1],
+    firstChar: katakanaName[0],
+    lastChar: katakanaName[katakanaName.length - 1],
   };
 }
 
@@ -81,20 +88,59 @@ export const createPokemonModel = () => {
   return {
     ...baseModel,
 
-    getAllPokemon(): Pokemon[] {
+    getAllPokemon(): PokemonObject[] {
       return state.allPokemon;
     },
 
-    searchByFirstChar(char: string): Pokemon[] {
-      const normalizedChar = normalizeCharacters(char);
-      return state.pokemonByFirstChar.get(normalizedChar) || [];
+    searchByFirstChar(char: string): PokemonObject[] {
+      // The database uses katakana characters as keys, so search directly with the provided character
+      return state.pokemonByFirstChar.get(char) || [];
     },
 
-    getPokemonByName(name: string): Pokemon | null {
+    getPokemonByName(name: string): PokemonObject | null {
       return state.allPokemon.find((p) => p.name === name) || null;
     },
 
-    addPokemon(pokemon: Pokemon): void {
+    /**
+     * Load Pokemon data from the new tuple-based database format
+     */
+    loadFromDatabase(database: PokemonDatabase): void {
+      try {
+        // Clear existing data
+        state.allPokemon = [];
+        state.pokemonByFirstChar.clear();
+        state.pokemonByLastChar.clear();
+
+        // Process each character group
+        for (const [char, pokemonTuples] of Object.entries(database)) {
+          const pokemonObjects = pokemonTuples.map(tuple => {
+            const pokemonObj = tupleToObject(tuple);
+            return processPokemon(pokemonObj);
+          });
+
+          // Add to all Pokemon list
+          state.allPokemon.push(...pokemonObjects);
+
+          // Index by first character
+          state.pokemonByFirstChar.set(char, pokemonObjects);
+
+          // Index by last character
+          for (const pokemon of pokemonObjects) {
+            if (pokemon.lastChar) {
+              const existingLast = state.pokemonByLastChar.get(pokemon.lastChar) || [];
+              existingLast.push(pokemon);
+              state.pokemonByLastChar.set(pokemon.lastChar, existingLast);
+            }
+          }
+        }
+
+        baseModel.setState(state);
+      } catch (error) {
+        baseModel.handleError(error as Error);
+      }
+    },
+
+    addPokemon(pokemon: PokemonObject): void {
       try {
         const processedPokemon = processPokemon(pokemon);
 
@@ -129,20 +175,27 @@ export const createPokemonModel = () => {
     /**
      * Get Pokemon that end with a specific character
      */
-    getPokemonByLastChar(char: string): Pokemon[] {
-      const normalizedChar = normalizeCharacters(char);
-      return state.pokemonByLastChar.get(normalizedChar) || [];
+    getPokemonByLastChar(char: string): PokemonObject[] {
+      // Search directly with the provided character (should be katakana)
+      return state.pokemonByLastChar.get(char) || [];
     },
 
     /**
      * Check if a Pokemon chain is valid (last character matches first character)
      */
-    isValidChain(previous: Pokemon, next: Pokemon): boolean {
+    isValidChain(previous: PokemonObject, next: PokemonObject): boolean {
       if (!previous.lastChar || !next.firstChar) return false;
       return (
         normalizeCharacters(previous.lastChar) ===
         normalizeCharacters(next.firstChar)
       );
+    },
+
+    /**
+     * Get type name from numeric type ID
+     */
+    getTypeName(typeId: PokemonType): string {
+      return TYPE_ID_TO_NAME[typeId] || 'unknown';
     },
   } as PokemonModel;
 };

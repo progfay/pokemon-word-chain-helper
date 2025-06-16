@@ -1,9 +1,9 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject } from '../types/index.js';
 import { createTypedView } from './createTypedView.js';
 
 interface GameStateViewState {
-  usedPokemon: Pokemon[];
-  lastUsed?: Pokemon;
+  usedPokemon: PokemonObject[];
+  lastUsed?: PokemonObject;
   currentChar?: string;
   remainingCount: number;
   isGameOver: boolean;

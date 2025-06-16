@@ -1,4 +1,4 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject } from '../types/index.js';
 import type { EventEmitter, EventMap } from '../utils/eventEmitter.js';
 import { type TypedView, createTypedView } from './createTypedView.js';
 import { createPokemonCardView } from './pokemonCardView.js';
@@ -6,15 +6,15 @@ import { createPokemonCardView } from './pokemonCardView.js';
 interface AccordionViewState {
   openRowIndex?: number;
   openCharacter?: string;
-  pokemonData: { [char: string]: Pokemon[] };
-  usedPokemon: Pokemon[];
+  pokemonData: { [char: string]: PokemonObject[] };
+  usedPokemon: PokemonObject[];
   isLoading: boolean;
   errorMessage?: string;
 }
 
 interface AccordionViewEvents extends EventMap {
   'accordion:character-select': [string];
-  'accordion:pokemon-select': [Pokemon];
+  'accordion:pokemon-select': [PokemonObject];
   'accordion:clear': [];
   [key: string]: unknown[];
 }
@@ -123,6 +123,14 @@ const updateAccordionElement = (
       const char = detailsElement.dataset.char;
       const isOpen = char === state.openCharacter;
       detailsElement.open = isOpen;
+      
+      // If opening a character, ensure its parent row stays open
+      if (isOpen) {
+        const parentRow = detailsElement.closest('details.accordion-row') as HTMLDetailsElement;
+        if (parentRow) {
+          parentRow.open = true;
+        }
+      }
     }
   }
 
@@ -131,7 +139,7 @@ const updateAccordionElement = (
     const pokemonData = state.pokemonData || {};
     const usedPokemon = state.usedPokemon || [];
     const usedNames = new Set(usedPokemon.map((p) => p.name));
-
+    
     for (const char in pokemonData) {
       const pokemonContainer = container.querySelector(
         `.accordion-pokemon-container[data-char="${char}"]`,
@@ -162,7 +170,7 @@ const updateAccordionElement = (
 
           // Add click handler for Pokemon selection
           cardView.on('card:click', ((...args: unknown[]) => {
-            const selectedPokemon = args[0] as Pokemon;
+            const selectedPokemon = args[0] as PokemonObject;
             const event = new CustomEvent('accordion:pokemon-select', {
               detail: selectedPokemon,
             });
@@ -220,9 +228,10 @@ export const createAccordionView = () => {
       };
 
       const handleCharToggle = (event: Event) => {
+        event.stopPropagation(); // Prevent event from bubbling up to row accordion
         const target = event.target as HTMLDetailsElement;
         const char = target.dataset.char;
-
+        
         if (char && target.open) {
           // When a character is opened, close other characters and emit selection event
           for (const charDetail of charDetails) {
@@ -232,12 +241,14 @@ export const createAccordionView = () => {
             }
           }
 
+
           const typedView = view as TypedView<AccordionViewState> &
             EventEmitter<AccordionViewEvents>;
-          view.update({
-            openCharacter: char,
-          });
+          
           typedView.emit('accordion:character-select', char);
+          
+          // Don't call view.update here - let the controller handle the state update
+          // This prevents the DOM manipulation conflict
         } else if (!target.open) {
           view.update({
             openCharacter: undefined,
@@ -247,7 +258,7 @@ export const createAccordionView = () => {
 
       const handlePokemonSelect = (event: Event) => {
         if (event instanceof CustomEvent) {
-          const pokemon = event.detail as Pokemon;
+          const pokemon = event.detail as PokemonObject;
           const typedView = view as TypedView<AccordionViewState> &
             EventEmitter<AccordionViewEvents>;
           typedView.emit('accordion:pokemon-select', pokemon);

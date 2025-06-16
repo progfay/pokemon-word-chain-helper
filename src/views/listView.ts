@@ -1,17 +1,17 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject } from '../types/index.js';
 import type { EventEmitter, EventMap } from '../utils/eventEmitter.js';
 import { type TypedView, createTypedView } from './createTypedView.js';
 import { createPokemonCardView } from './pokemonCardView.js';
 
 interface ListViewState {
-  items: Pokemon[];
-  selectedItem?: Pokemon;
-  highlightedItem?: Pokemon;
-  disabledItems: Pokemon[];
+  items: PokemonObject[];
+  selectedItem?: PokemonObject;
+  highlightedItem?: PokemonObject;
+  disabledItems: PokemonObject[];
 }
 
 interface ListViewEvents extends EventMap {
-  'item:click': [Pokemon];
+  'item:click': [PokemonObject];
   [key: string]: unknown[];
 }
 

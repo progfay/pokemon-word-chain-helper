@@ -1,15 +1,15 @@
-import type { GameWarning, Pokemon } from '../types/index.js';
+import type { GameWarning, PokemonObject } from '../types/index.js';
 import type { GameStateModel } from '../types/mvc.js';
 import { createModel } from './createModel.js';
 
 export interface GameStateModelState {
   usedPokemon: Set<string>;
   warnings: GameWarning[];
-  lastUsedPokemon: Pokemon | null;
+  lastUsedPokemon: PokemonObject | null;
 }
 
 export const createGameStateModel = (pokemonModel: {
-  getAllPokemon: () => Pokemon[];
+  getAllPokemon: () => PokemonObject[];
 }) => {
   const baseModel = createModel({
     id: 'game-state-model',
@@ -30,12 +30,12 @@ export const createGameStateModel = (pokemonModel: {
     const unusedPokemon = allPokemon.filter(
       (p) => !state.usedPokemon.has(p.name),
     );
-    const nEndingPokemon = unusedPokemon.filter((p) => p.lastChar === 'ん');
+    const nEndingPokemon = unusedPokemon.filter((p) => p.lastChar === 'ン');
 
     if (nEndingPokemon.length > 0) {
       warnings.push({
         type: 'ending_with_n',
-        message: `${nEndingPokemon.length}匹の「ん」で終わるポケモンが残っています`,
+        message: `${nEndingPokemon.length}匹の「ン」で終わるポケモンが残っています`,
         pokemon: nEndingPokemon[0],
       });
     }
@@ -55,7 +55,7 @@ export const createGameStateModel = (pokemonModel: {
       return pokemonModel.getAllPokemon().length - state.usedPokemon.size;
     },
 
-    markPokemonAsUsed(pokemon: Pokemon): void {
+    markPokemonAsUsed(pokemon: PokemonObject): void {
       try {
         state.usedPokemon.add(pokemon.name);
         state.lastUsedPokemon = pokemon;
@@ -70,7 +70,7 @@ export const createGameStateModel = (pokemonModel: {
       return state.warnings;
     },
 
-    getLastUsedPokemon(): Pokemon | null {
+    getLastUsedPokemon(): PokemonObject | null {
       return state.lastUsedPokemon;
     },
 

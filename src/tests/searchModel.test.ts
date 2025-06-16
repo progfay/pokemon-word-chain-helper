@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPokemonModel } from '../models/pokemonModel';
 import { createSearchModel } from '../models/searchModel';
-import type { Pokemon, PokemonType } from '../types';
+import type { PokemonObject } from '../types';
 
 describe('SearchModel', () => {
   // Test data and dependencies
-  const testPokemon: Pokemon[] = [
+  const testPokemon: PokemonObject[] = [
     {
       name: 'ピカチュウ',
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 25,
-      types: ['electric'] as PokemonType[],
+      types: [4], // electric
       firstChar: 'ぴ',
       lastChar: 'う',
     },
@@ -20,7 +20,7 @@ describe('SearchModel', () => {
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 26,
-      types: ['electric'] as PokemonType[],
+      types: [4], // electric
       firstChar: 'ら',
       lastChar: 'う',
     },
@@ -29,7 +29,7 @@ describe('SearchModel', () => {
       genus: 'とりポケモン',
       generation_id: 1,
       pokedex_number: 17,
-      types: ['normal', 'flying'] as PokemonType[],
+      types: [1, 10], // normal, flying
       firstChar: 'ぴ',
       lastChar: 'ん',
     },
@@ -52,7 +52,7 @@ describe('SearchModel', () => {
 
   describe('search', () => {
     it('should find Pokemon by first character', () => {
-      const results = searchModel.search('ぴ');
+      const results = searchModel.search('ピ');
       expect(results).toHaveLength(2);
       expect(results.map((p) => p.name)).toContain('ピカチュウ');
       expect(results.map((p) => p.name)).toContain('ピジョン');
@@ -71,7 +71,7 @@ describe('SearchModel', () => {
 
   describe('getCachedResults', () => {
     it('should return last search results', () => {
-      searchModel.search('ぴ');
+      searchModel.search('ピ');
       const cached = searchModel.getCachedResults();
       expect(cached).toHaveLength(2);
       expect(cached.map((p) => p.name)).toContain('ピカチュウ');
@@ -86,7 +86,7 @@ describe('SearchModel', () => {
 
   describe('clearCache', () => {
     it('should reset to showing all Pokemon', () => {
-      searchModel.search('ぴ');
+      searchModel.search('ピ');
       expect(searchModel.getCachedResults()).toHaveLength(2);
 
       searchModel.clearCache();
@@ -101,7 +101,7 @@ describe('SearchModel', () => {
         eventEmitted = true;
       });
 
-      searchModel.search('ぴ');
+      searchModel.search('ピ');
       expect(eventEmitted).toBe(true);
     });
 
@@ -118,28 +118,28 @@ describe('SearchModel', () => {
 
   describe('search optimization', () => {
     it('should use cached results for repeat searches', () => {
-      const initialResults = searchModel.search('ぴ');
-      const cachedResults = searchModel.search('ぴ');
+      const initialResults = searchModel.search('ピ');
+      const cachedResults = searchModel.search('ピ');
 
       expect(initialResults).toBe(cachedResults); // Should be same reference
     });
 
     it('should update cache when new Pokemon is added', () => {
-      searchModel.search('ぴ');
+      searchModel.search('ピ');
       expect(searchModel.getCachedResults()).toHaveLength(2);
 
-      const newPokemon: Pokemon = {
+      const newPokemon: PokemonObject = {
         name: 'ピッピ',
         genus: 'ようせいポケモン',
         generation_id: 1,
         pokedex_number: 35,
-        types: ['fairy'] as PokemonType[],
+        types: [18], // fairy
         firstChar: 'ぴ',
         lastChar: 'ぴ',
       };
 
       pokemonModel.addPokemon(newPokemon);
-      searchModel.search('ぴ');
+      searchModel.search('ピ');
       expect(searchModel.getCachedResults()).toHaveLength(3);
     });
   });

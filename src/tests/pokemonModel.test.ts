@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPokemonModel } from '../models/pokemonModel';
-import type { Pokemon, PokemonType } from '../types';
+import type { PokemonObject } from '../types';
 
 describe('PokemonModel', () => {
   // Test data
-  const testPokemon: Pokemon[] = [
+  const testPokemon: PokemonObject[] = [
     {
       name: 'ピカチュウ',
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 25,
-      types: ['electric'] as PokemonType[],
+      types: [4], // electric
       firstChar: 'ぴ',
       lastChar: 'う',
     },
@@ -19,7 +19,7 @@ describe('PokemonModel', () => {
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 26,
-      types: ['electric'] as PokemonType[],
+      types: [4], // electric
       firstChar: 'ら',
       lastChar: 'う',
     },
@@ -48,17 +48,17 @@ describe('PokemonModel', () => {
 
   describe('searchByFirstChar', () => {
     it('should return Pokemon starting with the given character', () => {
-      const pikachu = pokemonModel.searchByFirstChar('ぴ');
+      const pikachu = pokemonModel.searchByFirstChar('ピ');
       expect(pikachu).toHaveLength(1);
       expect(pikachu[0].name).toBe('ピカチュウ');
 
-      const raichu = pokemonModel.searchByFirstChar('ら');
+      const raichu = pokemonModel.searchByFirstChar('ラ');
       expect(raichu).toHaveLength(1);
       expect(raichu[0].name).toBe('ライチュウ');
     });
 
     it('should return empty array for non-matching character', () => {
-      const result = pokemonModel.searchByFirstChar('あ');
+      const result = pokemonModel.searchByFirstChar('ア');
       expect(result).toHaveLength(0);
     });
   });
@@ -78,12 +78,12 @@ describe('PokemonModel', () => {
 
   describe('addPokemon', () => {
     it('should add Pokemon and update search indices', () => {
-      const newPokemon: Pokemon = {
+      const newPokemon: PokemonObject = {
         name: 'フシギダネ',
         genus: 'たねポケモン',
         generation_id: 1,
         pokedex_number: 1,
-        types: ['grass', 'poison'] as PokemonType[],
+        types: [5, 8], // grass, poison
         firstChar: 'ふ',
         lastChar: 'ね',
       };
@@ -94,7 +94,7 @@ describe('PokemonModel', () => {
       expect(addedPokemon).not.toBeNull();
       expect(addedPokemon?.name).toBe('フシギダネ');
 
-      const searchResult = pokemonModel.searchByFirstChar('ふ');
+      const searchResult = pokemonModel.searchByFirstChar('フ');
       expect(searchResult).toHaveLength(1);
       expect(searchResult[0].name).toBe('フシギダネ');
     });
@@ -105,12 +105,12 @@ describe('PokemonModel', () => {
         eventEmitted = true;
       });
 
-      const newPokemon: Pokemon = {
+      const newPokemon: PokemonObject = {
         name: 'ゼニガメ',
         genus: 'かめのこポケモン',
         generation_id: 1,
         pokedex_number: 7,
-        types: ['water'] as PokemonType[],
+        types: [3], // water
         firstChar: 'ぜ',
         lastChar: 'め',
       };
@@ -120,22 +120,11 @@ describe('PokemonModel', () => {
     });
   });
 
-  describe('validation', () => {
-    it('should filter out invalid Pokemon types', () => {
-      const invalidPokemon = {
-        name: 'テストポケモン',
-        genus: 'テストポケモン',
-        generation_id: 1,
-        pokedex_number: 999,
-        types: ['invalid-type'] as unknown as PokemonType[],
-        firstChar: 'て',
-        lastChar: 'ん',
-      };
-
-      pokemonModel.addPokemon(invalidPokemon);
-      const addedPokemon = pokemonModel.getPokemonByName('テストポケモン');
-      expect(addedPokemon).not.toBeNull();
-      expect(addedPokemon?.types).toEqual([]); // Invalid types should be filtered out
+  describe('type name conversion', () => {
+    it('should convert numeric type IDs to type names', () => {
+      expect(pokemonModel.getTypeName(1)).toBe('normal');
+      expect(pokemonModel.getTypeName(4)).toBe('electric');
+      expect(pokemonModel.getTypeName(5)).toBe('grass');
     });
   });
 });

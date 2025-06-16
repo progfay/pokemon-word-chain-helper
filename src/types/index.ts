@@ -1,24 +1,10 @@
-export type PokemonType =
-  | 'grass'
-  | 'poison'
-  | 'fire'
-  | 'flying'
-  | 'water'
-  | 'bug'
-  | 'normal'
-  | 'electric'
-  | 'ground'
-  | 'fairy'
-  | 'fighting'
-  | 'psychic'
-  | 'rock'
-  | 'steel'
-  | 'ice'
-  | 'ghost'
-  | 'dragon'
-  | 'dark';
+export type PokemonType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18;
 
-export interface Pokemon {
+export type Pokemon = [name: string, genus: string, generation_id: number, pokedex_number: number, types: [PokemonType] | [PokemonType, PokemonType]];
+
+export type PokemonDatabase = { [firstChar: string]: Pokemon[]; };
+
+export interface PokemonObject {
   /** Name of Pokemon (e.g.: "ピカチュウ") */
   name: string;
   /** Genus of Pokemon (e.g.: "ねずみポケモン") */
@@ -42,11 +28,11 @@ export interface CharacterMap {
 export interface GameWarning {
   type: 'ending_with_n' | 'already_used' | 'invalid_chain';
   message: string;
-  pokemon?: Pokemon;
+  pokemon?: PokemonObject;
 }
 
 export interface GameRuleViolation {
   rule: string;
   message: string;
-  pokemon?: Pokemon;
+  pokemon?: PokemonObject;
 }

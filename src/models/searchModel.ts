@@ -1,16 +1,16 @@
-import type { Pokemon } from '../types/index.js';
+import type { PokemonObject } from '../types/index.js';
 import type { SearchModel } from '../types/mvc.js';
 import { createModel } from './createModel.js';
 
 export interface SearchModelState {
   lastQuery: string;
-  results: Pokemon[];
+  results: PokemonObject[];
   isSearching: boolean;
 }
 
 export const createSearchModel = (pokemonModel: {
-  searchByFirstChar: (char: string) => Pokemon[];
-  getAllPokemon: () => Pokemon[];
+  searchByFirstChar: (char: string) => PokemonObject[];
+  getAllPokemon: () => PokemonObject[];
 }) => {
   const baseModel = createModel({
     id: 'search-model',
@@ -26,7 +26,7 @@ export const createSearchModel = (pokemonModel: {
   return {
     ...baseModel,
 
-    search(query: string): Pokemon[] {
+    search(query: string): PokemonObject[] {
       try {
         state.isSearching = true;
         state.lastQuery = query;
@@ -52,7 +52,7 @@ export const createSearchModel = (pokemonModel: {
       }
     },
 
-    getCachedResults(): Pokemon[] {
+    getCachedResults(): PokemonObject[] {
       return state.results;
     },
 

@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Pokemon } from '../../types/index.js';
+import type { PokemonObject } from '../../types/index.js';
 import { createPokemonCardView } from '../../views/pokemonCardView.js';
 
 describe('PokemonCardView', () => {
   let container: HTMLElement;
   let pokemonCardView: ReturnType<typeof createPokemonCardView>;
-  const samplePokemon: Pokemon = {
+  const samplePokemon: PokemonObject = {
     name: 'ピカチュウ',
     genus: 'ねずみポケモン',
     generation_id: 1,
     pokedex_number: 25,
-    types: ['electric'],
+    types: [4], // electric = 4
     firstChar: 'ピ',
     lastChar: 'ウ',
   };

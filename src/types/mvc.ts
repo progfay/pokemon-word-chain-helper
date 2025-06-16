@@ -1,4 +1,4 @@
-import type { Pokemon } from './index.js';
+import type { PokemonObject, PokemonDatabase } from './index.js';
 
 // Model Interfaces
 export interface EventEmitter {
@@ -13,24 +13,26 @@ export interface Model extends EventEmitter {
 }
 
 export interface PokemonModel extends Model {
-  getAllPokemon(): Pokemon[];
-  searchByFirstChar(char: string): Pokemon[];
-  getPokemonByName(name: string): Pokemon | null;
-  addPokemon(pokemon: Pokemon): void;
+  getAllPokemon(): PokemonObject[];
+  searchByFirstChar(char: string): PokemonObject[];
+  getPokemonByName(name: string): PokemonObject | null;
+  addPokemon(pokemon: PokemonObject): void;
+  loadFromDatabase(database: PokemonDatabase): void;
+  getTypeName(typeId: number): string;
 }
 
 export interface GameStateModel extends Model {
   getUsedPokemon(): Set<string>;
   getRemainingCount(): number;
-  markPokemonAsUsed(pokemon: Pokemon): void;
+  markPokemonAsUsed(pokemon: PokemonObject): void;
   getWarnings(): GameWarning[];
-  getLastUsedPokemon(): Pokemon | null;
+  getLastUsedPokemon(): PokemonObject | null;
   reset(): void;
 }
 
 export interface SearchModel extends Model {
-  search(query: string): Pokemon[];
-  getCachedResults(): Pokemon[];
+  search(query: string): PokemonObject[];
+  getCachedResults(): PokemonObject[];
   clearCache(): void;
 }
 
@@ -44,17 +46,17 @@ export interface View {
 export interface PokemonCardView extends View {
   onImagePhaseChange(phase: number): void;
   onHintToggle(type: string): void;
-  onSelect(pokemon: Pokemon): void;
+  onSelect(pokemon: PokemonObject): void;
 }
 
 export interface SearchView extends View {
   onSearch(query: string): void;
-  updateResults(pokemon: Pokemon[]): void;
+  updateResults(pokemon: PokemonObject[]): void;
   showError(message: string): void;
 }
 
 export interface GameStateView extends View {
-  updateUsedPokemon(pokemon: Pokemon[]): void;
+  updateUsedPokemon(pokemon: PokemonObject[]): void;
   updateRemainingCount(count: number): void;
   showWarnings(warnings: GameWarning[]): void;
 }
@@ -67,27 +69,27 @@ export interface Controller {
 
 export interface SearchController extends Controller {
   handleSearch(query: string): void;
-  handlePokemonSelect(pokemon: Pokemon): void;
+  handlePokemonSelect(pokemon: PokemonObject): void;
   handleHintToggle(pokemonId: string, hintType: string): void;
 }
 
 export interface GameController extends Controller {
-  handlePokemonUse(pokemon: Pokemon): void;
+  handlePokemonUse(pokemon: PokemonObject): void;
   handleGameReset(): void;
-  checkGameRules(pokemon: Pokemon): GameRuleViolation[];
+  checkGameRules(pokemon: PokemonObject): GameRuleViolation[];
 }
 
 // Common Types
 export interface GameWarning {
   type: 'ending_with_n' | 'already_used' | 'invalid_chain';
   message: string;
-  pokemon?: Pokemon;
+  pokemon?: PokemonObject;
 }
 
 export interface GameRuleViolation {
   rule: string;
   message: string;
-  pokemon?: Pokemon;
+  pokemon?: PokemonObject;
 }
 
 // Event Types

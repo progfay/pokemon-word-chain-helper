@@ -3,19 +3,19 @@ import {
   type GameControllerDependencies,
   createGameController,
 } from '../../controllers/gameController.js';
-import type { Pokemon } from '../../types/index.js';
+import type { PokemonObject } from '../../types/index.js';
 
 describe('GameController', () => {
   let gameController: ReturnType<typeof createGameController>;
   let mockDependencies: GameControllerDependencies;
 
-  const testPokemon: Pokemon[] = [
+  const testPokemon: PokemonObject[] = [
     {
       name: 'ピカチュウ',
       genus: 'ねずみポケモン',
       generation_id: 1,
       pokedex_number: 25,
-      types: ['electric'],
+      types: [4], // electric
       firstChar: 'ピ',
       lastChar: 'ウ',
     },
@@ -24,7 +24,7 @@ describe('GameController', () => {
       genus: 'でんせつポケモン',
       generation_id: 1,
       pokedex_number: 59,
-      types: ['fire'],
+      types: [2], // fire
       firstChar: 'ウ',
       lastChar: 'ィ',
     },
@@ -33,7 +33,7 @@ describe('GameController', () => {
       genus: 'たねポケモン',
       generation_id: 1,
       pokedex_number: 1,
-      types: ['grass', 'poison'],
+      types: [5, 8], // grass, poison
       firstChar: 'フ',
       lastChar: 'ネ',
     },
@@ -153,12 +153,12 @@ describe('GameController', () => {
 
   describe('Game Warnings', () => {
     it('should generate warning for Pokemon ending with ン', () => {
-      const pokemonEndingWithN: Pokemon = {
+      const pokemonEndingWithN: PokemonObject = {
         name: 'ピジョン',
         genus: 'とりポケモン',
         generation_id: 1,
         pokedex_number: 17,
-        types: ['normal', 'flying'],
+        types: [1, 10], // normal, flying
         firstChar: 'ピ',
         lastChar: 'ン',
       };

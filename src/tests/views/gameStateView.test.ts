@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { Pokemon } from '../../types/index.js';
+import type { PokemonObject } from '../../types/index.js';
 import { createGameStateView } from '../../views/gameStateView.js';
 
 describe('GameStateView', () => {
   let container: HTMLElement;
   let gameStateView: ReturnType<typeof createGameStateView>;
 
-  const samplePokemon: Pokemon = {
+  const samplePokemon: PokemonObject = {
     name: 'ピカチュウ',
     genus: 'ねずみポケモン',
     generation_id: 1,
     pokedex_number: 25,
-    types: ['electric'],
+    types: [4], // electric
     firstChar: 'ピ',
     lastChar: 'ウ',
   };

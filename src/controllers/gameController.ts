@@ -1,7 +1,7 @@
 import type {
   GameRuleViolation,
   GameWarning,
-  Pokemon,
+  PokemonObject,
 } from '../types/index.js';
 import {
   ErrorCategory,
@@ -18,14 +18,14 @@ export interface GameControllerDependencies {
   gameStateModel: {
     getUsedPokemon: () => Set<string>;
     getRemainingCount: () => number;
-    markPokemonAsUsed: (pokemon: Pokemon) => void;
+    markPokemonAsUsed: (pokemon: PokemonObject) => void;
     reset: () => void;
-    getLastUsedPokemon: () => Pokemon | null;
+    getLastUsedPokemon: () => PokemonObject | null;
     getWarnings: () => GameWarning[];
   };
   pokemonModel: {
-    getAllPokemon: () => Pokemon[];
-    getPokemonByName: (name: string) => Pokemon | null;
+    getAllPokemon: () => PokemonObject[];
+    getPokemonByName: (name: string) => PokemonObject | null;
   };
   gameStatusView: {
     update: (data: unknown) => void;
@@ -67,7 +67,7 @@ export const createGameController = (deps: GameControllerDependencies) => {
     return warnings.some((w) => w.type === 'ending_with_n');
   };
 
-  const validatePokemonSelection = (pokemon: Pokemon): GameRuleViolation[] => {
+  const validatePokemonSelection = (pokemon: PokemonObject): GameRuleViolation[] => {
     const violations: GameRuleViolation[] = [];
     const usedPokemon = gameStateModel.getUsedPokemon();
     const currentChar = getCurrentCharacter();
@@ -93,7 +93,7 @@ export const createGameController = (deps: GameControllerDependencies) => {
     return violations;
   };
 
-  const generateGameWarnings = (pokemon: Pokemon): GameWarning[] => {
+  const generateGameWarnings = (pokemon: PokemonObject): GameWarning[] => {
     const warnings: GameWarning[] = [];
 
     // Warning for Pokemon ending with 'ン'
@@ -112,7 +112,7 @@ export const createGameController = (deps: GameControllerDependencies) => {
   const updateAllViews = () => {
     const usedPokemonArray = Array.from(gameStateModel.getUsedPokemon())
       .map((name) => pokemonModel.getPokemonByName(name))
-      .filter((p): p is Pokemon => p !== null);
+      .filter((p): p is PokemonObject => p !== null);
 
     const lastUsed = gameStateModel.getLastUsedPokemon();
     const currentChar = getCurrentCharacter();
@@ -138,7 +138,7 @@ export const createGameController = (deps: GameControllerDependencies) => {
     });
   };
 
-  const handlePokemonUse = (pokemon: Pokemon) => {
+  const handlePokemonUse = (pokemon: PokemonObject) => {
     try {
       const violations = validatePokemonSelection(pokemon);
 
