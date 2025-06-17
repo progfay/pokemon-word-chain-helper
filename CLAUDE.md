@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Pokemon Word Chain Helper** - a web application that assists players in Pokemon shiritori (word chain) games. It provides search functionality to find Pokemon starting with specific Japanese characters, hint systems to help identify Pokemon, and tracks used Pokemon to prevent duplicates.
 
+[SPEC.md](./SPEC.md) has more detail information.
+
 The application implements a **strict MVC architecture** with comprehensive TypeScript types, event-driven communication, and extensive test coverage.
 
 ## Essential Commands
@@ -87,10 +89,6 @@ Extensive use of TypeScript with strict interfaces defined in `src/types/`:
 
 ### Performance Optimizations
 
-The codebase includes several performance utilities in `src/utils/`:
-- `virtualization.ts`: Virtual scrolling for large Pokemon lists
-- `memoization.ts`: LRU cache for expensive operations
-- `debounce.ts`: Rate limiting for search operations
 - `errorHandler.ts`: Comprehensive error handling and reporting
 
 ## Key Architectural Decisions
