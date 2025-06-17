@@ -109,12 +109,14 @@ const updatePokemonCardElement = (
     `;
 
     // Set up checkbox event listener after content is added
-    const checkbox = card.querySelector('.pokemon-card__checkbox') as HTMLInputElement;
+    const checkbox = card.querySelector(
+      '.pokemon-card__checkbox',
+    ) as HTMLInputElement;
     if (checkbox) {
       const handleCheckboxChange = () => {
         view.emit('card:click', pokemon);
       };
-      
+
       // Remove any existing listener to avoid duplicates
       checkbox.removeEventListener('change', handleCheckboxChange);
       checkbox.addEventListener('change', handleCheckboxChange);

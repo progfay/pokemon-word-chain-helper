@@ -40,6 +40,7 @@ describe('SearchController', () => {
       gameStateModel: {
         getUsedPokemon: vi.fn().mockReturnValue(new Set()),
         markPokemonAsUsed: vi.fn(),
+        getLastUsedPokemon: vi.fn().mockReturnValue(null),
       },
       pokemonModel: {
         getPokemonByName: vi
@@ -47,6 +48,7 @@ describe('SearchController', () => {
           .mockImplementation(
             (name: string) => testPokemon.find((p) => p.name === name) || null,
           ),
+        isValidChain: vi.fn().mockReturnValue(true),
       },
       searchView: {
         on: vi.fn(),

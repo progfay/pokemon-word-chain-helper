@@ -25,9 +25,7 @@ describe('AccordionView', () => {
     expect(rowDetailsElements.length).toBeGreaterThan(0);
 
     // Check that character tab buttons are present (instead of details.accordion-char)
-    const charTabButtons = element.querySelectorAll(
-      '.char-tab-button',
-    );
+    const charTabButtons = element.querySelectorAll('.char-tab-button');
     expect(charTabButtons.length).toBeGreaterThan(0);
 
     // Check that summary elements are present
@@ -183,9 +181,7 @@ describe('AccordionView', () => {
     });
 
     element = accordionView.render();
-    charButton = element.querySelector(
-      '[data-char="ア"]',
-    ) as HTMLButtonElement;
+    charButton = element.querySelector('[data-char="ア"]') as HTMLButtonElement;
     expect(charButton.classList.contains('active')).toBe(false);
   });
 

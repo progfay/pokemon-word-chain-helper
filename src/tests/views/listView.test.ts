@@ -59,7 +59,9 @@ describe('ListView', () => {
     });
 
     const element = listView.render();
-    const firstCheckbox = element.querySelector('.pokemon-card__checkbox') as HTMLInputElement;
+    const firstCheckbox = element.querySelector(
+      '.pokemon-card__checkbox',
+    ) as HTMLInputElement;
     firstCheckbox?.dispatchEvent(new Event('change', { bubbles: true }));
 
     expect(mockCallback).toHaveBeenCalledWith(samplePokemon[0]);

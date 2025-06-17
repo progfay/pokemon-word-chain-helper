@@ -20,12 +20,15 @@ export interface PokemonModel extends Model {
   addPokemon(pokemon: PokemonObject): void;
   loadFromDatabase(database: PokemonDatabase): void;
   getTypeName(typeId: number): string;
+  isValidChain(previous: PokemonObject, next: PokemonObject): boolean;
 }
 
 export interface GameStateModel extends Model {
   getUsedPokemon(): Set<string>;
   getRemainingCount(): number;
   markPokemonAsUsed(pokemon: PokemonObject): void;
+  getLastUsedPokemon(): string | null;
+  getUsedPokemonInOrder(): string[];
   reset(): void;
 }
 
@@ -68,7 +71,6 @@ export interface Controller {
 export interface SearchController extends Controller {
   handleSearch(query: string): void;
   handlePokemonSelect(pokemon: PokemonObject): void;
-  handleHintToggle(pokemonId: string, hintType: string): void;
 }
 
 export interface GameController extends Controller {

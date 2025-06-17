@@ -22,10 +22,10 @@ export interface GameControllerDependencies {
     getPokemonByName: (name: string) => PokemonObject | null;
   };
   gameStatusView: {
-    update: (data: unknown) => void;
+    update: (data: { remainingCount: number }) => void;
   };
   usedPokemonView: {
-    update: (data: unknown) => void;
+    update: (data: { usedPokemon: PokemonObject[] }) => void;
   };
 }
 

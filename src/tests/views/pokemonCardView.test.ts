@@ -54,7 +54,9 @@ describe('PokemonCardView', () => {
       isDisabled: false,
     });
 
-    const checkbox = pokemonCardView.render().querySelector('.pokemon-card__checkbox') as HTMLInputElement;
+    const checkbox = pokemonCardView
+      .render()
+      .querySelector('.pokemon-card__checkbox') as HTMLInputElement;
     checkbox.dispatchEvent(new Event('change', { bubbles: true }));
     expect(mockCallback).toHaveBeenCalledWith(samplePokemon);
   });
@@ -145,7 +147,9 @@ describe('PokemonCardView', () => {
       // First click: show silhouette
       imageSection.click();
       element = pokemonCardView.render(); // Re-render to get updated DOM
-      imageSection = element.querySelector('[data-clickable="image"]') as HTMLElement;
+      imageSection = element.querySelector(
+        '[data-clickable="image"]',
+      ) as HTMLElement;
       expect(imageSection.classList.contains('image-visible')).toBe(true);
       let pokemonImage = element.querySelector('.pokemon-image');
       expect(pokemonImage?.classList.contains('silhouette')).toBe(true);
@@ -157,10 +161,14 @@ describe('PokemonCardView', () => {
       expect(pokemonImage?.classList.contains('silhouette')).toBe(false);
 
       // Third click: hide image
-      imageSection = element.querySelector('[data-clickable="image"]') as HTMLElement;
+      imageSection = element.querySelector(
+        '[data-clickable="image"]',
+      ) as HTMLElement;
       imageSection.click();
       element = pokemonCardView.render(); // Re-render to get updated DOM
-      imageSection = element.querySelector('[data-clickable="image"]') as HTMLElement;
+      imageSection = element.querySelector(
+        '[data-clickable="image"]',
+      ) as HTMLElement;
       expect(imageSection.classList.contains('image-hidden')).toBe(true);
     });
 
@@ -214,12 +222,12 @@ describe('PokemonCardView', () => {
       });
 
       const element = pokemonCardView.render();
-      
+
       expect(element.textContent).toContain('**ピカチュウ**');
       expect(element.textContent).toContain('ねずみポケモン');
       expect(element.textContent).toContain('electric');
       expect(element.textContent).toContain('Gen 1');
-      
+
       const imageSection = element.querySelector('[data-clickable="image"]');
       expect(imageSection?.classList.contains('image-visible')).toBe(true);
     });

@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createGameController } from '../../controllers/gameController.js';
-import { createSearchController } from '../../controllers/searchController.js';
+import {
+  type ListViewInterface,
+  type SearchViewInterface,
+  createSearchController,
+} from '../../controllers/searchController.js';
 import { createGameStateModel } from '../../models/gameStateModel.js';
 import { createPokemonModel } from '../../models/pokemonModel.js';
 import { createSearchModel } from '../../models/searchModel.js';
@@ -87,14 +91,8 @@ describe('MVC Integration Tests', () => {
         searchModel: models.searchModel,
         gameStateModel: models.gameStateModel,
         pokemonModel: models.pokemonModel,
-        searchView: views.searchView as {
-          on: (event: string, callback: (...args: unknown[]) => void) => void;
-          update: (data: unknown) => void;
-        },
-        listView: views.listView as {
-          on: (event: string, callback: (...args: unknown[]) => void) => void;
-          update: (data: unknown) => void;
-        },
+        searchView: views.searchView as SearchViewInterface,
+        listView: views.listView as ListViewInterface,
       }),
       gameController: createGameController({
         gameStateModel: models.gameStateModel,

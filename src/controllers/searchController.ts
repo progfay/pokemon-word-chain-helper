@@ -4,7 +4,34 @@ import {
   ErrorSeverity,
   handleError,
 } from '../utils/errorHandler.js';
+import { JAPANESE_ROWS, findRowForChar } from '../utils/japaneseConstants.js';
 import { createController } from './createController.js';
+
+// Properly typed event interfaces
+export interface SearchViewInterface {
+  on(event: 'search:character-select', callback: (char: string) => void): void;
+  on(
+    event: 'search:pokemon-select',
+    callback: (pokemon: PokemonObject) => void,
+  ): void;
+  on(event: 'search:clear', callback: () => void): void;
+  update(data: {
+    openCharacter?: string;
+    openRowIndex?: number;
+    pokemonData?: { [char: string]: PokemonObject[] };
+    usedPokemon?: PokemonObject[];
+    errorMessage?: string;
+    isLoading?: boolean;
+  }): void;
+}
+
+export interface ListViewInterface {
+  on(
+    event: 'list:pokemon-select',
+    callback: (pokemon: PokemonObject) => void,
+  ): void;
+  update(data: unknown): void;
+}
 
 /**
  * Dependencies required by the SearchController
@@ -26,26 +53,20 @@ export interface SearchControllerDependencies {
     getUsedPokemon: () => Set<string>;
     /** Mark a Pokemon as used in the game */
     markPokemonAsUsed: (pokemon: PokemonObject) => void;
+    /** Get the last used Pokemon name */
+    getLastUsedPokemon: () => string | null;
   };
   /** Model for Pokemon data access */
   pokemonModel: {
     /** Get Pokemon by name, returns null if not found */
     getPokemonByName: (name: string) => PokemonObject | null;
+    /** Check if two Pokemon form a valid chain */
+    isValidChain: (previous: PokemonObject, next: PokemonObject) => boolean;
   };
   /** View for search input and error display */
-  searchView: {
-    /** Register event listener */
-    on: (event: string, callback: (...args: unknown[]) => void) => void;
-    /** Update view with new data */
-    update: (data: unknown) => void;
-  };
+  searchView: SearchViewInterface;
   /** View for displaying Pokemon list */
-  listView: {
-    /** Register event listener */
-    on: (event: string, callback: (...args: unknown[]) => void) => void;
-    /** Update view with new data */
-    update: (data: unknown) => void;
-  };
+  listView: ListViewInterface;
 }
 
 /**
@@ -73,31 +94,10 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
       pokemonData[char] = results;
 
       // Find which row contains this character
-      const JAPANESE_ROWS = [
-        { name: 'ア行', chars: ['ア', 'イ', 'ウ', 'エ', 'オ'] },
-        { name: 'カ行', chars: ['カ', 'キ', 'ク', 'ケ', 'コ'] },
-        { name: 'ガ行', chars: ['ガ', 'ギ', 'グ', 'ゲ', 'ゴ'] },
-        { name: 'サ行', chars: ['サ', 'シ', 'ス', 'セ', 'ソ'] },
-        { name: 'ザ行', chars: ['ザ', 'ジ', 'ズ', 'ゼ', 'ゾ'] },
-        { name: 'タ行', chars: ['タ', 'チ', 'ツ', 'テ', 'ト'] },
-        { name: 'ダ行', chars: ['ダ', 'ヂ', 'ヅ', 'デ', 'ド'] },
-        { name: 'ナ行', chars: ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'] },
-        { name: 'ハ行', chars: ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ'] },
-        { name: 'バ行', chars: ['バ', 'ビ', 'ブ', 'ベ', 'ボ'] },
-        { name: 'パ行', chars: ['パ', 'ピ', 'プ', 'ペ', 'ポ'] },
-        { name: 'マ行', chars: ['マ', 'ミ', 'ム', 'メ', 'モ'] },
-        { name: 'ヤ行', chars: ['ヤ', 'ユ', 'ヨ'] },
-        { name: 'ラ行', chars: ['ラ', 'リ', 'ル', 'レ', 'ロ'] },
-        { name: 'ワ行', chars: ['ワ', 'ヲ', 'ン'] },
-      ];
-
-      let openRowIndex: number | undefined = undefined;
-      for (let i = 0; i < JAPANESE_ROWS.length; i++) {
-        if (JAPANESE_ROWS[i].chars.includes(char)) {
-          openRowIndex = i;
-          break;
-        }
-      }
+      const matchingRow = findRowForChar(char);
+      const openRowIndex = matchingRow
+        ? JAPANESE_ROWS.indexOf(matchingRow)
+        : undefined;
 
       searchView.update({
         openCharacter: char,
@@ -136,8 +136,20 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
 
     // Check if it's a valid chain (if this isn't the first Pokemon)
     if (usedPokemon.size > 0) {
-      // TODO: Add chain validation logic here
-      // For now, just accept any Pokemon
+      const lastUsedPokemonName = gameStateModel.getLastUsedPokemon();
+      if (lastUsedPokemonName) {
+        const lastUsedPokemon =
+          pokemonModel.getPokemonByName(lastUsedPokemonName);
+        if (
+          lastUsedPokemon &&
+          !pokemonModel.isValidChain(lastUsedPokemon, pokemon)
+        ) {
+          searchView.update({
+            errorMessage: `チェーンが無効です。「${lastUsedPokemon.name}」の最後の文字「${lastUsedPokemon.lastChar}」で始まるポケモンを選択してください。`,
+          });
+          return;
+        }
+      }
     }
 
     gameStateModel.markPokemonAsUsed(pokemon);
@@ -169,24 +181,12 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
     });
   };
 
-  const handleHintToggle = (pokemonId: string, hintType: string) => {
-    // TODO: Implement hint toggle logic
-    console.log(`Toggling ${hintType} hint for Pokemon ${pokemonId}`);
-  };
-
   const controller = createController({
     setupController: async () => {
       // Set up search event handlers
-      searchView.on('search:character-select', ((...args: unknown[]) =>
-        handleCharacterSelect(args[0] as string)) as (
-        ...args: unknown[]
-      ) => void);
-      searchView.on('search:pokemon-select', ((...args: unknown[]) =>
-        handlePokemonSelect(args[0] as PokemonObject)) as (
-        ...args: unknown[]
-      ) => void);
-      searchView.on('search:clear', ((..._args: unknown[]) =>
-        handleSearchClear()) as (...args: unknown[]) => void);
+      searchView.on('search:character-select', handleCharacterSelect);
+      searchView.on('search:pokemon-select', handlePokemonSelect);
+      searchView.on('search:clear', handleSearchClear);
 
       // Initialize with clear state
       handleSearchClear();
@@ -201,6 +201,5 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
     ...controller,
     handleCharacterSelect,
     handlePokemonSelect,
-    handleHintToggle,
   };
 };

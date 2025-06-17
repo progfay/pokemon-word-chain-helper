@@ -38,12 +38,30 @@ export const createAppController = () => {
     gameStateModel,
     pokemonModel,
     searchView: searchView as {
-      on: (event: string, callback: (...args: unknown[]) => void) => void;
-      update: (data: unknown) => void;
+      on(
+        event: 'search:character-select',
+        callback: (char: string) => void,
+      ): void;
+      on(
+        event: 'search:pokemon-select',
+        callback: (pokemon: PokemonObject) => void,
+      ): void;
+      on(event: 'search:clear', callback: () => void): void;
+      update(data: {
+        openCharacter?: string;
+        openRowIndex?: number;
+        pokemonData?: { [char: string]: PokemonObject[] };
+        usedPokemon?: PokemonObject[];
+        errorMessage?: string;
+        isLoading?: boolean;
+      }): void;
     },
     listView: listView as {
-      on: (event: string, callback: (...args: unknown[]) => void) => void;
-      update: (data: unknown) => void;
+      on(
+        event: 'list:pokemon-select',
+        callback: (pokemon: PokemonObject) => void,
+      ): void;
+      update(data: unknown): void;
     },
   });
 
@@ -51,10 +69,12 @@ export const createAppController = () => {
     gameStateModel,
     pokemonModel,
     gameStatusView: gameStatusView as {
-      update: (data: unknown) => void;
+      update: (data: { remainingCount: number }) => void;
       on: (event: string, callback: (...args: unknown[]) => void) => void;
     },
-    usedPokemonView: usedPokemonView as { update: (data: unknown) => void },
+    usedPokemonView: usedPokemonView as {
+      update: (data: { usedPokemon: PokemonObject[] }) => void;
+    },
   });
 
   // Create root layout
