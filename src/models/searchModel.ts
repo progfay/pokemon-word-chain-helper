@@ -2,7 +2,7 @@ import type { PokemonObject } from '../types/index.js';
 import type { SearchModel } from '../types/mvc.js';
 import { createModel } from './createModel.js';
 
-export interface SearchModelState {
+interface SearchModelState {
   lastQuery: string;
   results: PokemonObject[];
   isSearching: boolean;

@@ -1,6 +1,6 @@
 import { createEventEmitter } from '../utils/eventEmitter.js';
 
-export type ModelOptions = {
+type ModelOptions = {
   id: string;
   initialState?: unknown;
 };

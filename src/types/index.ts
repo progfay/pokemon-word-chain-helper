@@ -49,13 +49,13 @@ export interface CharacterMap {
   [key: string]: string;
 }
 
-export interface GameWarning {
+interface GameWarning {
   type: 'ending_with_n' | 'already_used' | 'invalid_chain';
   message: string;
   pokemon?: PokemonObject;
 }
 
-export interface GameRuleViolation {
+interface GameRuleViolation {
   rule: string;
   message: string;
   pokemon?: PokemonObject;

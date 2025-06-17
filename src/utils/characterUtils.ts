@@ -108,11 +108,11 @@ export const CharacterUtils = {
   },
 };
 
-export const isEndingWithN = (str: string): boolean => {
+const isEndingWithN = (str: string): boolean => {
   return str.endsWith('ん') || str.endsWith('ン');
 };
 
-export const isValidJapanese = (str: string): boolean => {
+const isValidJapanese = (str: string): boolean => {
   return Array.from(str).every((char) => CharacterUtils.isJapaneseChar(char));
 };
 
@@ -131,13 +131,13 @@ export function normalizeCharacters(text: string): string {
 /**
  * Convert a character to katakana if it exists in the map
  */
-export function toKatakana(char: string): string {
+function toKatakana(char: string): string {
   return kanaMap[char] || char;
 }
 
 /**
  * Convert a string to katakana
  */
-export function convertToKatakana(text: string): string {
+function convertToKatakana(text: string): string {
   return text.split('').map(toKatakana).join('');
 }

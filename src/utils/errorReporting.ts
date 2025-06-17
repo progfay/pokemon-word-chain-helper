@@ -12,7 +12,7 @@ import {
 } from './errorHandler.js';
 
 /** Error reporting configuration */
-export interface ErrorReportingConfig {
+interface ErrorReportingConfig {
   /** Enable user notifications */
   showUserNotifications: boolean;
   /** Enable console logging */
@@ -30,7 +30,7 @@ export interface ErrorReportingConfig {
 }
 
 /** Error report data structure */
-export interface ErrorReport {
+interface ErrorReport {
   error: ApplicationError;
   userAgent: string;
   url: string;
@@ -529,7 +529,7 @@ class ErrorReportingService {
 }
 
 // Global instance
-export const errorReporting = new ErrorReportingService();
+const errorReporting = new ErrorReportingService();
 
 /**
  * Initialize error reporting with configuration
@@ -543,7 +543,7 @@ export function initializeErrorReporting(
 /**
  * Manually report an error
  */
-export function reportError(
+function reportError(
   error: Error,
   category: ErrorCategory = ErrorCategory.SYSTEM,
   severity: ErrorSeverity = ErrorSeverity.MEDIUM,

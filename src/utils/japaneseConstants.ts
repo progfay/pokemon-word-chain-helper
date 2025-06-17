@@ -2,7 +2,7 @@
  * Japanese character constants for the Pokemon Word Chain Helper
  */
 
-export interface JapaneseRow {
+interface JapaneseRow {
   name: string;
   chars: string[];
 }
@@ -32,7 +32,7 @@ export const JAPANESE_ROWS: JapaneseRow[] = [
 /**
  * Get all Japanese characters as a flat array
  */
-export const getAllJapaneseChars = (): string[] => {
+const getAllJapaneseChars = (): string[] => {
   return JAPANESE_ROWS.flatMap((row) => row.chars);
 };
 

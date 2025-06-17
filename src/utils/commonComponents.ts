@@ -11,7 +11,7 @@ import {
 } from './baseComponent.js';
 
 /** Button component configuration */
-export interface ButtonConfig {
+interface ButtonConfig {
   text: string;
   className?: string;
   variant?: 'primary' | 'secondary' | 'danger' | 'success';
@@ -22,7 +22,7 @@ export interface ButtonConfig {
 }
 
 /** Button component interface */
-export interface Button extends BaseComponent<ButtonConfig> {
+interface Button extends BaseComponent<ButtonConfig> {
   /** Set button loading state */
   setLoading(loading: boolean): void;
   /** Enable or disable the button */
@@ -122,7 +122,7 @@ export function createButton(config: ButtonConfig): Button {
 }
 
 /** Input field configuration */
-export interface InputConfig {
+interface InputConfig {
   type?: 'text' | 'email' | 'password' | 'number' | 'search';
   placeholder?: string;
   value?: string;
@@ -136,7 +136,7 @@ export interface InputConfig {
 }
 
 /** Input field component interface */
-export interface InputField extends FormComponent<InputConfig> {
+interface InputField extends FormComponent<InputConfig> {
   /** Get the current input value */
   getValue(): string;
   /** Set the input value */
@@ -150,7 +150,7 @@ export interface InputField extends FormComponent<InputConfig> {
 /**
  * Create a reusable input field component
  */
-export function createInputField(config: InputConfig): InputField {
+function createInputField(config: InputConfig): InputField {
   let inputElement: HTMLInputElement;
   let labelElement: HTMLLabelElement | undefined;
   let errorElement: HTMLDivElement;
@@ -276,7 +276,7 @@ export function createInputField(config: InputConfig): InputField {
 }
 
 /** Modal dialog configuration */
-export interface ModalConfig {
+interface ModalConfig {
   title?: string;
   content?: string | HTMLElement;
   className?: string;
@@ -286,7 +286,7 @@ export interface ModalConfig {
 }
 
 /** Modal component interface */
-export interface Modal extends BaseComponent<ModalConfig> {
+interface Modal extends BaseComponent<ModalConfig> {
   /** Show the modal */
   show(): void;
   /** Hide the modal */
@@ -441,14 +441,14 @@ export function createModal(config: ModalConfig): Modal {
 }
 
 /** Loading spinner configuration */
-export interface LoadingConfig {
+interface LoadingConfig {
   message?: string;
   size?: 'small' | 'medium' | 'large';
   className?: string;
 }
 
 /** Loading component interface */
-export interface Loading extends BaseComponent<LoadingConfig> {
+interface Loading extends BaseComponent<LoadingConfig> {
   /** Set loading message */
   setMessage(message: string): void;
 }
@@ -456,7 +456,7 @@ export interface Loading extends BaseComponent<LoadingConfig> {
 /**
  * Create a loading spinner component
  */
-export function createLoading(config: LoadingConfig = {}): Loading {
+function createLoading(config: LoadingConfig = {}): Loading {
   const baseComponent = createBaseComponent<LoadingConfig>({
     initialState: config,
     className: 'loading',

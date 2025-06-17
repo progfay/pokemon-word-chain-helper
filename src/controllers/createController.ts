@@ -1,6 +1,6 @@
 import { createEventEmitter } from '../utils/eventEmitter.js';
 
-export type ControllerOptions = {
+type ControllerOptions = {
   setupController: () => void;
   cleanupController: () => void;
 };

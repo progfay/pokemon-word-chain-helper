@@ -1,13 +1,13 @@
 import type { PokemonDatabase, PokemonObject } from './index.js';
 
 // Model Interfaces
-export interface EventEmitter {
+interface EventEmitter {
   on(event: string, callback: (data: unknown) => void): void;
   off(event: string, callback: (data: unknown) => void): void;
   emit(event: string, data: unknown): void;
 }
 
-export interface Model extends EventEmitter {
+interface Model extends EventEmitter {
   getId(): string;
   getState(): unknown;
 }
@@ -45,54 +45,54 @@ export interface View {
   destroy(): void;
 }
 
-export interface PokemonCardView extends View {
+interface PokemonCardView extends View {
   onImagePhaseChange(phase: number): void;
   onHintToggle(type: string): void;
   onSelect(pokemon: PokemonObject): void;
 }
 
-export interface SearchView extends View {
+interface SearchView extends View {
   onSearch(query: string): void;
   updateResults(pokemon: PokemonObject[]): void;
   showError(message: string): void;
 }
 
-export interface GameStateView extends View {
+interface GameStateView extends View {
   updateUsedPokemon(pokemon: PokemonObject[]): void;
   updateRemainingCount(count: number): void;
 }
 
 // Controller Interfaces
-export interface Controller {
+interface Controller {
   initialize(): void;
   destroy(): void;
 }
 
-export interface SearchController extends Controller {
+interface SearchController extends Controller {
   handleSearch(query: string): void;
   handlePokemonSelect(pokemon: PokemonObject): void;
 }
 
-export interface GameController extends Controller {
+interface GameController extends Controller {
   handlePokemonUse(pokemon: PokemonObject): void;
   handleGameReset(): void;
 }
 
 // Event Types
-export type ModelEventMap = {
+type ModelEventMap = {
   'state:changed': unknown;
   error: Error;
   [key: string]: unknown;
 };
 
-export type ViewEventMap = {
+type ViewEventMap = {
   'view:mounted': HTMLElement;
   'view:updated': unknown;
   'view:destroyed': undefined;
   [key: string]: unknown;
 };
 
-export type ControllerEventMap = {
+type ControllerEventMap = {
   initialized: undefined;
   destroyed: undefined;
   [key: string]: unknown;

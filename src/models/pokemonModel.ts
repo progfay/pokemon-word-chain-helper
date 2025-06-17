@@ -15,7 +15,7 @@ import { createModel } from './createModel.js';
  * State interface for Pokemon model data storage
  * @interface PokemonModelState
  */
-export interface PokemonModelState {
+interface PokemonModelState {
   /** Array of all Pokemon */
   allPokemon: PokemonObject[];
   /** Map of Pokemon grouped by first character for efficient search */

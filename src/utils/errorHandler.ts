@@ -35,10 +35,10 @@ export interface ApplicationError {
 }
 
 /** Error handler function signature */
-export type ErrorHandler = (error: ApplicationError) => void;
+type ErrorHandler = (error: ApplicationError) => void;
 
 /** Recovery strategy function signature */
-export type RecoveryStrategy = (error: ApplicationError) => boolean;
+type RecoveryStrategy = (error: ApplicationError) => boolean;
 
 /**
  * Global error handling system
@@ -378,7 +378,7 @@ export function setupDefaultRecoveryStrategies(): void {
 /**
  * Create a wrapped function that automatically handles errors
  */
-export function withErrorHandling<T extends (...args: unknown[]) => unknown>(
+function withErrorHandling<T extends (...args: unknown[]) => unknown>(
   fn: T,
   category: ErrorCategory,
   context?: Record<string, unknown>,

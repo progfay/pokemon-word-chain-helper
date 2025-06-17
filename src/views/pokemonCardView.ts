@@ -26,7 +26,7 @@ const TYPE_ID_TO_NAME: Record<PokemonType, string> = {
   18: 'fairy',
 };
 
-export type PokemonCardState = {
+type PokemonCardState = {
   pokemon: PokemonObject;
   isHighlighted: boolean;
   isSelected: boolean;
@@ -47,7 +47,7 @@ type HintTogglePayload =
       value: boolean;
     };
 
-export type PokemonCardEvents = {
+type PokemonCardEvents = {
   'card:click': [PokemonObject];
   'hint:toggle': [HintTogglePayload];
 };

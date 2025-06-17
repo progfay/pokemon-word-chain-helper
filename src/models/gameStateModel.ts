@@ -2,7 +2,7 @@ import type { PokemonObject } from '../types/index.js';
 import type { GameStateModel } from '../types/mvc.js';
 import { createModel } from './createModel.js';
 
-export interface GameStateModelState {
+interface GameStateModelState {
   usedPokemon: Set<string>;
   usedPokemonOrder: string[]; // Maintains the order of Pokemon selection
 }

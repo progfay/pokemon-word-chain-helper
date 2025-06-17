@@ -6,7 +6,7 @@
 import { createEventEmitter } from './eventEmitter.js';
 
 /** Component lifecycle hooks */
-export interface ComponentLifecycle<TState = unknown> {
+interface ComponentLifecycle<TState = unknown> {
   /** Called when component is mounted to DOM */
   onMount?(): void;
   /** Called when component is updated */
@@ -18,7 +18,7 @@ export interface ComponentLifecycle<TState = unknown> {
 }
 
 /** Base component configuration */
-export interface BaseComponentConfig<TState = unknown>
+interface BaseComponentConfig<TState = unknown>
   extends ComponentLifecycle<TState> {
   /** Initial state for the component */
   initialState?: TState;
@@ -232,10 +232,10 @@ export function createBaseComponent<TState = unknown>(
 }
 
 /** Form validation function type */
-export type FieldValidator<T = unknown> = (value: T) => string | null;
+type FieldValidator<T = unknown> = (value: T) => string | null;
 
 /** Form component configuration */
-export interface FormComponentConfig<TState = unknown>
+interface FormComponentConfig<TState = unknown>
   extends BaseComponentConfig<TState> {
   /** Field validators */
   validators?: Record<string, FieldValidator>;
@@ -323,7 +323,7 @@ export function createFormComponent<TState = unknown>(
 }
 
 /** List component configuration */
-export interface ListComponentConfig<TItem = unknown, TState = unknown>
+interface ListComponentConfig<TItem = unknown, TState = unknown>
   extends BaseComponentConfig<TState> {
   /** Function to render a single item */
   renderItem?: (item: TItem, index: number) => HTMLElement;
@@ -334,7 +334,7 @@ export interface ListComponentConfig<TItem = unknown, TState = unknown>
 }
 
 /** List component interface */
-export interface ListComponent<TItem = unknown, TState = unknown>
+interface ListComponent<TItem = unknown, TState = unknown>
   extends BaseComponent<TState> {
   /** Set the items to display in the list */
   setItems(items: TItem[]): void;
@@ -361,7 +361,7 @@ export interface ListComponent<TItem = unknown, TState = unknown>
 /**
  * Create a list component for displaying collections of items
  */
-export function createListComponent<TItem = unknown, TState = unknown>(
+function createListComponent<TItem = unknown, TState = unknown>(
   config: ListComponentConfig<TItem, TState>,
 ): ListComponent<TItem, TState> {
   const baseComponent = createBaseComponent(config);
