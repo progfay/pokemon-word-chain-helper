@@ -1,18 +1,11 @@
 import type { View } from '../types/mvc.js';
 import { createEventEmitter } from '../utils/eventEmitter.js';
-import type { EventMap } from '../utils/eventEmitter.js';
 
 interface TypedViewOptions<T> {
   createElement: () => HTMLElement;
   updateElement: (data: Partial<T>) => void;
   setupEventListeners?: () => (() => void) | undefined;
   cleanupEventListeners?: () => void;
-}
-
-interface TypedViewEvents<T> extends EventMap {
-  'view:mounted': [HTMLElement];
-  'view:updated': [Partial<T>];
-  'view:destroyed': [];
 }
 
 export interface TypedView<T> extends View {

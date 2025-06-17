@@ -539,22 +539,3 @@ export function initializeErrorReporting(
 ): void {
   errorReporting.initialize(config);
 }
-
-/**
- * Manually report an error
- */
-function reportError(
-  error: Error,
-  category: ErrorCategory = ErrorCategory.SYSTEM,
-  severity: ErrorSeverity = ErrorSeverity.MEDIUM,
-  userMessage?: string,
-  context?: Record<string, unknown>,
-): void {
-  globalErrorHandler.handleError(error, {
-    category,
-    severity,
-    userMessage,
-    context,
-    recoverable: severity !== ErrorSeverity.CRITICAL,
-  });
-}

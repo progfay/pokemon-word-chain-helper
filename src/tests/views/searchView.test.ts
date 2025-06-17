@@ -134,25 +134,4 @@ describe('SearchView', () => {
 
     expect(error.classList.contains('hidden')).toBe(true);
   });
-
-  it('should highlight selected character in accordion', () => {
-    searchView.update({
-      openRowIndex: 0,
-      openCharacter: 'ア',
-      pokemonData: {},
-      usedPokemon: [],
-      isLoading: false,
-    });
-
-    const element = searchView.render();
-    const selectedButton = element.querySelector(
-      '[data-char="ア"]',
-    ) as HTMLButtonElement;
-    const otherButton = element.querySelector(
-      '[data-char="イ"]',
-    ) as HTMLButtonElement;
-
-    expect(selectedButton.classList.contains('active')).toBe(true);
-    expect(otherButton.classList.contains('active')).toBe(false);
-  });
 });

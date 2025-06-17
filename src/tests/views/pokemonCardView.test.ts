@@ -25,7 +25,6 @@ describe('PokemonCardView', () => {
   it('should render pokemon card with correct data', () => {
     pokemonCardView.update({
       pokemon: samplePokemon,
-      isHighlighted: false,
       isSelected: false,
       isDisabled: false,
       hints: {
@@ -49,7 +48,6 @@ describe('PokemonCardView', () => {
 
     pokemonCardView.update({
       pokemon: samplePokemon,
-      isHighlighted: false,
       isSelected: false,
       isDisabled: false,
     });
@@ -65,7 +63,6 @@ describe('PokemonCardView', () => {
     beforeEach(() => {
       pokemonCardView.update({
         pokemon: samplePokemon,
-        isHighlighted: false,
         isSelected: false,
         isDisabled: false,
         hints: {
@@ -124,7 +121,6 @@ describe('PokemonCardView', () => {
       // Initialize the card with Pokemon data
       pokemonCardView.update({
         pokemon: samplePokemon,
-        isHighlighted: false,
         isSelected: false,
         isDisabled: false,
         hints: {
@@ -209,7 +205,6 @@ describe('PokemonCardView', () => {
     it('should show correct content when hints are revealed', () => {
       pokemonCardView.update({
         pokemon: samplePokemon,
-        isHighlighted: false,
         isSelected: false,
         isDisabled: false,
         hints: {

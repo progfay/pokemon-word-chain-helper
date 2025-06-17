@@ -166,7 +166,6 @@ const updateAccordionElement = (
           const cardView = createPokemonCardView();
           cardView.update({
             pokemon: p,
-            isHighlighted: false, // Remove highlighting
             isSelected: false,
             isDisabled: usedNames.has(p.name),
             hints: {

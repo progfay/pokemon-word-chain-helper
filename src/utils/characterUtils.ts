@@ -108,14 +108,6 @@ export const CharacterUtils = {
   },
 };
 
-const isEndingWithN = (str: string): boolean => {
-  return str.endsWith('ん') || str.endsWith('ン');
-};
-
-const isValidJapanese = (str: string): boolean => {
-  return Array.from(str).every((char) => CharacterUtils.isJapaneseChar(char));
-};
-
 /**
  * Convert any mix of katakana and hiragana to normalized hiragana
  */
@@ -126,18 +118,4 @@ export function normalizeCharacters(text: string): string {
     normalized = normalized.replace(new RegExp(katakana, 'g'), hiragana);
   }
   return normalized;
-}
-
-/**
- * Convert a character to katakana if it exists in the map
- */
-function toKatakana(char: string): string {
-  return kanaMap[char] || char;
-}
-
-/**
- * Convert a string to katakana
- */
-function convertToKatakana(text: string): string {
-  return text.split('').map(toKatakana).join('');
 }

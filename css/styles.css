@@ -224,10 +224,6 @@ main {
     background: var(--secondary-color);
   }
 
-  &--highlighted {
-    border-color: var(--primary-color);
-  }
-
   &--selected {
     background: var(--secondary-color);
   }

@@ -30,13 +30,6 @@ export const JAPANESE_ROWS: JapaneseRow[] = [
 ];
 
 /**
- * Get all Japanese characters as a flat array
- */
-const getAllJapaneseChars = (): string[] => {
-  return JAPANESE_ROWS.flatMap((row) => row.chars);
-};
-
-/**
  * Find which row contains a specific character
  */
 export const findRowForChar = (char: string): JapaneseRow | undefined => {

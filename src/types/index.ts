@@ -48,15 +48,3 @@ export interface PokemonObject {
 export interface CharacterMap {
   [key: string]: string;
 }
-
-interface GameWarning {
-  type: 'ending_with_n' | 'already_used' | 'invalid_chain';
-  message: string;
-  pokemon?: PokemonObject;
-}
-
-interface GameRuleViolation {
-  rule: string;
-  message: string;
-  pokemon?: PokemonObject;
-}

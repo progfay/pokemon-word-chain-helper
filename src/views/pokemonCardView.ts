@@ -28,7 +28,6 @@ const TYPE_ID_TO_NAME: Record<PokemonType, string> = {
 
 type PokemonCardState = {
   pokemon: PokemonObject;
-  isHighlighted: boolean;
   isSelected: boolean;
   isDisabled: boolean;
   hints: {
@@ -38,18 +37,6 @@ type PokemonCardState = {
     showGenus: boolean;
     showName: boolean;
   };
-};
-
-type HintTogglePayload =
-  | { type: 'showImage'; value: 'hidden' | 'silhouette' | 'full' }
-  | {
-      type: 'showTypes' | 'showGeneration' | 'showGenus' | 'showName';
-      value: boolean;
-    };
-
-type PokemonCardEvents = {
-  'card:click': [PokemonObject];
-  'hint:toggle': [HintTogglePayload];
 };
 
 const INITIAL_HINTS: PokemonCardState['hints'] = {
@@ -71,20 +58,26 @@ const updatePokemonCardElement = (
   state: PokemonCardState,
   view: TypedView<PokemonCardState>,
 ) => {
-  const { pokemon, isHighlighted, isSelected, isDisabled, hints } = state;
+  const { pokemon, isSelected, isDisabled, hints } = state;
 
   if (pokemon) {
     const paddedNumber = pokemon.pokedex_number.toString().padStart(3, '0');
     card.innerHTML = `
       <div class="pokemon-card__container">
         <div class="pokemon-card__checkbox-section">
-          <input type="checkbox" class="pokemon-card__checkbox" ${isSelected ? 'checked' : ''} />
+          <input type="checkbox" class="pokemon-card__checkbox" ${
+            isSelected ? 'checked' : ''
+          } />
         </div>
-        <div class="pokemon-card__image-section ${hints.showImage !== 'hidden' ? 'image-visible' : 'image-hidden'}" data-clickable="image">
+        <div class="pokemon-card__image-section ${
+          hints.showImage !== 'hidden' ? 'image-visible' : 'image-hidden'
+        }" data-clickable="image">
           <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${paddedNumber}.png" 
               alt="${pokemon.name}"
               loading="lazy"
-              class="pokemon-image ${hints.showImage === 'silhouette' ? 'silhouette' : ''}" />
+              class="pokemon-image ${
+                hints.showImage === 'silhouette' ? 'silhouette' : ''
+              }" />
         </div>
         <div class="pokemon-card__info-section">
           <div class="pokemon-card__number">No.${pokemon.pokedex_number}</div>
@@ -98,10 +91,20 @@ const updatePokemonCardElement = (
               - ${hints.showGenus ? `${pokemon.genus}ポケモン` : '(Genus)'}
             </div>
             <div class="pokemon-card__detail-item" data-clickable="types">
-              - ${hints.showTypes ? pokemon.types.map((type) => TYPE_ID_TO_NAME[type] || 'unknown').join(', ') : '(Types)'}
+              - ${
+                hints.showTypes
+                  ? pokemon.types
+                      .map((type) => TYPE_ID_TO_NAME[type] || 'unknown')
+                      .join(', ')
+                  : '(Types)'
+              }
             </div>
             <div class="pokemon-card__detail-item" data-clickable="generation">
-              - ${hints.showGeneration ? `Gen ${pokemon.generation_id}` : '(Generation)'}
+              - ${
+                hints.showGeneration
+                  ? `Gen ${pokemon.generation_id}`
+                  : '(Generation)'
+              }
             </div>
           </div>
         </div>
@@ -123,7 +126,6 @@ const updatePokemonCardElement = (
     }
   }
 
-  card.classList.toggle('pokemon-card--highlighted', !!isHighlighted);
   card.classList.toggle('pokemon-card--selected', !!isSelected);
   card.classList.toggle('pokemon-card--disabled', !!isDisabled);
 };
@@ -131,7 +133,6 @@ const updatePokemonCardElement = (
 export const createPokemonCardView = (): TypedView<PokemonCardState> => {
   const state: PokemonCardState = {
     pokemon: undefined as unknown as PokemonObject,
-    isHighlighted: false,
     isSelected: false,
     isDisabled: false,
     hints: INITIAL_HINTS,

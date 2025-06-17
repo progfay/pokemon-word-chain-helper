@@ -6,7 +6,6 @@ import { createPokemonCardView } from './pokemonCardView.js';
 interface ListViewState {
   items: PokemonObject[];
   selectedItem?: PokemonObject;
-  highlightedItem?: PokemonObject;
   disabledItems: PokemonObject[];
 }
 
@@ -29,12 +28,7 @@ export const createListView = () => {
 
   const view = createTypedView<ListViewState>({
     createElement: createListElement,
-    updateElement: ({
-      items = [],
-      selectedItem,
-      highlightedItem,
-      disabledItems = [],
-    }) => {
+    updateElement: ({ items = [], selectedItem, disabledItems = [] }) => {
       const listElement = view.render();
 
       // Clear removed cards
@@ -66,8 +60,6 @@ export const createListView = () => {
         card.update({
           pokemon,
           isSelected: selectedItem?.pokedex_number === pokemon.pokedex_number,
-          isHighlighted:
-            highlightedItem?.pokedex_number === pokemon.pokedex_number,
           isDisabled: disabledItems.some(
             (item) => item.pokedex_number === pokemon.pokedex_number,
           ),
