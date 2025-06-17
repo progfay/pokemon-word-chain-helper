@@ -71,7 +71,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
       // Group Pokemon by their first character for the accordion (using original katakana char)
       const pokemonData: { [char: string]: PokemonObject[] } = {};
       pokemonData[char] = results;
-      
+
       // Find which row contains this character
       const JAPANESE_ROWS = [
         { name: 'ア行', chars: ['ア', 'イ', 'ウ', 'エ', 'オ'] },
@@ -90,7 +90,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
         { name: 'ラ行', chars: ['ラ', 'リ', 'ル', 'レ', 'ロ'] },
         { name: 'ワ行', chars: ['ワ', 'ヲ', 'ン'] },
       ];
-      
+
       let openRowIndex: number | undefined = undefined;
       for (let i = 0; i < JAPANESE_ROWS.length; i++) {
         if (JAPANESE_ROWS[i].chars.includes(char)) {
@@ -98,7 +98,7 @@ export const createSearchController = (deps: SearchControllerDependencies) => {
           break;
         }
       }
-      
+
       searchView.update({
         openCharacter: char,
         openRowIndex,

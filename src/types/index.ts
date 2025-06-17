@@ -1,8 +1,32 @@
-export type PokemonType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18;
+export type PokemonType =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18;
 
-export type Pokemon = [name: string, genus: string, generation_id: number, pokedex_number: number, types: [PokemonType] | [PokemonType, PokemonType]];
+export type Pokemon = [
+  name: string,
+  genus: string,
+  generation_id: number,
+  pokedex_number: number,
+  types: [PokemonType] | [PokemonType, PokemonType],
+];
 
-export type PokemonDatabase = { [firstChar: string]: Pokemon[]; };
+export type PokemonDatabase = { [firstChar: string]: Pokemon[] };
 
 export interface PokemonObject {
   /** Name of Pokemon (e.g.: "ピカチュウ") */

@@ -18,7 +18,6 @@ export const createGameStateModel = (pokemonModel: {
 
   const state = baseModel.getState() as GameStateModelState;
 
-
   return {
     ...baseModel,
 
@@ -38,7 +37,6 @@ export const createGameStateModel = (pokemonModel: {
         baseModel.handleError(error as Error);
       }
     },
-
 
     reset(): void {
       state.usedPokemon.clear();

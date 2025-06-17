@@ -5,7 +5,6 @@ describe('GameStateView', () => {
   let container: HTMLElement;
   let gameStateView: ReturnType<typeof createGameStateView>;
 
-
   beforeEach(() => {
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -40,8 +39,6 @@ describe('GameStateView', () => {
     const element = gameStateView.render();
     expect(element.textContent).toContain('150');
   });
-
-
 
   it('should update remaining count display', () => {
     const element = gameStateView.render();

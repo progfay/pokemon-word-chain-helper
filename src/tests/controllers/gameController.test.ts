@@ -66,7 +66,6 @@ describe('GameController', () => {
     gameController = createGameController(mockDependencies);
   });
 
-
   describe('Pokemon Usage', () => {
     it('should successfully use valid Pokemon', () => {
       const pokemon = testPokemon[0];
@@ -78,9 +77,7 @@ describe('GameController', () => {
         mockDependencies.gameStateModel.markPokemonAsUsed,
       ).toHaveBeenCalledWith(pokemon);
     });
-
   });
-
 
   describe('Game Reset', () => {
     it('should reset game state', () => {
@@ -121,7 +118,6 @@ describe('GameController', () => {
   });
 
   describe('Initialization', () => {
-
     it('should initialize views on startup', async () => {
       await gameController.initialize();
 

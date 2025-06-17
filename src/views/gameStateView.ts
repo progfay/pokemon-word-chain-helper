@@ -25,7 +25,9 @@ const updateGameStateElement = (
   container: HTMLElement,
   state: Partial<GameStateViewState>,
 ) => {
-  const counter = container.querySelector('.game-state__counter') as HTMLDivElement;
+  const counter = container.querySelector(
+    '.game-state__counter',
+  ) as HTMLDivElement;
 
   if (!counter) return;
 

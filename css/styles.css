@@ -208,105 +208,163 @@ h2 {
   display: none !important;
 }
 
-/* Pokemon card styles */
+/* Enhanced Pokemon card styles for mobile */
 .pokemon-card {
-  position: relative;
-  padding: 1rem;
   background: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #ddd;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.pokemon-card__hint-controls {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+.pokemon-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pokemon-card:active {
+  transform: translateY(0);
+}
+
+.pokemon-card.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.pokemon-card.selected {
+  border: 2px solid var(--primary-color);
+  background: var(--secondary-color);
+}
+
+.pokemon-card__container {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--spacing);
+  padding: var(--spacing);
+  align-items: flex-start;
+}
+
+.pokemon-card__checkbox-section {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0.25rem;
+}
+
+.pokemon-card__checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.pokemon-card__image-section {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #eee;
+  border-radius: var(--border-radius);
+  background: #f9f9f9;
+}
+
+.pokemon-card__image-section.image-hidden .pokemon-image {
   opacity: 0;
+}
+
+.pokemon-card__image-section.image-visible .pokemon-image {
+  opacity: 1;
+}
+
+.pokemon-card__image-section {
+  cursor: pointer;
   transition: opacity 0.2s ease;
 }
 
-.pokemon-card:hover .pokemon-card__hint-controls {
-  opacity: 1;
+.pokemon-card__image-section:hover {
+  opacity: 0.8;
 }
 
-.hint-button {
-  padding: 0.25rem;
-  border: none;
-  background: var(--bg-color);
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s ease, background-color 0.2s ease;
-}
-
-.hint-button:hover {
-  opacity: 1;
-  background-color: var(--secondary-color);
-}
-
-.hint-button.active {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.pokemon-card__image {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 96px;
-  margin-bottom: 0.5rem;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-}
-
-.pokemon-card__image.silhouette img {
-  filter: brightness(0);
-}
-
-.pokemon-image {
-  max-width: 96px;
-  max-height: 96px;
+.pokemon-card__image-section .pokemon-image {
+  max-width: 70px;
+  max-height: 70px;
   object-fit: contain;
-  transition: transform 0.2s ease;
 }
 
-.pokemon-card:hover .pokemon-image {
-  transform: scale(1.1);
-}
-
-.pokemon-card__content {
+.pokemon-card__info-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.pokemon-card__name {
-  font-size: 1.25rem;
+.pokemon-card__number {
+  font-size: 1rem;
   font-weight: bold;
-  text-align: center;
-}
-
-.pokemon-card__info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  justify-content: center;
-  font-size: 0.875rem;
   color: var(--text-color);
-  opacity: 0.8;
 }
 
-.pokemon-card__types {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  justify-content: center;
+.pokemon-card__name-section {
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease;
 }
+
+.pokemon-card__name-section[data-clickable] {
+  cursor: pointer;
+}
+
+.pokemon-card__name-section:hover {
+  background-color: var(--secondary-color);
+}
+
+.pokemon-card__name-label {
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+.pokemon-card__name-label.hidden {
+  color: #888;
+  font-style: italic;
+}
+
+.pokemon-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pokemon-card__detail-item {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  margin-bottom: 0;
+}
+
+.pokemon-card__detail-item[data-clickable] {
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease;
+}
+
+.pokemon-card__detail-item[data-clickable]:hover {
+  background-color: var(--secondary-color);
+}
+
+.pokemon-card__detail-item:not([data-clickable]) {
+  color: #888;
+  font-style: italic;
+}
+
+
 
 /* Hint System Styles */
 .hint-controls {
@@ -385,9 +443,42 @@ h2 {
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing);
   margin-top: var(--spacing);
+}
+
+/* Responsive grid adjustments */
+@media (min-width: 768px) {
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pokemon-card__hint-controls {
+    position: static;
+    opacity: 1;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+  }
+
+  .pokemon-card__hint-controls .hint-button {
+    margin: 0 0.5rem;
+  }
 }
 
 .pokemon-card {
@@ -445,6 +536,70 @@ h2 {
 
 .pokemon-image img.silhouette {
   filter: brightness(0);
+}
+
+/* Safe area support for notched devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .app-header {
+    padding-top: max(var(--spacing), env(safe-area-inset-top));
+  }
+
+  .app-main {
+    padding-left: max(var(--spacing), env(safe-area-inset-left));
+    padding-right: max(var(--spacing), env(safe-area-inset-right));
+    padding-bottom: max(var(--spacing), env(safe-area-inset-bottom));
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #e0e0e0;
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+  }
+
+  .char-button {
+    background: var(--card-bg);
+    border-color: var(--primary-color);
+  }
+
+  .row-chars {
+    background: #2a2a2a;
+  }
+
+  .search-error {
+    background: #3d1a1a;
+    color: #ff8a80;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.char-button:focus,
+.hint-button:focus,
+.dialog-button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .char-button,
+  .hint-button {
+    border-width: 3px;
+  }
 }
 
 .pokemon-types {
@@ -678,3 +833,365 @@ h2 {
 .pokemon-image img.silhouette {
   filter: brightness(0);
 }
+
+/* Safe area support for notched devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .app-header {
+    padding-top: max(var(--spacing), env(safe-area-inset-top));
+  }
+
+  .app-main {
+    padding-left: max(var(--spacing), env(safe-area-inset-left));
+    padding-right: max(var(--spacing), env(safe-area-inset-right));
+    padding-bottom: max(var(--spacing), env(safe-area-inset-bottom));
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #e0e0e0;
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+  }
+
+  .char-button {
+    background: var(--card-bg);
+    border-color: var(--primary-color);
+  }
+
+  .row-chars {
+    background: #2a2a2a;
+  }
+
+  .search-error {
+    background: #3d1a1a;
+    color: #ff8a80;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.char-button:focus,
+.hint-button:focus,
+.dialog-button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .char-button,
+  .hint-button {
+    border-width: 3px;
+  }
+}
+
+
+/* Mobile-specific touch improvements */
+@media (max-width: 768px) {
+  /* Ensure minimum touch target sizes */
+  .char-button,
+  .hint-button,
+  .pokemon-card {
+    min-height: var(--touch-target-size);
+  }
+
+  /* Improve spacing for touch */
+  .hint-controls {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Better visual feedback for touch */
+  .pokemon-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  .char-button:active,
+  .hint-button:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+  }
+
+  /* Improve text readability */
+  .pokemon-card__name {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .pokemon-card__info {
+    font-size: 0.9rem;
+  }
+
+  /* Better image scaling for mobile */
+  .pokemon-card__image {
+    height: 80px;
+  }
+
+  .pokemon-image {
+    max-width: 80px;
+    max-height: 80px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .app-header {
+    padding: 0.5rem;
+  }
+
+  .app-header h1 {
+    font-size: 1.1rem;
+  }
+
+  .pokemon-card__image {
+    height: 60px;
+  }
+
+  .pokemon-image {
+    max-width: 60px;
+    max-height: 60px;
+  }
+
+  .accordion-row {
+    font-size: 0.9rem;
+  }
+}
+
+/* Prevent zoom on form inputs (iOS) */
+input, select, textarea {
+  font-size: var(--mobile-font-size);
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Improve loading states */
+.pokemon-image {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.pokemon-image[src=""] {
+  display: none;
+}
+
+/* Accordion Styles */
+.accordion-container {
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
+.accordion-header h3 {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing);
+  font-size: 1.2rem;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.accordion-row {
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+}
+
+.accordion-row[open] {
+  border-color: var(--primary-color);
+}
+
+.accordion-row-header {
+  padding: var(--spacing);
+  font-weight: bold;
+  color: var(--primary-color);
+  cursor: pointer;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.accordion-row-header:hover {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.accordion-row-header::before {
+  content: '▶';
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.accordion-row[open] .accordion-row-header::before {
+  transform: rotate(90deg);
+}
+
+.accordion-char-container {
+  padding: 0 var(--spacing) var(--spacing);
+}
+
+/* Tab navigation styles */
+.char-tab-nav {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--spacing);
+  border-bottom: 2px solid #eee;
+}
+
+.char-tab-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  border-top: 3px solid transparent;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.char-tab-button:hover {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.char-tab-button.active {
+  background: var(--card-bg);
+  color: var(--primary-color);
+  border-top-color: var(--primary-color);
+  border-bottom: 2px solid var(--card-bg);
+  margin-bottom: -2px;
+}
+
+/* Tab content styles */
+.char-tab-content {
+  background: var(--card-bg);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  min-height: 200px;
+}
+
+
+.accordion-pokemon-container {
+  padding: var(--spacing);
+}
+
+.accordion-pokemon-container .results-grid {
+  margin-top: 0;
+}
+
+/* Make Pokemon cards in tabs use full width */
+.tab-panel .results-grid {
+  grid-template-columns: 1fr;
+  gap: var(--spacing);
+}
+
+.pokemon-count-display {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: var(--spacing);
+  border: 1px solid var(--primary-color);
+}
+
+.accordion-error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: var(--spacing);
+  border-radius: var(--border-radius);
+  margin-top: var(--spacing);
+  border: 1px solid #f5c6cb;
+}
+
+.accordion-error.hidden {
+  display: none;
+}
+
+/* Better visual hierarchy on mobile */
+@media (max-width: 480px) {
+  .search-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .game-state__info {
+    font-size: 1rem;
+  }
+
+  .game-state__counter {
+    font-size: 1.2rem;
+  }
+
+  .pokemon-count {
+    font-size: 1.1rem;
+    padding: 0.75rem;
+  }
+
+  .char-tab-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Touch-specific styles */
+@media (hover: none) and (pointer: coarse) {
+  /* Always show controls on touch devices */
+  .pokemon-card__hint-controls {
+    opacity: 1;
+    position: static;
+    margin-bottom: 0.5rem;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+  }
+
+  /* Remove hover effects */
+  .pokemon-card:hover .pokemon-image {
+    transform: none;
+  }
+
+  .char-button:hover,
+  .hint-button:hover {
+    background: initial;
+    transform: none;
+  }
+
+  /* Improve tap targets */
+  .char-button,
+  .hint-button {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .pokemon-card__hint-controls .hint-button {
+    min-width: 48px;
+    min-height: 48px;
+    margin: 0 0.25rem;
+  }
+}
+

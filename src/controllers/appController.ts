@@ -2,7 +2,7 @@ import { createGameStateModel } from '../models/gameStateModel.js';
 import { createPokemonModel } from '../models/pokemonModel.js';
 import { createSearchModel } from '../models/searchModel.js';
 import pokemonDatabase from '../pokemon_database.json' with { type: 'json' };
-import type { PokemonObject, PokemonDatabase } from '../types/index.js';
+import type { PokemonDatabase, PokemonObject } from '../types/index.js';
 import {
   ErrorCategory,
   globalErrorHandler,

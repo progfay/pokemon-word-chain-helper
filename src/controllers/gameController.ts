@@ -35,12 +35,8 @@ export interface GameControllerDependencies {
  * @returns GameController instance with used Pokemon management
  */
 export const createGameController = (deps: GameControllerDependencies) => {
-  const {
-    gameStateModel,
-    pokemonModel,
-    gameStatusView,
-    usedPokemonView,
-  } = deps;
+  const { gameStateModel, pokemonModel, gameStatusView, usedPokemonView } =
+    deps;
 
   const updateAllViews = () => {
     const usedPokemonArray = Array.from(gameStateModel.getUsedPokemon())

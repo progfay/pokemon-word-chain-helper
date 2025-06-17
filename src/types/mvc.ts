@@ -1,4 +1,4 @@
-import type { PokemonObject, PokemonDatabase } from './index.js';
+import type { PokemonDatabase, PokemonObject } from './index.js';
 
 // Model Interfaces
 export interface EventEmitter {
@@ -15,6 +15,7 @@ export interface Model extends EventEmitter {
 export interface PokemonModel extends Model {
   getAllPokemon(): PokemonObject[];
   searchByFirstChar(char: string): PokemonObject[];
+  searchByName(query: string): PokemonObject[];
   getPokemonByName(name: string): PokemonObject | null;
   addPokemon(pokemon: PokemonObject): void;
   loadFromDatabase(database: PokemonDatabase): void;
@@ -74,7 +75,6 @@ export interface GameController extends Controller {
   handlePokemonUse(pokemon: PokemonObject): void;
   handleGameReset(): void;
 }
-
 
 // Event Types
 export type ModelEventMap = {

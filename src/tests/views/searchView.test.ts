@@ -50,16 +50,15 @@ describe('SearchView', () => {
     });
 
     const element = searchView.render();
-    const charDetails = element.querySelector(
+    const charButton = element.querySelector(
       '[data-char="ア"]',
-    ) as HTMLDetailsElement;
+    ) as HTMLButtonElement;
 
-    expect(charDetails).toBeTruthy();
-    charDetails.open = true;
+    expect(charButton).toBeTruthy();
 
-    // Trigger the toggle event manually
-    const toggleEvent = new Event('toggle');
-    charDetails.dispatchEvent(toggleEvent);
+    // Trigger the click event manually
+    const clickEvent = new Event('click');
+    charButton.dispatchEvent(clickEvent);
 
     expect(mockCallback).toHaveBeenCalledWith('ア');
   });
@@ -146,14 +145,14 @@ describe('SearchView', () => {
     });
 
     const element = searchView.render();
-    const selectedDetails = element.querySelector(
+    const selectedButton = element.querySelector(
       '[data-char="ア"]',
-    ) as HTMLDetailsElement;
-    const otherDetails = element.querySelector(
+    ) as HTMLButtonElement;
+    const otherButton = element.querySelector(
       '[data-char="イ"]',
-    ) as HTMLDetailsElement;
+    ) as HTMLButtonElement;
 
-    expect(selectedDetails.open).toBe(true);
-    expect(otherDetails.open).toBe(false);
+    expect(selectedButton.classList.contains('active')).toBe(true);
+    expect(otherButton.classList.contains('active')).toBe(false);
   });
 });

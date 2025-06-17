@@ -35,6 +35,7 @@ export const createSearchModel = (pokemonModel: {
           // Empty query returns all Pokemon
           state.results = pokemonModel.getAllPokemon();
         } else {
+          // Character search uses first character search
           const firstChar = query.charAt(0);
           state.results = pokemonModel.searchByFirstChar(firstChar);
         }

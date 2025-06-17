@@ -167,7 +167,9 @@ describe('MVC Integration Tests', () => {
         expect(success).toBe(true);
 
         // Check game state updates
-        expect(models.gameStateModel.getUsedPokemon().has('ピカチュウ')).toBe(true);
+        expect(models.gameStateModel.getUsedPokemon().has('ピカチュウ')).toBe(
+          true,
+        );
 
         // Try to select valid next Pokemon
         const windie = models.pokemonModel.getPokemonByName('ウインディ');

@@ -63,24 +63,32 @@ const createAccordionElement = () => {
     const charContainer = document.createElement('div');
     charContainer.className = 'accordion-char-container';
 
-    // Create nested character accordions
+    // Create tab navigation
+    const tabNav = document.createElement('div');
+    tabNav.className = 'char-tab-nav';
     for (const char of row.chars) {
-      const charDetails = document.createElement('details');
-      charDetails.className = 'accordion-char';
-      charDetails.dataset.char = char;
-
-      const charSummary = document.createElement('summary');
-      charSummary.className = 'accordion-char-header';
-      charSummary.textContent = char;
-
-      const pokemonContainer = document.createElement('div');
-      pokemonContainer.className = 'accordion-pokemon-container';
-      pokemonContainer.dataset.char = char;
-
-      charDetails.appendChild(charSummary);
-      charDetails.appendChild(pokemonContainer);
-      charContainer.appendChild(charDetails);
+      const tabButton = document.createElement('button');
+      tabButton.className = 'char-tab-button';
+      tabButton.dataset.char = char;
+      tabButton.textContent = char;
+      tabNav.appendChild(tabButton);
     }
+
+    // Create tab content container
+    const tabContent = document.createElement('div');
+    tabContent.className = 'char-tab-content';
+
+    // Create Pokemon containers for each character (hidden by default)
+    for (const char of row.chars) {
+      const pokemonContainer = document.createElement('div');
+      pokemonContainer.className = 'accordion-pokemon-container tab-panel';
+      pokemonContainer.dataset.char = char;
+      pokemonContainer.style.display = 'none'; // Hidden by default
+      tabContent.appendChild(pokemonContainer);
+    }
+
+    charContainer.appendChild(tabNav);
+    charContainer.appendChild(tabContent);
 
     rowDetails.appendChild(rowSummary);
     rowDetails.appendChild(charContainer);
@@ -102,7 +110,8 @@ const updateAccordionElement = (
   state: Partial<AccordionViewState>,
 ) => {
   const rowDetails = container.querySelectorAll('details.accordion-row');
-  const charDetails = container.querySelectorAll('details.accordion-char');
+  const tabButtons = container.querySelectorAll('.char-tab-button');
+  const tabPanels = container.querySelectorAll('.tab-panel');
   const error = container.querySelector('.accordion-error');
 
   if (!error) return;
@@ -116,21 +125,32 @@ const updateAccordionElement = (
     }
   }
 
-  // Update open/closed state of character accordions
+  // Update active tab and visible panel
   if ('openCharacter' in state) {
-    for (const charDetail of charDetails) {
-      const detailsElement = charDetail as HTMLDetailsElement;
-      const char = detailsElement.dataset.char;
-      const isOpen = char === state.openCharacter;
-      detailsElement.open = isOpen;
-      
-      // If opening a character, ensure its parent row stays open
-      if (isOpen) {
-        const parentRow = detailsElement.closest('details.accordion-row') as HTMLDetailsElement;
+    // Update tab button states
+    for (const button of tabButtons) {
+      const tabButton = button as HTMLButtonElement;
+      const char = tabButton.dataset.char;
+      const isActive = char === state.openCharacter;
+      tabButton.classList.toggle('active', isActive);
+
+      // If activating a character, ensure its parent row stays open
+      if (isActive) {
+        const parentRow = tabButton.closest(
+          'details.accordion-row',
+        ) as HTMLDetailsElement;
         if (parentRow) {
           parentRow.open = true;
         }
       }
+    }
+
+    // Update tab panel visibility
+    for (const panel of tabPanels) {
+      const tabPanel = panel as HTMLElement;
+      const char = tabPanel.dataset.char;
+      const isVisible = char === state.openCharacter;
+      tabPanel.style.display = isVisible ? 'block' : 'none';
     }
   }
 
@@ -139,7 +159,7 @@ const updateAccordionElement = (
     const pokemonData = state.pokemonData || {};
     const usedPokemon = state.usedPokemon || [];
     const usedNames = new Set(usedPokemon.map((p) => p.name));
-    
+
     for (const char in pokemonData) {
       const pokemonContainer = container.querySelector(
         `.accordion-pokemon-container[data-char="${char}"]`,
@@ -152,11 +172,19 @@ const updateAccordionElement = (
         // Add Pokemon cards
         const pokemon = pokemonData[char] || [];
 
+        // Add Pokemon count display
+        if (pokemon.length > 0) {
+          const countElement = document.createElement('div');
+          countElement.className = 'pokemon-count-display';
+          countElement.textContent = `${pokemon.length}匹のポケモン`;
+          pokemonContainer.appendChild(countElement);
+        }
+
         for (const p of pokemon) {
           const cardView = createPokemonCardView();
           cardView.update({
             pokemon: p,
-            isHighlighted: false,
+            isHighlighted: false, // Remove highlighting
             isSelected: false,
             isDisabled: usedNames.has(p.name),
             hints: {
@@ -200,7 +228,7 @@ export const createAccordionView = () => {
     setupEventListeners: () => {
       const element = view.render();
       const rowDetails = element.querySelectorAll('details.accordion-row');
-      const charDetails = element.querySelectorAll('details.accordion-char');
+      const tabButtons = element.querySelectorAll('.char-tab-button');
 
       const handleRowToggle = (event: Event) => {
         const target = event.target as HTMLDetailsElement;
@@ -227,32 +255,30 @@ export const createAccordionView = () => {
         }
       };
 
-      const handleCharToggle = (event: Event) => {
-        event.stopPropagation(); // Prevent event from bubbling up to row accordion
-        const target = event.target as HTMLDetailsElement;
+      const handleTabClick = (event: Event) => {
+        const target = event.target as HTMLButtonElement;
         const char = target.dataset.char;
-        
-        if (char && target.open) {
-          // When a character is opened, close other characters and emit selection event
-          for (const charDetail of charDetails) {
-            const detailsElement = charDetail as HTMLDetailsElement;
-            if (detailsElement !== target) {
-              detailsElement.open = false;
+
+        if (char) {
+          // Remove active state from all tabs in this row
+          const parentRow = target.closest('.accordion-char-container');
+          if (parentRow) {
+            const siblingTabs = parentRow.querySelectorAll('.char-tab-button');
+            for (const tab of siblingTabs) {
+              tab.classList.remove('active');
             }
           }
 
+          // Add active state to clicked tab
+          target.classList.add('active');
 
           const typedView = view as TypedView<AccordionViewState> &
             EventEmitter<AccordionViewEvents>;
-          
+
           typedView.emit('accordion:character-select', char);
-          
+
           // Don't call view.update here - let the controller handle the state update
           // This prevents the DOM manipulation conflict
-        } else if (!target.open) {
-          view.update({
-            openCharacter: undefined,
-          });
         }
       };
 
@@ -270,9 +296,9 @@ export const createAccordionView = () => {
         details.addEventListener('toggle', handleRowToggle);
       }
 
-      // Add toggle listeners to character details elements
-      for (const details of charDetails) {
-        details.addEventListener('toggle', handleCharToggle);
+      // Add click listeners to tab buttons
+      for (const button of tabButtons) {
+        button.addEventListener('click', handleTabClick);
       }
 
       // Add Pokemon selection listener to container
@@ -282,8 +308,8 @@ export const createAccordionView = () => {
         for (const details of rowDetails) {
           details.removeEventListener('toggle', handleRowToggle);
         }
-        for (const details of charDetails) {
-          details.removeEventListener('toggle', handleCharToggle);
+        for (const button of tabButtons) {
+          button.removeEventListener('click', handleTabClick);
         }
         element.removeEventListener(
           'accordion:pokemon-select',

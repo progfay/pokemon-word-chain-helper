@@ -42,14 +42,14 @@ describe('ListView', () => {
     const element = listView.render();
     const cards = element.querySelectorAll('.pokemon-card');
     expect(cards.length).toBe(2);
-    // Pokemon names should be hidden by default, showing as "???"
-    expect(element.textContent).toContain('???');
+    // Pokemon names should be hidden by default, showing as "**Pokemon Name**"
+    expect(element.textContent).toContain('**Pokemon Name**');
     // Should show Pokedex numbers
-    expect(element.textContent).toContain('#025');
-    expect(element.textContent).toContain('#026');
+    expect(element.textContent).toContain('No.25');
+    expect(element.textContent).toContain('No.26');
   });
 
-  it('should emit item:click event when a card is clicked', () => {
+  it('should emit item:click event when a card checkbox is clicked', () => {
     const mockCallback = vi.fn();
     listView.on('item:click', mockCallback);
 
@@ -59,8 +59,8 @@ describe('ListView', () => {
     });
 
     const element = listView.render();
-    const firstCard = element.querySelector('.pokemon-card');
-    (firstCard as HTMLElement)?.click();
+    const firstCheckbox = element.querySelector('.pokemon-card__checkbox') as HTMLInputElement;
+    firstCheckbox?.dispatchEvent(new Event('change', { bubbles: true }));
 
     expect(mockCallback).toHaveBeenCalledWith(samplePokemon[0]);
   });
@@ -81,8 +81,8 @@ describe('ListView', () => {
 
     expect(element.querySelectorAll('.pokemon-card').length).toBe(1);
     // Check for Pokedex number instead of name since names are hidden
-    expect(element.textContent).toContain('#025');
-    expect(element.textContent).not.toContain('#026');
+    expect(element.textContent).toContain('No.25');
+    expect(element.textContent).not.toContain('No.26');
   });
 
   it('should handle disabled items', () => {

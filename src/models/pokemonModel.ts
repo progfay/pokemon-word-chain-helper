@@ -1,6 +1,14 @@
-import type { Pokemon, PokemonType, PokemonObject, PokemonDatabase } from '../types/index.js';
+import type {
+  Pokemon,
+  PokemonDatabase,
+  PokemonObject,
+  PokemonType,
+} from '../types/index.js';
 import type { PokemonModel } from '../types/mvc.js';
-import { normalizeCharacters, CharacterUtils } from '../utils/characterUtils.js';
+import {
+  CharacterUtils,
+  normalizeCharacters,
+} from '../utils/characterUtils.js';
 import { createModel } from './createModel.js';
 
 /**
@@ -54,7 +62,6 @@ function tupleToObject(tuple: Pokemon): PokemonObject {
   };
 }
 
-
 /**
  * Process a Pokemon object to add first and last character information
  */
@@ -97,6 +104,67 @@ export const createPokemonModel = () => {
       return state.pokemonByFirstChar.get(char) || [];
     },
 
+    /**
+     * Search Pokemon by name (supports partial matching)
+     */
+    searchByName(query: string): PokemonObject[] {
+      if (!query.trim()) {
+        return state.allPokemon;
+      }
+
+      const normalizedQuery = query.toLowerCase().trim();
+
+      return state.allPokemon.filter((pokemon) => {
+        // Search in Pokemon name (case-insensitive)
+        const nameMatch = pokemon.name.toLowerCase().includes(normalizedQuery);
+
+        // Also search in katakana version
+        const katakanaName = CharacterUtils.toKatakana(pokemon.name);
+        const katakanaMatch = katakanaName.includes(normalizedQuery);
+
+        // Search in genus
+        const genusMatch = pokemon.genus
+          ?.toLowerCase()
+          .includes(normalizedQuery);
+
+        return nameMatch || katakanaMatch || genusMatch;
+      });
+    },
+
+    /**
+     * Search Pokemon by type, generation, or other attributes
+     */
+    searchByAttributes(filters: {
+      types?: PokemonType[];
+      generation?: number;
+      genus?: string;
+    }): PokemonObject[] {
+      return state.allPokemon.filter((pokemon) => {
+        if (filters.types && filters.types.length > 0) {
+          const hasMatchingType = filters.types.some((type) =>
+            pokemon.types.includes(type),
+          );
+          if (!hasMatchingType) return false;
+        }
+
+        if (
+          filters.generation &&
+          pokemon.generation_id !== filters.generation
+        ) {
+          return false;
+        }
+
+        if (
+          filters.genus &&
+          !pokemon.genus?.toLowerCase().includes(filters.genus.toLowerCase())
+        ) {
+          return false;
+        }
+
+        return true;
+      });
+    },
+
     getPokemonByName(name: string): PokemonObject | null {
       return state.allPokemon.find((p) => p.name === name) || null;
     },
@@ -113,7 +181,7 @@ export const createPokemonModel = () => {
 
         // Process each character group
         for (const [char, pokemonTuples] of Object.entries(database)) {
-          const pokemonObjects = pokemonTuples.map(tuple => {
+          const pokemonObjects = pokemonTuples.map((tuple) => {
             const pokemonObj = tupleToObject(tuple);
             return processPokemon(pokemonObj);
           });
@@ -127,7 +195,8 @@ export const createPokemonModel = () => {
           // Index by last character
           for (const pokemon of pokemonObjects) {
             if (pokemon.lastChar) {
-              const existingLast = state.pokemonByLastChar.get(pokemon.lastChar) || [];
+              const existingLast =
+                state.pokemonByLastChar.get(pokemon.lastChar) || [];
               existingLast.push(pokemon);
               state.pokemonByLastChar.set(pokemon.lastChar, existingLast);
             }

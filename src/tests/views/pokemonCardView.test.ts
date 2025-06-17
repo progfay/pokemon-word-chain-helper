@@ -40,10 +40,10 @@ describe('PokemonCardView', () => {
     const element = pokemonCardView.render();
     expect(element.textContent).toContain('ピカチュウ');
     expect(element.textContent).toContain('ねずみポケモン');
-    expect(element.textContent).toContain('#025');
+    expect(element.textContent).toContain('No.25');
   });
 
-  it('should emit card:click event when clicked', () => {
+  it('should emit card:click event when checkbox is clicked', () => {
     const mockCallback = vi.fn();
     pokemonCardView.on('card:click', mockCallback);
 
@@ -54,7 +54,8 @@ describe('PokemonCardView', () => {
       isDisabled: false,
     });
 
-    pokemonCardView.render().click();
+    const checkbox = pokemonCardView.render().querySelector('.pokemon-card__checkbox') as HTMLInputElement;
+    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
     expect(mockCallback).toHaveBeenCalledWith(samplePokemon);
   });
 
@@ -75,52 +76,49 @@ describe('PokemonCardView', () => {
       });
     });
 
-    it('should toggle types hint when types button is clicked', () => {
+    it('should toggle types hint when types section is clicked', () => {
       const element = pokemonCardView.render();
-      const typesButton = element.querySelector(
-        '[data-hint="showTypes"]',
-      ) as HTMLButtonElement;
+      const typesSection = element.querySelector(
+        '[data-clickable="types"]',
+      ) as HTMLElement;
 
-      expect(typesButton).toBeTruthy();
-      expect(element.querySelector('.pokemon-card__types')).toBeNull();
+      expect(typesSection).toBeTruthy();
+      expect(element.textContent).toContain('(Types)');
 
-      typesButton.click();
+      typesSection.click();
 
-      expect(element.querySelector('.pokemon-card__types')).toBeTruthy();
       expect(element.textContent).toContain('electric');
     });
 
-    it('should toggle generation hint when generation button is clicked', () => {
+    it('should toggle generation hint when generation section is clicked', () => {
       const element = pokemonCardView.render();
-      const generationButton = element.querySelector(
-        '[data-hint="showGeneration"]',
-      ) as HTMLButtonElement;
+      const generationSection = element.querySelector(
+        '[data-clickable="generation"]',
+      ) as HTMLElement;
 
-      expect(generationButton).toBeTruthy();
-      expect(element.querySelector('.pokemon-card__generation')).toBeNull();
+      expect(generationSection).toBeTruthy();
+      expect(element.textContent).toContain('(Generation)');
 
-      generationButton.click();
+      generationSection.click();
 
-      expect(element.querySelector('.pokemon-card__generation')).toBeTruthy();
       expect(element.textContent).toContain('Gen 1');
     });
 
-    it('should toggle genus hint when genus button is clicked', () => {
+    it('should toggle genus hint when genus section is clicked', () => {
       const element = pokemonCardView.render();
-      const genusButton = element.querySelector(
-        '[data-hint="showGenus"]',
-      ) as HTMLButtonElement;
+      const genusSection = element.querySelector(
+        '[data-clickable="genus"]',
+      ) as HTMLElement;
 
-      expect(genusButton).toBeTruthy();
-      expect(element.querySelector('.pokemon-card__genus')).toBeNull();
+      expect(genusSection).toBeTruthy();
+      expect(element.textContent).toContain('(Genus)');
 
-      genusButton.click();
+      genusSection.click();
 
-      expect(element.querySelector('.pokemon-card__genus')).toBeTruthy();
       expect(element.textContent).toContain('ねずみポケモン');
     });
 
-    it('should cycle through image states when image button is clicked', () => {
+    it('should cycle through image states when image section is clicked', () => {
       // Initialize the card with Pokemon data
       pokemonCardView.update({
         pokemon: samplePokemon,
@@ -137,80 +135,70 @@ describe('PokemonCardView', () => {
       });
 
       let element = pokemonCardView.render();
-      let imageButton = element.querySelector(
-        '[data-hint="showImage"]',
-      ) as HTMLButtonElement;
+      let imageSection = element.querySelector(
+        '[data-clickable="image"]',
+      ) as HTMLElement;
 
-      expect(imageButton).toBeTruthy();
-      expect(element.querySelector('.pokemon-card__image')).toBeNull();
+      expect(imageSection).toBeTruthy();
+      expect(imageSection.classList.contains('image-hidden')).toBe(true);
 
       // First click: show silhouette
-      imageButton.click();
+      imageSection.click();
       element = pokemonCardView.render(); // Re-render to get updated DOM
-      let imageContainer = element.querySelector('.pokemon-card__image');
-      expect(imageContainer).toBeTruthy();
-      expect(imageContainer?.classList.contains('silhouette')).toBe(true);
+      imageSection = element.querySelector('[data-clickable="image"]') as HTMLElement;
+      expect(imageSection.classList.contains('image-visible')).toBe(true);
+      let pokemonImage = element.querySelector('.pokemon-image');
+      expect(pokemonImage?.classList.contains('silhouette')).toBe(true);
 
       // Second click: show full image
-      imageButton = element.querySelector(
-        '[data-hint="showImage"]',
-      ) as HTMLButtonElement;
-      imageButton.click();
+      imageSection.click();
       element = pokemonCardView.render(); // Re-render to get updated DOM
-      imageContainer = element.querySelector('.pokemon-card__image');
-      expect(imageContainer).toBeTruthy();
-      expect(imageContainer?.classList.contains('silhouette')).toBe(false);
+      pokemonImage = element.querySelector('.pokemon-image');
+      expect(pokemonImage?.classList.contains('silhouette')).toBe(false);
 
       // Third click: hide image
-      imageButton = element.querySelector(
-        '[data-hint="showImage"]',
-      ) as HTMLButtonElement;
-      imageButton.click();
+      imageSection = element.querySelector('[data-clickable="image"]') as HTMLElement;
+      imageSection.click();
       element = pokemonCardView.render(); // Re-render to get updated DOM
-      expect(element.querySelector('.pokemon-card__image')).toBeNull();
+      imageSection = element.querySelector('[data-clickable="image"]') as HTMLElement;
+      expect(imageSection.classList.contains('image-hidden')).toBe(true);
     });
 
-    it('should not emit card:click when hint button is clicked', () => {
+    it('should not emit card:click when hint section is clicked', () => {
       const mockCallback = vi.fn();
       pokemonCardView.on('card:click', mockCallback);
 
       const element = pokemonCardView.render();
-      const typesButton = element.querySelector(
-        '[data-hint="showTypes"]',
-      ) as HTMLButtonElement;
+      const typesSection = element.querySelector(
+        '[data-clickable="types"]',
+      ) as HTMLElement;
 
-      typesButton.click();
+      typesSection.click();
 
       expect(mockCallback).not.toHaveBeenCalled();
     });
 
-    it('should toggle name hint when name button is clicked', () => {
+    it('should toggle name hint when name section is clicked', () => {
       const element = pokemonCardView.render();
-      const nameButton = element.querySelector(
-        '[data-hint="showName"]',
-      ) as HTMLButtonElement;
+      const nameSection = element.querySelector(
+        '[data-clickable="name"]',
+      ) as HTMLElement;
 
-      expect(nameButton).toBeTruthy();
-      expect(element.querySelector('.pokemon-card__name')?.textContent).toBe(
-        '???',
-      );
+      expect(nameSection).toBeTruthy();
+      expect(element.textContent).toContain('**Pokemon Name**');
 
-      nameButton.click();
+      nameSection.click();
 
-      expect(element.querySelector('.pokemon-card__name')?.textContent).toBe(
-        'ピカチュウ',
-      );
+      expect(element.textContent).toContain('**ピカチュウ**');
     });
 
     it('should hide Pokemon name by default', () => {
       const element = pokemonCardView.render();
 
-      expect(element.querySelector('.pokemon-card__name')?.textContent).toBe(
-        '???',
-      );
+      expect(element.textContent).toContain('**Pokemon Name**');
     });
 
-    it('should add active class to hint buttons when hints are shown', () => {
+    it('should show correct content when hints are revealed', () => {
       pokemonCardView.update({
         pokemon: samplePokemon,
         isHighlighted: false,
@@ -226,27 +214,14 @@ describe('PokemonCardView', () => {
       });
 
       const element = pokemonCardView.render();
-      const imageButton = element.querySelector(
-        '[data-hint="showImage"]',
-      ) as HTMLButtonElement;
-      const typesButton = element.querySelector(
-        '[data-hint="showTypes"]',
-      ) as HTMLButtonElement;
-      const generationButton = element.querySelector(
-        '[data-hint="showGeneration"]',
-      ) as HTMLButtonElement;
-      const genusButton = element.querySelector(
-        '[data-hint="showGenus"]',
-      ) as HTMLButtonElement;
-      const nameButton = element.querySelector(
-        '[data-hint="showName"]',
-      ) as HTMLButtonElement;
-
-      expect(imageButton.classList.contains('active')).toBe(true);
-      expect(typesButton.classList.contains('active')).toBe(true);
-      expect(generationButton.classList.contains('active')).toBe(true);
-      expect(genusButton.classList.contains('active')).toBe(true);
-      expect(nameButton.classList.contains('active')).toBe(true);
+      
+      expect(element.textContent).toContain('**ピカチュウ**');
+      expect(element.textContent).toContain('ねずみポケモン');
+      expect(element.textContent).toContain('electric');
+      expect(element.textContent).toContain('Gen 1');
+      
+      const imageSection = element.querySelector('[data-clickable="image"]');
+      expect(imageSection?.classList.contains('image-visible')).toBe(true);
     });
   });
 });

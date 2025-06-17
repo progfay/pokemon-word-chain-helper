@@ -24,11 +24,11 @@ describe('AccordionView', () => {
     );
     expect(rowDetailsElements.length).toBeGreaterThan(0);
 
-    // Check that character details elements are present
-    const charDetailsElements = element.querySelectorAll(
-      'details.accordion-char',
+    // Check that character tab buttons are present (instead of details.accordion-char)
+    const charTabButtons = element.querySelectorAll(
+      '.char-tab-button',
     );
-    expect(charDetailsElements.length).toBeGreaterThan(0);
+    expect(charTabButtons.length).toBeGreaterThan(0);
 
     // Check that summary elements are present
     const summaryElements = element.querySelectorAll(
@@ -108,7 +108,7 @@ describe('AccordionView', () => {
     expect(firstDetails.open).toBe(false);
   });
 
-  it('should emit accordion:character-select event when character is opened', () => {
+  it('should emit accordion:character-select event when character is clicked', () => {
     const mockCallback = vi.fn();
     accordionView.on('accordion:character-select', mockCallback);
 
@@ -121,16 +121,15 @@ describe('AccordionView', () => {
     });
 
     const element = accordionView.render();
-    const charDetails = element.querySelector(
+    const charButton = element.querySelector(
       '[data-char="ア"]',
-    ) as HTMLDetailsElement;
+    ) as HTMLButtonElement;
 
-    expect(charDetails).toBeTruthy();
-    charDetails.open = true;
+    expect(charButton).toBeTruthy();
 
-    // Trigger the toggle event manually
-    const toggleEvent = new Event('toggle');
-    charDetails.dispatchEvent(toggleEvent);
+    // Trigger the click event manually
+    const clickEvent = new Event('click');
+    charButton.dispatchEvent(clickEvent);
 
     expect(mockCallback).toHaveBeenCalledWith('ア');
   });
@@ -145,17 +144,17 @@ describe('AccordionView', () => {
     });
 
     const element = accordionView.render();
-    const charDetails = element.querySelector(
+    const charButton = element.querySelector(
       '[data-char="ア"]',
-    ) as HTMLDetailsElement;
+    ) as HTMLButtonElement;
 
-    expect(charDetails.open).toBe(true);
+    expect(charButton.classList.contains('active')).toBe(true);
 
-    // Other characters should not be open
-    const otherCharDetails = element.querySelector(
+    // Other characters should not be active
+    const otherCharButton = element.querySelector(
       '[data-char="イ"]',
-    ) as HTMLDetailsElement;
-    expect(otherCharDetails.open).toBe(false);
+    ) as HTMLButtonElement;
+    expect(otherCharButton.classList.contains('active')).toBe(false);
   });
 
   it('should clear selected character when updated with undefined', () => {
@@ -169,10 +168,10 @@ describe('AccordionView', () => {
     });
 
     let element = accordionView.render();
-    let charDetails = element.querySelector(
+    let charButton = element.querySelector(
       '[data-char="ア"]',
-    ) as HTMLDetailsElement;
-    expect(charDetails.open).toBe(true);
+    ) as HTMLButtonElement;
+    expect(charButton.classList.contains('active')).toBe(true);
 
     // Then clear selection
     accordionView.update({
@@ -184,10 +183,10 @@ describe('AccordionView', () => {
     });
 
     element = accordionView.render();
-    charDetails = element.querySelector(
+    charButton = element.querySelector(
       '[data-char="ア"]',
-    ) as HTMLDetailsElement;
-    expect(charDetails.open).toBe(false);
+    ) as HTMLButtonElement;
+    expect(charButton.classList.contains('active')).toBe(false);
   });
 
   it('should display error messages', () => {

@@ -66,93 +66,59 @@ const createPokemonCardElement = () => {
   return card;
 };
 
-const createHintButtons = (hints: PokemonCardState['hints']) => `
-  <div class="pokemon-card__hint-controls">
-    <button class="hint-button image-hint ${
-      hints.showImage !== 'hidden' ? 'active' : ''
-    }" data-hint="showImage" title="Toggle image visibility">
-      <span class="hint-icon">👁️</span>
-    </button>
-    <button class="hint-button ${
-      hints.showTypes ? 'active' : ''
-    }" data-hint="showTypes" title="Toggle type information">
-      <span class="hint-icon">🏷️</span>
-    </button>
-    <button class="hint-button ${
-      hints.showGeneration ? 'active' : ''
-    }" data-hint="showGeneration" title="Toggle generation">
-      <span class="hint-icon">📅</span>
-    </button>
-    <button class="hint-button ${
-      hints.showGenus ? 'active' : ''
-    }" data-hint="showGenus" title="Toggle genus">
-      <span class="hint-icon">📝</span>
-    </button>
-    <button class="hint-button ${
-      hints.showName ? 'active' : ''
-    }" data-hint="showName" title="Reveal Pokemon name">
-      <span class="hint-icon">🏮</span>
-    </button>
-  </div>
-`;
-
 const updatePokemonCardElement = (
   card: HTMLElement,
   state: PokemonCardState,
+  view: TypedView<PokemonCardState>,
 ) => {
   const { pokemon, isHighlighted, isSelected, isDisabled, hints } = state;
 
   if (pokemon) {
     const paddedNumber = pokemon.pokedex_number.toString().padStart(3, '0');
     card.innerHTML = `
-      ${createHintButtons(hints)}
-      ${hints.showName ? `<div class="pokemon-card__name">${pokemon.name}</div>` : '<div class="pokemon-card__name">???</div>'}
-      <div class="pokemon-card__content">
-        ${
-          hints.showImage !== 'hidden'
-            ? `
-          <div class="pokemon-card__image ${
-            hints.showImage === 'silhouette' ? 'silhouette' : ''
-          }">
-            <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${paddedNumber}.png" 
-                alt="${pokemon.name}"
-                loading="lazy"
-                class="pokemon-image" />
-          </div>
-        `
-            : ''
-        }
-        <div class="pokemon-card__info">
-          <span class="pokemon-card__number">#${paddedNumber}</span>
-          ${
-            hints.showGenus
-              ? `<span class="pokemon-card__genus">${pokemon.genus}ポケモン</span>`
-              : ''
-          }
-          ${
-            hints.showGeneration
-              ? `<span class="pokemon-card__generation">Gen ${pokemon.generation_id}</span>`
-              : ''
-          }
+      <div class="pokemon-card__container">
+        <div class="pokemon-card__checkbox-section">
+          <input type="checkbox" class="pokemon-card__checkbox" ${isSelected ? 'checked' : ''} />
         </div>
-        ${
-          hints.showTypes
-            ? `
-          <div class="pokemon-card__types">
-            ${pokemon.types
-              .map(
-                (type) => {
-                  const typeName = TYPE_ID_TO_NAME[type] || 'unknown';
-                  return `<span class="type-label type-${typeName}">${typeName}</span>`;
-                }
-              )
-              .join('')}
+        <div class="pokemon-card__image-section ${hints.showImage !== 'hidden' ? 'image-visible' : 'image-hidden'}" data-clickable="image">
+          <img src="https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${paddedNumber}.png" 
+              alt="${pokemon.name}"
+              loading="lazy"
+              class="pokemon-image ${hints.showImage === 'silhouette' ? 'silhouette' : ''}" />
+        </div>
+        <div class="pokemon-card__info-section">
+          <div class="pokemon-card__number">No.${pokemon.pokedex_number}</div>
+          <div class="pokemon-card__name-section" data-clickable="name">
+            <span class="pokemon-card__name-label">
+              ${hints.showName ? `**${pokemon.name}**` : '**Pokemon Name**'}
+            </span>
           </div>
-        `
-            : ''
-        }
+          <div class="pokemon-card__details">
+            <div class="pokemon-card__detail-item" data-clickable="genus">
+              - ${hints.showGenus ? `${pokemon.genus}ポケモン` : '(Genus)'}
+            </div>
+            <div class="pokemon-card__detail-item" data-clickable="types">
+              - ${hints.showTypes ? pokemon.types.map((type) => TYPE_ID_TO_NAME[type] || 'unknown').join(', ') : '(Types)'}
+            </div>
+            <div class="pokemon-card__detail-item" data-clickable="generation">
+              - ${hints.showGeneration ? `Gen ${pokemon.generation_id}` : '(Generation)'}
+            </div>
+          </div>
+        </div>
       </div>
     `;
+
+    // Set up checkbox event listener after content is added
+    const checkbox = card.querySelector('.pokemon-card__checkbox') as HTMLInputElement;
+    if (checkbox) {
+      const handleCheckboxChange = () => {
+        view.emit('card:click', pokemon);
+      };
+      
+      // Remove any existing listener to avoid duplicates
+      checkbox.removeEventListener('change', handleCheckboxChange);
+      checkbox.addEventListener('change', handleCheckboxChange);
+    }
   }
 
   card.classList.toggle('pokemon-card--highlighted', !!isHighlighted);
@@ -179,45 +145,71 @@ export const createPokemonCardView = (): TypedView<PokemonCardState> => {
           ...(newState.hints || {}),
         },
       });
-      updatePokemonCardElement(view.render(), state);
+      updatePokemonCardElement(view.render(), state, view);
     },
     setupEventListeners: () => {
       const element = view.render();
 
       const handleClick = (e: Event) => {
-        // Check if click target is a hint button
         const target = e.target as HTMLElement;
-        const hintButton = target.closest('.hint-button');
+        const clickableElement = target.closest(
+          '[data-clickable]',
+        ) as HTMLElement;
 
-        if (hintButton) {
+        if (clickableElement) {
           e.stopPropagation();
-          const hintType = (hintButton as HTMLElement).dataset
-            .hint as keyof PokemonCardState['hints'];
+          const clickType = clickableElement.dataset.clickable;
 
-          if (hintType === 'showImage') {
-            const states: PokemonCardState['hints']['showImage'][] = [
-              'hidden',
-              'silhouette',
-              'full',
-            ];
-            const nextIndex =
-              (states.indexOf(state.hints.showImage) + 1) % states.length;
-            view.update({
-              hints: {
-                ...state.hints,
-                [hintType]: states[nextIndex],
-              },
-            });
-          } else {
-            view.update({
-              hints: {
-                ...state.hints,
-                [hintType]: !state.hints[hintType],
-              },
-            });
+          switch (clickType) {
+            case 'image': {
+              const states: PokemonCardState['hints']['showImage'][] = [
+                'hidden',
+                'silhouette',
+                'full',
+              ];
+              const nextIndex =
+                (states.indexOf(state.hints.showImage) + 1) % states.length;
+              view.update({
+                hints: {
+                  ...state.hints,
+                  showImage: states[nextIndex],
+                },
+              });
+              break;
+            }
+            case 'name':
+              view.update({
+                hints: {
+                  ...state.hints,
+                  showName: !state.hints.showName,
+                },
+              });
+              break;
+            case 'genus':
+              view.update({
+                hints: {
+                  ...state.hints,
+                  showGenus: !state.hints.showGenus,
+                },
+              });
+              break;
+            case 'types':
+              view.update({
+                hints: {
+                  ...state.hints,
+                  showTypes: !state.hints.showTypes,
+                },
+              });
+              break;
+            case 'generation':
+              view.update({
+                hints: {
+                  ...state.hints,
+                  showGeneration: !state.hints.showGeneration,
+                },
+              });
+              break;
           }
-        } else if (state.pokemon) {
-          view.emit('card:click', state.pokemon);
         }
       };
 

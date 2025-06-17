@@ -64,8 +64,6 @@ describe('GameStateModel', () => {
     });
   });
 
-
-
   describe('reset', () => {
     it('should clear all state', () => {
       gameStateModel.markPokemonAsUsed(testPokemon[0]);
@@ -98,6 +96,5 @@ describe('GameStateModel', () => {
       gameStateModel.markPokemonAsUsed(testPokemon[0]);
       expect(eventEmitted).toBe(true);
     });
-
   });
 });
