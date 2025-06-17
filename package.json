@@ -9,7 +9,6 @@
     "copy-assets": "cp src/pokemon_database.json dist/",
     "test": "vitest run",
     "test:watch": "vitest",
-    "format": "biome format --write .",
     "lint": "npm run typecheck && biome lint .",
     "lint:fix": "npm run typecheck && biome check --write .",
     "typecheck": "tsc --noEmit",
