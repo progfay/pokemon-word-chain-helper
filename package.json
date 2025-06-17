@@ -12,7 +12,8 @@
     "lint": "npm run typecheck && biome lint .",
     "lint:fix": "npm run typecheck && biome check --write .",
     "typecheck": "tsc --noEmit",
-    "generate:pokemon_database": "node scripts/generate_pokemon_database.js"
+    "generate:pokemon_database": "node scripts/generate_pokemon_database.js",
+    "knip": "knip --config knip.json"
   },
   "keywords": [],
   "author": "progfay",
@@ -22,6 +23,7 @@
     "@biomejs/biome": "1.9.4",
     "@types/node": "24.0.1",
     "jsdom": "26.1.0",
+    "knip": "5.61.1",
     "typescript": "5.8.3",
     "vitest": "3.2.3"
   }
