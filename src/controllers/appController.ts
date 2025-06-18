@@ -90,7 +90,7 @@ export const createAppController = () => {
     main.className = 'app-main';
 
     // Mount views
-    main.appendChild(searchView.render());
+    main.appendChild(searchView);
     main.appendChild(gameStatusView.render());
     main.appendChild(usedPokemonView.render());
     main.appendChild(listView.render());

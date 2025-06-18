@@ -10,6 +10,18 @@ This is a **Pokemon Word Chain Helper** - a web application that assists players
 
 The application implements a **strict MVC architecture** with comprehensive TypeScript types, event-driven communication, and extensive test coverage.
 
+## Coding Guidelines
+
+### Non-Null Assertions (`!.`)
+**Strictly prohibited.** Use safer alternatives:
+
+- **Optional chaining**: `shadowRoot?.querySelector()` instead of `shadowRoot!.querySelector()`
+- **Null checks**: `if (element) element.click()` instead of `element!.click()`
+- **Type guards**: `as HTMLElement | null` with conditional execution
+- **Test assertions**: `expect(shadowRoot).toBeTruthy()` before access
+
+Prevents runtime crashes and improves code safety.
+
 ## Essential Commands
 
 ### Development Workflow

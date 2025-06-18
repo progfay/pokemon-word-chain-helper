@@ -37,9 +37,12 @@ describe('PokemonCardView', () => {
     });
 
     const element = pokemonCardView.render();
-    expect(element.textContent).toContain('ピカチュウ');
-    expect(element.textContent).toContain('ねずみポケモン');
-    expect(element.textContent).toContain('No.25');
+    // For Custom Elements with Shadow DOM, check shadowRoot content
+    const shadowRoot = element.shadowRoot;
+    expect(shadowRoot).toBeTruthy();
+    expect(shadowRoot?.textContent).toContain('ピカチュウ');
+    expect(shadowRoot?.textContent).toContain('ねずみポケモン');
+    expect(shadowRoot?.textContent).toContain('No.25');
   });
 
   it('should emit card:click event when checkbox is clicked', () => {
@@ -52,10 +55,13 @@ describe('PokemonCardView', () => {
       isDisabled: false,
     });
 
-    const checkbox = pokemonCardView
-      .render()
-      .querySelector('.pokemon-card__checkbox') as HTMLInputElement;
-    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    const element = pokemonCardView.render();
+    const shadowRoot = element.shadowRoot;
+    const checkbox = shadowRoot?.querySelector('.checkbox') as HTMLInputElement | null;
+    expect(checkbox).toBeTruthy();
+    if (checkbox) {
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    }
     expect(mockCallback).toHaveBeenCalledWith(samplePokemon);
   });
 
@@ -77,44 +83,50 @@ describe('PokemonCardView', () => {
 
     it('should toggle types hint when types section is clicked', () => {
       const element = pokemonCardView.render();
-      const typesSection = element.querySelector(
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
+      const typesSection = shadowRoot?.querySelector(
         '[data-clickable="types"]',
-      ) as HTMLElement;
+      ) as HTMLElement | null;
 
       expect(typesSection).toBeTruthy();
-      expect(element.textContent).toContain('(Types)');
+      expect(shadowRoot?.textContent).toContain('(Types)');
 
-      typesSection.click();
+      typesSection?.click();
 
-      expect(element.textContent).toContain('electric');
+      expect(shadowRoot?.textContent).toContain('electric');
     });
 
     it('should toggle generation hint when generation section is clicked', () => {
       const element = pokemonCardView.render();
-      const generationSection = element.querySelector(
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
+      const generationSection = shadowRoot?.querySelector(
         '[data-clickable="generation"]',
-      ) as HTMLElement;
+      ) as HTMLElement | null;
 
       expect(generationSection).toBeTruthy();
-      expect(element.textContent).toContain('(Generation)');
+      expect(shadowRoot?.textContent).toContain('(Generation)');
 
-      generationSection.click();
+      generationSection?.click();
 
-      expect(element.textContent).toContain('Gen 1');
+      expect(shadowRoot?.textContent).toContain('Gen 1');
     });
 
     it('should toggle genus hint when genus section is clicked', () => {
       const element = pokemonCardView.render();
-      const genusSection = element.querySelector(
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
+      const genusSection = shadowRoot?.querySelector(
         '[data-clickable="genus"]',
-      ) as HTMLElement;
+      ) as HTMLElement | null;
 
       expect(genusSection).toBeTruthy();
-      expect(element.textContent).toContain('(Genus)');
+      expect(shadowRoot?.textContent).toContain('(Genus)');
 
-      genusSection.click();
+      genusSection?.click();
 
-      expect(element.textContent).toContain('ねずみポケモン');
+      expect(shadowRoot?.textContent).toContain('ねずみポケモン');
     });
 
     it('should cycle through image states when image section is clicked', () => {
@@ -132,40 +144,41 @@ describe('PokemonCardView', () => {
         },
       });
 
-      let element = pokemonCardView.render();
-      let imageSection = element.querySelector(
+      const element = pokemonCardView.render();
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
+      let imageSection = shadowRoot?.querySelector(
         '[data-clickable="image"]',
-      ) as HTMLElement;
+      ) as HTMLElement | null;
 
       expect(imageSection).toBeTruthy();
-      expect(imageSection.classList.contains('image-hidden')).toBe(true);
+      expect(imageSection?.classList.contains('image-hidden')).toBe(true);
 
       // First click: show silhouette
-      imageSection.click();
-      element = pokemonCardView.render(); // Re-render to get updated DOM
-      imageSection = element.querySelector(
+      imageSection?.click();
+      imageSection = shadowRoot?.querySelector(
         '[data-clickable="image"]',
-      ) as HTMLElement;
-      expect(imageSection.classList.contains('image-visible')).toBe(true);
-      let pokemonImage = element.querySelector('.pokemon-image');
+      ) as HTMLElement | null;
+      expect(imageSection).toBeTruthy();
+      expect(imageSection?.classList.contains('image-visible')).toBe(true);
+      let pokemonImage = shadowRoot?.querySelector('.pokemon-image');
       expect(pokemonImage?.classList.contains('silhouette')).toBe(true);
 
       // Second click: show full image
-      imageSection.click();
-      element = pokemonCardView.render(); // Re-render to get updated DOM
-      pokemonImage = element.querySelector('.pokemon-image');
+      imageSection?.click();
+      pokemonImage = shadowRoot?.querySelector('.pokemon-image');
       expect(pokemonImage?.classList.contains('silhouette')).toBe(false);
 
       // Third click: hide image
-      imageSection = element.querySelector(
+      imageSection = shadowRoot?.querySelector(
         '[data-clickable="image"]',
-      ) as HTMLElement;
-      imageSection.click();
-      element = pokemonCardView.render(); // Re-render to get updated DOM
-      imageSection = element.querySelector(
+      ) as HTMLElement | null;
+      imageSection?.click();
+      imageSection = shadowRoot?.querySelector(
         '[data-clickable="image"]',
-      ) as HTMLElement;
-      expect(imageSection.classList.contains('image-hidden')).toBe(true);
+      ) as HTMLElement | null;
+      expect(imageSection).toBeTruthy();
+      expect(imageSection?.classList.contains('image-hidden')).toBe(true);
     });
 
     it('should not emit card:click when hint section is clicked', () => {
@@ -173,33 +186,39 @@ describe('PokemonCardView', () => {
       pokemonCardView.on('card:click', mockCallback);
 
       const element = pokemonCardView.render();
-      const typesSection = element.querySelector(
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
+      const typesSection = shadowRoot?.querySelector(
         '[data-clickable="types"]',
-      ) as HTMLElement;
+      ) as HTMLElement | null;
 
-      typesSection.click();
+      typesSection?.click();
 
       expect(mockCallback).not.toHaveBeenCalled();
     });
 
     it('should toggle name hint when name section is clicked', () => {
       const element = pokemonCardView.render();
-      const nameSection = element.querySelector(
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
+      const nameSection = shadowRoot?.querySelector(
         '[data-clickable="name"]',
-      ) as HTMLElement;
+      ) as HTMLElement | null;
 
       expect(nameSection).toBeTruthy();
-      expect(element.textContent).toContain('**Pokemon Name**');
+      expect(shadowRoot?.textContent).toContain('**Pokemon Name**');
 
-      nameSection.click();
+      nameSection?.click();
 
-      expect(element.textContent).toContain('**ピカチュウ**');
+      expect(shadowRoot?.textContent).toContain('**ピカチュウ**');
     });
 
     it('should hide Pokemon name by default', () => {
       const element = pokemonCardView.render();
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
 
-      expect(element.textContent).toContain('**Pokemon Name**');
+      expect(shadowRoot?.textContent).toContain('**Pokemon Name**');
     });
 
     it('should show correct content when hints are revealed', () => {
@@ -217,13 +236,15 @@ describe('PokemonCardView', () => {
       });
 
       const element = pokemonCardView.render();
+      const shadowRoot = element.shadowRoot;
+      expect(shadowRoot).toBeTruthy();
 
-      expect(element.textContent).toContain('**ピカチュウ**');
-      expect(element.textContent).toContain('ねずみポケモン');
-      expect(element.textContent).toContain('electric');
-      expect(element.textContent).toContain('Gen 1');
+      expect(shadowRoot?.textContent).toContain('**ピカチュウ**');
+      expect(shadowRoot?.textContent).toContain('ねずみポケモン');
+      expect(shadowRoot?.textContent).toContain('electric');
+      expect(shadowRoot?.textContent).toContain('Gen 1');
 
-      const imageSection = element.querySelector('[data-clickable="image"]');
+      const imageSection = shadowRoot?.querySelector('[data-clickable="image"]');
       expect(imageSection?.classList.contains('image-visible')).toBe(true);
     });
   });

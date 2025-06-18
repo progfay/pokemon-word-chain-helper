@@ -14,27 +14,34 @@ describe('SearchView', () => {
 
   it('should render search header', () => {
     const element = searchView.render();
-    const header = element.querySelector('.search-header');
+    const shadowRoot = element.shadowRoot;
+    expect(shadowRoot).toBeTruthy();
+    const header = shadowRoot?.querySelector('.search-header');
     expect(header).toBeTruthy();
     expect(header?.textContent).toContain('ポケモン検索');
   });
 
   it('should render selected character display', () => {
     const element = searchView.render();
-    const display = element.querySelector('.search-selected-display');
+    const shadowRoot = element.shadowRoot;
+    expect(shadowRoot).toBeTruthy();
+    const display = shadowRoot?.querySelector('.search-selected-display');
     expect(display).toBeTruthy();
     expect(display?.textContent).toContain('選択された文字');
   });
 
   it('should render accordion navigation', () => {
     const element = searchView.render();
-    const accordion = element.querySelector('.accordion');
-    expect(accordion).toBeTruthy();
+    const shadowRoot = element.shadowRoot;
+    expect(shadowRoot).toBeTruthy();
+    // The accordion is a custom element, so check its existence
+    const accordionElement = shadowRoot?.querySelector('accordion-view');
+    expect(accordionElement).toBeTruthy();
 
-    // Check that some Japanese row headers are present
-    expect(element.textContent).toContain('ア行');
-    expect(element.textContent).toContain('カ行');
-    expect(element.textContent).toContain('サ行');
+    // Check that some Japanese row headers are present in the full shadow DOM tree
+    expect(shadowRoot?.textContent).toContain('ア行');
+    expect(shadowRoot?.textContent).toContain('カ行');
+    expect(shadowRoot?.textContent).toContain('サ行');
   });
 
   it('should emit search:character-select event when character is selected', () => {
