@@ -32,3 +32,5 @@ logs
 
 # database
 /src/pokemon_database.json
+
+.next/

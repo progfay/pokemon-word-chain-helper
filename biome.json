@@ -4,13 +4,28 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"performance": {
+				"noImgElement": "off"
+			}
+		},
+		"domains": {
+			"next": "recommended",
+			"project": "recommended",
+			"react": "recommended",
+			"test": "recommended"
 		}
 	},
 	"formatter": {
 		"enabled": true
 	},
 	"files": {
-		"includes": ["**/*.ts", "**/*.tsx", "!**/node_modules/**", "!**/dist/**"]
+		"includes": [
+			"**/*.ts",
+			"**/*.tsx",
+			"!**/node_modules/**",
+			"!**/dist/**",
+			"!**/.next/**"
+		]
 	}
 }

@@ -1,150 +1,258 @@
-# ポケモンしりとりヘルパー 仕様書
+# Pokemon Word Chain Helper - Specification
 
-## 1. 概要
+## Overview
 
-本アプリケーションは、ポケモンを使用したしりとりゲームをプレイする際のサポートツールです。
-プレイヤーが次の手を考える際の補助として、特定の文字から始まるポケモンの検索と、
-そのポケモンに関する様々な情報を提供します。また、使用済みポケモンの記録機能により、
-同じポケモンの重複使用を防ぐことができます。
+Pokemon Word Chain Helper is a web application that assists players in Pokemon shiritori (word chain) games. It provides a comprehensive Pokemon database with hints and tracks used Pokemon to help players find the next Pokemon in the chain.
 
-本アプリケーションはあくまでヘルパーツールであり、ゲームの進行管理（ターン管理、勝敗判定、
-しりとりのルール検証など）は行いません。プレイヤー自身がゲームを進行し、
-本ツールは情報検索と使用状況記録のサポートを提供します。
+## Core Features
 
-## 2. 基本機能
+### 1. Used Pokemon Management
 
-### 2.1. ポケモン検索機能
+#### Purpose
+Track which Pokemon have been used in the current game session to avoid repetition.
 
-#### 2.1.1. 基本検索機能
-- ネストアコーディオンによる階層的なナビゲーション
-- 第1階層：日本語の行（ア行、カ行、ガ行、サ行、ザ行など）
-- 第2階層：各行内の個別文字（例：ア行 → ア、イ、ウ、エ、オ）
-- 第2階層の文字を選択すると該当するポケモン一覧を表示
+#### Features
+- **Add Pokemon**: Users can mark Pokemon as used via text input in the footer
+- **Usage History Display**: Shows list of used Pokemon with count (e.g., "使用履歴 (3件)")
+- **Clear All**: Single button to mark all used Pokemon as unused
+- **Individual Removal**: Users can mark specific used Pokemon as unused
+- **Visual Distinction**: Used Pokemon cards have different styling (grayed out, "使用済み" badge)
 
-#### 2.1.2. アコーディオンナビゲーション
-- 階層構造で日本語文字を整理表示
-- 同時に開けるアコーディオンは1つのみ
-- 文字選択時に他のアコーディオンは自動的に閉じる
-- 選択された文字で始まるポケモンを即座に表示
+#### UI Components
+- **Footer Input Section**: Text input with "追加" button for adding used Pokemon
+- **Usage History Section**: Header with count and clear button, followed by list of used Pokemon cards
+- **Pokemon Cards**: Visual indication when Pokemon is marked as used
 
-#### 2.1.3. ヒントシステム
-各ポケモンカードは以下の情報をヒントとして個別に表示/非表示可能：
-- ポケモン画像（3段階で表示）
-  1. 非表示
-  2. シルエット
-  3. カラー画像
-- タイプ情報
-- 初登場の世代
-- ポケモンの分類（例：でんきねずみポケモン）
-- ポケモンの名前
+### 2. Pokemon Hints System
 
-#### 2.1.4. 情報開示の仕組み
-- 各ヒントは個別のトグルボタンで表示/非表示を切り替え可能
-- ポケモン画像は専用のボタンで3段階（非表示→シルエット→カラー画像）で切り替え
-- ポケモンの名前は初期状態では「???」で隠され、専用ボタンで表示可能
-- ヒントの表示順序は自由
-- 各ヒントボタンは選択状態を視覚的に表示
+#### Structure Overview
+The hints are organized in a hierarchical accordion structure:
+```
+Accordion Groups (行) → Tabs (Character) → Pokemon Cards
+```
 
-### 2.2. 使用済みポケモン管理機能
+#### Accordion Groups (行)
+- **Groups**: あ行, か行, が行, さ行, ざ行, た行, だ行, な行, は行, ば行, ぱ行, ま行, や行, ら行, わ行
+- **State**: Expandable/collapsible
+- **Display**: Group name + Pokemon count badge (e.g., "あ行 24")
+- **Default**: All groups are collapsed by default
 
-- 使用済みポケモンの記録・表示
-- 残りの使用可能ポケモン数の表示
-- 使用済みポケモンの視覚的な識別（検索結果での無効化表示）
+#### Character Tabs
+- **Within each group**: Individual character tabs (あ, い, う, え, お for あ行)
+- **State**: Only one tab active at a time per group
+- **Default**: First character tab is active when group is expanded
+- **Styling**: Active tab has different background color and styling
 
-## 3. 対象ポケモンの範囲
+#### Pokemon Cards
+- **Layout**: Grid layout within each character tab
+- **Information Display**: Pokedex number, hints, and answer button
+- **Interactive Elements**: Expandable hint sections and image controls
 
-### 3.1. 含めるポケモン
+### 3. Pokemon Card Details
 
-- 全世代の全国図鑑に登録されているポケモン
-- 全ての進化形
+#### Card Header
+- **Pokedex Number**: Displays as "#XXX" (e.g., "#024", "#065")
+- **Answer Button**: "答えを見る" button to reveal Pokemon name
+- **Used State**: Shows "使用済み" badge and Pokemon name when marked as used
 
-### 3.2. 除外するポケモン
+#### Hint Categories
+Pokemon cards contain multiple hint categories that can be revealed individually:
 
-- フォルムチェンジ違いのポケモン
-- メガシンカポケモン
-- その他の形態変化ポケモン
-- 名前が「ん」で終わるポケモン（しりとりで使用不可能なため）
+##### 1. Generation (世代)
+- **Icon**: Calendar icon
+- **Expandable**: Collapsed by default
+- **Content**: Shows generation (e.g., "第1世代")
+- **Purpose**: Helps narrow down Pokemon by release generation
 
-## 4. 技術仕様
+##### 2. Type (タイプ)
+- **Icon**: Tag icon
+- **Expandable**: Can be expanded/collapsed
+- **Content**: Shows Pokemon type(s) as colored badges
+- **Examples**: "どく" (Poison), "エスパー" (Psychic)
+- **Colors**: Each type has specific color coding
 
-### 4.1. プラットフォーム
+##### 3. Image (画像)
+- **Icon**: Image icon
+- **Expandable**: Can be expanded/collapsed
+- **Content**: Pokemon image with visibility controls
+- **Interactive**: Multiple viewing options
 
-- Webアプリケーションとして実装
+#### Image Visibility System
+Pokemon images have four distinct visibility states:
 
-### 4.2. 文字の取り扱い
+1. **Hidden**: No image shown (default state)
+2. **Silhouette**: Black silhouette only
+3. **Blurred**: Blurred version of the image
+4. **Full Color**: Complete, clear image
 
-- ひらがな・カタカナのみを使用
-- 入力時は両方の文字種を受け付ける
-- 表示は統一された文字種で行う
+#### Image Controls
+- **Toggle Buttons**: "シルエット", "ぼかし", "フルカラー"
+- **Single Selection**: Only one visibility mode active at a time
+- **Visual Feedback**: Active button has different styling
+- **Image Container**: 120px height container for consistent layout
 
-## 5. ユーザーインターフェース要件
+### 4. Answer Reveal System
 
-### 5.1. 検索・ヒント機能
+#### Confirmation Modal
+When user clicks "答えを見る" button:
+1. **Modal Appears**: Confirmation dialog
+2. **Options**:
+   - **Confirm**: Reveals Pokemon name, marks as used, closes modal
+   - **Cancel**: Closes modal with no action
+3. **Consequence**: Confirming automatically adds Pokemon to used list
 
-#### 5.1.1. 検索インターフェース
-- ネストアコーディオン（2階層構造）
-- 第1階層：日本語の行ボタン（ア行、カ行など）
-- 第2階層：個別文字ボタン（ア、イ、ウなど）
-- 検索結果カード一覧表示領域
+#### Post-Reveal State
+- Pokemon name becomes visible in card header
+- Card gains "使用済み" badge
+- Card styling changes to indicate used state
+- Pokemon appears in usage history section
 
-#### 5.1.2. ヒントインターフェース
-- 各カードにヒント操作ボタン群を配置
-- 各ヒントの表示/非表示を切り替えるトグルボタン
-  - 画像表示ボタン（👁️）
-  - タイプ情報ボタン（🏷️）
-  - 世代情報ボタン（📅）
-  - 分類情報ボタン（📝）
-  - 名前表示ボタン（🏮）
-- ヒント表示状態の視覚的フィードバック（activeクラス）
+## Data Structure
 
-#### 5.1.3. ヒント確認インターフェース
-- 各ヒントの表示領域
-- ヒントの表示状態を示すインジケータ
-- 名前は初期状態で「???」として隠蔽
+### Pokemon Database
+- **Format**: JSON file with Pokemon data
+- **Organization**: Grouped by first katakana character for efficient shiritori searches
+- **Data Fields**: Name, genus, generation, Pokedex number, types
 
-### 5.2. 使用済みポケモン表示
+### Pokemon Data Schema
+```typescript
+type Pokemon = [
+  name: string,           // Pokemon name in katakana
+  genus: string,          // Pokemon genus
+  generation_id: number,  // Generation (1-9)
+  pokedex_number: number, // National Pokedex number
+  types: [PokemonType] | [PokemonType, PokemonType] // 1-2 types
+];
 
-- 使用済みポケモンリスト
-- 残り使用可能ポケモン数の表示
+type PokemonDatabase = {
+  [firstChar: string]: Pokemon[];
+};
+```
 
-## 6. データ要件
+### Type System
+- **18 Pokemon Types**: normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy
+- **Color Coding**: Each type has specific color for visual distinction
 
-### 6.1. ポケモンデータ
+## User Interface Design
 
-- ポケモンの名前（ひらがな・カタカナ）
-- タイプ情報
-- 登場世代情報
-- カラー画像（シルエット表示にも対応）
-- ポケモン分類
-- 図鑑番号
+### Layout Structure
+```
+┌─────────────────────────────────────┐
+│          Usage History              │
+├─────────────────────────────────────┤
+│                                     │
+│         Accordion Groups            │
+│    ┌─ あ行 (24) ─────────────────┐  │
+│    │  [あ] [い] [う] [え] [お]     │  │
+│    │  ┌─────────┐ ┌─────────┐   │  │
+│    │  │Pokemon  │ │Pokemon  │   │  │
+│    │  │Card     │ │Card     │   │  │
+│    │  └─────────┘ └─────────┘   │  │
+│    └─────────────────────────────┘  │
+│    ┌─ か行 (31) ─────────────────┐  │
+│    │         (collapsed)         │  │
+│    └─────────────────────────────┘  │
+│                                     │
+├─────────────────────────────────────┤
+│    ポケモンを使用する                │
+│    [Input Field] [追加 Button]      │
+└─────────────────────────────────────┘
+```
 
-### 6.2. 使用状況データ
+### Responsive Design
+- **Mobile-First**: Design optimized for 375px width
+- **Adaptive Layout**: Content adjusts to screen size
+- **Touch-Friendly**: Adequate button sizes and spacing
 
-- 使用済みポケモンリスト
+### Color Scheme
+- **Primary**: Blue (#2563EB)
+- **Background**: Light gray (#F8FAFC)
+- **Cards**: White (#FFFFFF)
+- **Borders**: Light gray (#E5E7EB)
+- **Text**: Dark gray (#111827)
+- **Disabled**: Medium gray (#6B7280)
 
-## 7. 非機能要件
+## User Experience Flow
 
-### 7.1. パフォーマンス
+### 1. Initial Load
+1. App loads with あ行 accordion expanded
+2. あ tab is active by default
+3. Pokemon cards show minimal information
+4. Usage history is empty
 
-- アコーディオンの開閉は即時反応
-- 文字選択後の検索結果は即時表示（1秒以内）
-- ヒント情報の表示切り替えは即時反応
-- 画像の読み込みは遅延読み込み（lazy loading）を使用
+### 2. Exploring Pokemon
+1. User browses accordion groups
+2. User clicks character tabs to see different Pokemon
+3. User expands hint categories as needed
+4. User adjusts image visibility for visual hints
 
-### 7.2. ユーザビリティ
+### 3. Revealing Answers
+1. User clicks "答えを見る" on a Pokemon card
+2. Confirmation modal appears
+3. User confirms to see answer
+4. Pokemon name is revealed and marked as used
 
-- スマートフォン・タブレット・PCに対応したレスポンシブデザイン
-- 直感的な操作性の実現
-- しりとりゲーム進行を妨げない快適な操作性
+### 4. Managing Used Pokemon
+1. Used Pokemon appear in usage history
+2. User can add more Pokemon via footer input
+3. User can clear all used Pokemon or remove individual ones
+4. Visual feedback shows used state throughout interface
 
-### 7.3. 拡張性
+## Technical Requirements
 
-- 新世代のポケモンデータの追加が容易な設計
-- 新機能の追加が容易な構造
+### Performance
+- **Efficient Rendering**: React Server Components for optimal performance
+- **Data Loading**: JSON database loaded efficiently
+- **Search Optimization**: Data organized by first character for quick lookups
 
-## 8. 制限事項
+### Accessibility
+- **Keyboard Navigation**: All interactive elements keyboard accessible
+- **Screen Readers**: Proper ARIA labels and semantic HTML
+- **Color Contrast**: Sufficient contrast ratios for all text
+- **Focus Management**: Clear focus indicators
 
-- オフライン環境での動作は対象外
-- 同時対戦機能は対象外
-- AIによる自動プレイは対象外
-- ゲーム進行の自動管理は対象外（しりとりのルール検証や自動ターン管理は行わない）
+### Browser Support
+- **Modern Browsers**: Chrome, Firefox, Safari, Edge (latest versions)
+- **Mobile Browsers**: iOS Safari, Chrome Mobile
+- **Progressive Enhancement**: Core functionality works without JavaScript
+
+## Development Guidelines
+
+### Code Quality
+- **TypeScript**: Strict typing for all components
+- **Testing**: Unit tests for all major functionality
+- **Linting**: Biome for code quality and consistency
+- **Type Checking**: No TypeScript errors allowed
+
+### File Structure
+```
+app/
+├── globals.css           # Global styles
+├── layout.tsx           # Root layout
+├── page.tsx             # Main page component
+├── components/          # React components
+├── lib/                 # Utility functions
+└── types/               # TypeScript type definitions
+```
+
+### Component Architecture
+- **Server Components**: Use RSC for static content
+- **Client Components**: Only when interactivity is needed
+- **Atomic Design**: Break down UI into reusable components
+- **Props Interface**: Clear TypeScript interfaces for all props
+
+## Future Enhancements
+
+### Potential Features
+- **Search Functionality**: Search Pokemon by name or characteristics
+- **Game Modes**: Different shiritori game variations
+- **Statistics**: Track usage patterns and game statistics
+- **Favorites**: Save frequently used Pokemon
+- **Filters**: Filter by type, generation, or other criteria
+- **Offline Support**: PWA functionality for offline use
+
+### Scalability Considerations
+- **Database Updates**: Easy updating of Pokemon data
+- **Internationalization**: Support for multiple languages
+- **Performance Monitoring**: Track app performance metrics
+- **User Preferences**: Save user settings and preferences
