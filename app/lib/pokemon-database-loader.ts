@@ -1,5 +1,5 @@
-import type { GetPokemonDataQuery } from "../../scripts/generated/pokemon-types";
 import type { PokemonDatabase, PokemonType } from "../types/pokemon";
+import type { GetPokemonDataQuery } from "./pokemon-database-loader.graphql";
 
 const TYPE_SIGNATURE_MAP: Record<string, number> = {
   normal: 1,

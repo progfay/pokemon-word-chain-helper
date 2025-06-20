@@ -1,13 +1,7 @@
 schema: 'https://graphql.pokeapi.co/v1beta2'
 documents: 'app/lib/pokemon-database-loader.ts'
 generates:
-  scripts/generated/pokemon-types.ts:
+  app/lib/pokemon-database-loader.graphql.ts:
     plugins:
       - 'typescript'
       - 'typescript-operations'
-    config:
-      scalars:
-        Int: number
-        String: string
-        Boolean: boolean
-        Float: number
