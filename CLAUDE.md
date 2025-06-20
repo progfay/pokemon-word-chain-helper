@@ -18,6 +18,10 @@ Pokemon Word Chain Helper - helper app for Pokemon word-chain games runs on Web 
   - Linter: `@biomejs/biome`
   - Type Checker: `tsc`
 
+## Graphic Design
+
+See https://www.figma.com/design/8hL2y9PAcx6hg6cG4b5QTr/Pokemon-Word-Chain-Helper?node-id=5-2&t=2ejBN5MmFLCsWkRe-4
+
 ## Key Rules
 
 - **Follow coding rules**: run `npm run lint:fix` and `npm test`, fix problems if commands are failed
