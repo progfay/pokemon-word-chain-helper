@@ -33,25 +33,26 @@ const GENUS_MAP: Record<string, string> = {
 } as const;
 
 const query = /* GraphQL */ `
-query GetPokemonData {
-  pokemon_v2_pokemonspeciesname(where: {language_id: {_eq: 1}}) {
-    name
-    genus
-    pokemon_v2_pokemonspecy {
-      generation_id
-      pokemon_v2_pokemondexnumbers(where: {pokedex_id: {_eq: 1}}) {
-        pokedex_number
-      }
-      pokemon_v2_pokemons(where: {is_default: {_eq:true}}) {
-        pokemon_v2_pokemontypes {
-          pokemon_v2_type{
-            name
+  query GetPokemonData {
+    pokemonspeciesname(where: { language_id: { _eq: 1 } }) {
+      name
+      genus
+      pokemonspecy {
+        generation_id
+        pokemondexnumbers(where: { pokedex_id: { _eq: 1 } }) {
+          pokedex_number
+        }
+        pokemons(where: { is_default: { _eq: true } }) {
+          pokemontypes {
+            type {
+              name
+            }
           }
         }
       }
     }
   }
-}`;
+`;
 
 const throwError = (message: string): never => {
   throw new Error(message);
@@ -71,7 +72,7 @@ interface TransformedPokemon {
  */
 export async function loadPokemonDatabase(): Promise<PokemonDatabase> {
   try {
-    const response = await fetch("https://beta.pokeapi.co/graphql/v1beta", {
+    const response = await fetch("https://graphql.pokeapi.co/v1beta2", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,8 +86,8 @@ export async function loadPokemonDatabase(): Promise<PokemonDatabase> {
 
     const { data }: { data: GetPokemonDataQuery } = await response.json();
 
-    const transformed: TransformedPokemon[] =
-      data.pokemon_v2_pokemonspeciesname.map((pokemon) => ({
+    const transformed: TransformedPokemon[] = data.pokemonspeciesname.map(
+      (pokemon) => ({
         name: pokemon.name || throwError("Name not found"),
         genus:
           (pokemon.genus || GENUS_MAP[pokemon.name])?.replace(
@@ -94,23 +95,24 @@ export async function loadPokemonDatabase(): Promise<PokemonDatabase> {
             ""
           ) ||
           throwError(
-            `Genus not found: ${pokemon.name}, ${pokemon.pokemon_v2_pokemonspecy?.pokemon_v2_pokemondexnumbers[0]?.pokedex_number}`
+            `Genus not found: ${pokemon.name}, ${pokemon.pokemonspecy?.pokemondexnumbers[0]?.pokedex_number}`
           ),
         generation_id:
-          pokemon.pokemon_v2_pokemonspecy?.generation_id ||
+          pokemon.pokemonspecy?.generation_id ||
           throwError(`Generation ID not found: ${pokemon.name}`),
         pokedex_number:
-          pokemon.pokemon_v2_pokemonspecy?.pokemon_v2_pokemondexnumbers[0]
-            ?.pokedex_number || throwError("Pokedex number not found"),
+          pokemon.pokemonspecy?.pokemondexnumbers[0]?.pokedex_number ||
+          throwError("Pokedex number not found"),
         types:
-          pokemon.pokemon_v2_pokemonspecy?.pokemon_v2_pokemons[0]?.pokemon_v2_pokemontypes.map(
+          pokemon.pokemonspecy?.pokemons[0]?.pokemontypes.map(
             (type) =>
-              (TYPE_SIGNATURE_MAP[type.pokemon_v2_type?.name || ""] ??
+              (TYPE_SIGNATURE_MAP[type.type?.name || ""] ??
                 throwError(
-                  `Type not found: ${pokemon.name}, ${type.pokemon_v2_type?.name}`
+                  `Type not found: ${pokemon.name}, ${type.type?.name}`
                 )) as PokemonType
           ) || [],
-      }));
+      })
+    );
 
     const pokemonDatabase: PokemonDatabase = transformed.reduce(
       (acc: PokemonDatabase, pokemon) => {

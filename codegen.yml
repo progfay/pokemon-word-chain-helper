@@ -1,4 +1,4 @@
-schema: 'https://beta.pokeapi.co/graphql/v1beta'
+schema: 'https://graphql.pokeapi.co/v1beta2'
 documents: 'app/lib/pokemon-database-loader.ts'
 generates:
   scripts/generated/pokemon-types.ts:
