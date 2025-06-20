@@ -50,7 +50,6 @@ describe("AccordionGroup", () => {
 		);
 
 		expect(screen.getByText("あ行")).toBeInTheDocument();
-		expect(screen.getByText("4")).toBeInTheDocument(); // Total count (ア:1, イ:1, ウ:1, オ:1)
 		expect(screen.queryByText("あ")).not.toBeInTheDocument(); // Tab should not be visible when collapsed
 	});
 
@@ -67,7 +66,6 @@ describe("AccordionGroup", () => {
 		);
 
 		expect(screen.getByText("あ行")).toBeInTheDocument();
-		expect(screen.getByText("4")).toBeInTheDocument();
 
 		// All character tabs should be visible
 		expect(screen.getByText("あ")).toBeInTheDocument();
@@ -75,6 +73,9 @@ describe("AccordionGroup", () => {
 		expect(screen.getByText("う")).toBeInTheDocument();
 		expect(screen.getByText("え")).toBeInTheDocument();
 		expect(screen.getByText("お")).toBeInTheDocument();
+
+		// Individual character counts should be visible (in tab badges)
+		expect(screen.getAllByText("1")).toHaveLength(4); // Count for あ, い, う, お (each has 1 Pokemon)
 	});
 
 	it("should call onToggleExpanded when header is clicked", () => {
@@ -141,8 +142,8 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		const activeTab = screen.getByText("あ");
-		const inactiveTab = screen.getByText("い");
+		const activeTab = screen.getByText("あ").closest("button");
+		const inactiveTab = screen.getByText("い").closest("button");
 
 		expect(activeTab).toHaveClass("bg-blue-600", "text-white");
 		expect(inactiveTab).toHaveClass("bg-gray-200", "text-gray-600");
@@ -170,10 +171,10 @@ describe("AccordionGroup", () => {
 		).toBeInTheDocument();
 	});
 
-	it("should calculate total Pokemon count correctly", () => {
+	it("should show individual character counts in tabs", () => {
 		render(
 			<AccordionGroup
-				group={mockGroup}
+				group={mockExpandedGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
 				onToggleExpanded={mockOnToggleExpanded}
@@ -182,8 +183,9 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		// ア: 1, イ: 1, ウ: 1, エ: 0, オ: 1 = Total: 4
-		expect(screen.getByText("4")).toBeInTheDocument();
+		// Character counts should be visible in tabs: ア: 1, イ: 1, ウ: 1, エ: 0, オ: 1
+		expect(screen.getAllByText("1")).toHaveLength(4); // 4 tabs with count 1
+		expect(screen.getByText("0")).toBeInTheDocument(); // え tab with count 0
 	});
 
 	it("should show different chevron direction when expanded/collapsed", () => {

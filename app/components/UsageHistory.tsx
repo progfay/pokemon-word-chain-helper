@@ -30,27 +30,29 @@ export function UsageHistory({
 			</div>
 
 			{/* History List */}
-			<div className="bg-gray-50 rounded-xl p-4 flex flex-col gap-3">
-				{usedPokemon.length > 0 ? (
-					usedPokemon
-						.sort((a, b) => b.timestamp - a.timestamp) // Sort by newest first
-						.map((pokemon) => (
-							<button
-								type="button"
-								key={`${pokemon.name}-${pokemon.timestamp}`}
-								onClick={() => onRemoveUsed(pokemon.name)}
-								className="bg-white border border-gray-300 rounded-lg p-4 hover:bg-gray-50 text-left"
-							>
-								<span className="text-base font-bold text-gray-900">
-									{pokemon.name}
-								</span>
-							</button>
-						))
-				) : (
-					<div className="text-center py-6 text-gray-500">
-						まだ使用したポケモンはありません
-					</div>
-				)}
+			<div className="bg-gray-50 rounded-xl p-4 max-h-60 overflow-y-auto">
+				<div className="flex flex-col gap-3">
+					{usedPokemon.length > 0 ? (
+						usedPokemon
+							.sort((a, b) => b.timestamp - a.timestamp) // Sort by newest first
+							.map((pokemon) => (
+								<button
+									type="button"
+									key={`${pokemon.name}-${pokemon.timestamp}`}
+									onClick={() => onRemoveUsed(pokemon.name)}
+									className="bg-white border border-gray-300 rounded-lg p-4 hover:bg-gray-50 text-left"
+								>
+									<span className="text-base font-bold text-gray-900">
+										{pokemon.name}
+									</span>
+								</button>
+							))
+					) : (
+						<div className="text-center py-6 text-gray-500">
+							まだ使用したポケモンはありません
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);

@@ -52,9 +52,6 @@ export function AccordionGroup({
 					<span className="text-base font-bold text-gray-900">
 						{group.name}
 					</span>
-					<span className="bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1.5 rounded-full">
-						{totalCount}
-					</span>
 				</div>
 				<svg
 					className={`w-5 h-5 stroke-gray-600 transition-transform ${
@@ -86,6 +83,8 @@ export function AccordionGroup({
 							const isActive = character === group.activeCharacter;
 							const isFirst = index === 0;
 							const isLast = index === group.characters.length - 1;
+							const characterPokemonCount =
+								getPokemonForCharacter(character).length;
 
 							let borderRadius = "";
 							if (isFirst && isLast) {
@@ -101,13 +100,20 @@ export function AccordionGroup({
 									type="button"
 									key={character}
 									onClick={() => onSetActiveCharacter(group.id, character)}
-									className={`w-15 h-11 flex justify-center items-center text-sm font-bold border ${borderRadius} ${
+									className={`w-15 h-11 flex flex-col justify-center items-center text-sm font-bold border ${borderRadius} ${
 										isActive
 											? "bg-blue-600 text-white border-blue-600"
 											: "bg-gray-200 text-gray-600 border-gray-300 hover:bg-gray-300"
 									} ${!isFirst ? "border-l-0" : ""}`}
 								>
-									{character}
+									<span>{character}</span>
+									<span
+										className={`text-xs font-medium ${
+											isActive ? "text-blue-100" : "text-gray-500"
+										}`}
+									>
+										{characterPokemonCount}
+									</span>
 								</button>
 							);
 						})}
