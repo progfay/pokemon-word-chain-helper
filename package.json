@@ -1,29 +1,16 @@
 {
   "name": "pokemon-word-chain-helper",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "build": "npm run clean && tsc && npm run copy-assets",
-    "watch": "tsc --watch",
-    "clean": "rm -rf dist",
-    "copy-assets": "cp src/pokemon_database.json dist/",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "npm run typecheck && biome lint .",
-    "lint:fix": "npm run typecheck && biome check --write .",
-    "typecheck": "tsc --noEmit",
-    "generate:pokemon_database": "node scripts/generate_pokemon_database.js",
-    "knip": "knip --config knip.json"
+    "generate:pokemon_database": "node scripts/generate_pokemon_database.js"
   },
   "keywords": [],
   "author": "progfay",
   "license": "MIT",
   "description": "",
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/node": "24.0.1",
-    "jsdom": "26.1.0",
-    "knip": "5.61.1",
+    "@biomejs/biome": "2.0.0",
     "typescript": "5.8.3",
     "vitest": "3.2.3"
   }
