@@ -34,3 +34,5 @@ logs
 /src/pokemon_database.json
 
 .next/
+
+*.tsbuildinfo

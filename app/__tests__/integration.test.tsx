@@ -1,9 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
-import Home from "../page";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { PokemonApp } from "../components/PokemonApp";
+import type { PokemonDatabase } from "../types/pokemon";
 
-// Mock fetch for Pokemon database
-const mockPokemonDatabase = {
+// Mock Pokemon database
+const mockPokemonDatabase: PokemonDatabase = {
 	ピ: [["ピカチュウ", "ねずみ", 1, 25, [4]]],
 	フ: [["フシギダネ", "たね", 1, 1, [5, 8]]],
 	ア: [["アーボ", "へび", 1, 23, [8]]],
@@ -15,24 +16,13 @@ global.alert = vi.fn();
 describe("Home Integration Tests", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-
-		// Mock fetch to return Pokemon database
-		(global.fetch as Mock).mockResolvedValue({
-			ok: true,
-			json: async () => mockPokemonDatabase,
-		});
 	});
 
 	it("should load and display the app correctly", async () => {
-		render(<Home />);
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
-		// Should show loading state initially
-		expect(screen.getByText("読み込み中...")).toBeInTheDocument();
-
-		// Wait for data to load
-		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
-		});
+		// Should show usage history
+		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
 
 		// Should show accordion groups
 		expect(screen.getByText("あ行")).toBeInTheDocument();
@@ -46,11 +36,10 @@ describe("Home Integration Tests", () => {
 	});
 
 	it("should allow adding Pokemon via footer input and update usage history", async () => {
-		render(<Home />);
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
-		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
-		});
+		// Should start with empty usage history
+		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
 
 		// Add Pokemon via footer input
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
@@ -70,11 +59,10 @@ describe("Home Integration Tests", () => {
 	});
 
 	it("should allow expanding accordion and revealing Pokemon answers", async () => {
-		render(<Home />);
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
-		await waitFor(() => {
-			expect(screen.getByText("あ行")).toBeInTheDocument();
-		});
+		// Should show accordion groups immediately
+		expect(screen.getByText("あ行")).toBeInTheDocument();
 
 		// Expand あ行 accordion
 		const aGroupButton = screen.getByText("あ行").closest("button");
@@ -109,11 +97,10 @@ describe("Home Integration Tests", () => {
 	});
 
 	it("should allow switching between character tabs", async () => {
-		render(<Home />);
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
-		await waitFor(() => {
-			expect(screen.getByText("あ行")).toBeInTheDocument();
-		});
+		// Should show accordion groups immediately
+		expect(screen.getByText("あ行")).toBeInTheDocument();
 
 		// Expand あ行 accordion
 		const aGroupButton = screen.getByText("あ行").closest("button");
@@ -132,11 +119,10 @@ describe("Home Integration Tests", () => {
 	});
 
 	it("should allow clearing all used Pokemon", async () => {
-		render(<Home />);
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
-		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
-		});
+		// Should start with empty usage history
+		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
 
 		// Add Pokemon first
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
@@ -158,11 +144,10 @@ describe("Home Integration Tests", () => {
 	});
 
 	it("should allow removing individual Pokemon from usage history", async () => {
-		render(<Home />);
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
-		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
-		});
+		// Should start with empty usage history
+		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
 
 		// Add multiple Pokemon
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
@@ -196,11 +181,10 @@ describe("Home Integration Tests", () => {
 	});
 
 	it("should handle invalid Pokemon names gracefully", async () => {
-		render(<Home />);
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
-		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
-		});
+		// Should start with empty usage history
+		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
 
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
 		fireEvent.change(input, { target: { value: "InvalidPokemon" } });
@@ -213,5 +197,77 @@ describe("Home Integration Tests", () => {
 
 		// Usage history should remain unchanged
 		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+	});
+
+	it("should persist used Pokemon in sessionStorage", async () => {
+		// Mock sessionStorage with stateful behavior
+		let store: Record<string, string> = {};
+		const sessionStorageMock = {
+			getItem: vi.fn((key: string) => store[key] || null),
+			setItem: vi.fn((key: string, value: string) => {
+				store[key] = value;
+			}),
+			removeItem: vi.fn((key: string) => {
+				delete store[key];
+			}),
+			clear: vi.fn(() => {
+				store = {};
+			}),
+		};
+		Object.defineProperty(window, "sessionStorage", {
+			value: sessionStorageMock,
+		});
+
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
+
+		// Should start with empty usage history
+		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+
+		// Add a Pokemon
+		const input = screen.getByPlaceholderText("ポケモン名を入力...");
+		fireEvent.change(input, { target: { value: "ピカチュウ" } });
+		fireEvent.click(screen.getByText("追加"));
+
+		await waitFor(() => {
+			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+		});
+
+		// Check that sessionStorage.setItem was called
+		expect(sessionStorageMock.setItem).toHaveBeenCalledWith(
+			"usedPokemon",
+			expect.stringContaining("ピカチュウ"),
+		);
+	});
+
+	it("should load used Pokemon from sessionStorage on mount", async () => {
+		// Mock sessionStorage with existing data
+		const existingUsedPokemon = [
+			{ name: "ピカチュウ", pokedexNumber: 25, timestamp: Date.now() },
+		];
+		const sessionStorageMock = {
+			getItem: vi.fn((key) => {
+				if (key === "usedPokemon") {
+					return JSON.stringify(existingUsedPokemon);
+				}
+				return null;
+			}),
+			setItem: vi.fn(),
+			removeItem: vi.fn(),
+			clear: vi.fn(),
+		};
+		Object.defineProperty(window, "sessionStorage", {
+			value: sessionStorageMock,
+		});
+
+		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
+
+		// Should show pre-loaded Pokemon
+		await waitFor(() => {
+			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+			expect(screen.getByText("ピカチュウ")).toBeInTheDocument();
+		});
+
+		// Check that sessionStorage.getItem was called
+		expect(sessionStorageMock.getItem).toHaveBeenCalledWith("usedPokemon");
 	});
 });

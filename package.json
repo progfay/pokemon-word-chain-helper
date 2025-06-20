@@ -10,7 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "npm run typecheck && biome check .",
     "lint:fix": "npm run typecheck && biome check --write .",
-    "generate:pokemon_database": "node scripts/generate_pokemon_database.js"
+    "generate:types": "graphql-codegen --config codegen.yml"
   },
   "keywords": [],
   "author": "progfay",
@@ -18,6 +18,9 @@
   "description": "",
   "devDependencies": {
     "@biomejs/biome": "2.0.0",
+    "@graphql-codegen/cli": "5.0.7",
+    "@graphql-codegen/typescript": "4.1.6",
+    "@graphql-codegen/typescript-operations": "4.6.1",
     "@tailwindcss/postcss": "4.1.10",
     "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.6.3",
@@ -26,6 +29,7 @@
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react": "4.5.2",
+    "graphql": "16.11.0",
     "tailwindcss": "4.1.10",
     "typescript": "5.8.3",
     "vite-tsconfig-paths": "5.1.4",

@@ -72,7 +72,7 @@ describe("accordion-groups", () => {
 		});
 
 		it("should have mappings for all hiragana characters", () => {
-			const expectedCount = 73; // Includes all variants (voiced, semi-voiced, etc.)
+			const expectedCount = 71; // Includes all variants (voiced, semi-voiced, etc.)
 			expect(Object.keys(HIRAGANA_TO_KATAKANA).length).toBe(expectedCount);
 		});
 

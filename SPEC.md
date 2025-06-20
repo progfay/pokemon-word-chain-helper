@@ -17,6 +17,7 @@ Track which Pokemon have been used in the current game session to avoid repetiti
 - **Clear All**: Single button to mark all used Pokemon as unused
 - **Individual Removal**: Users can mark specific used Pokemon as unused
 - **Visual Distinction**: Used Pokemon cards have different styling (grayed out, "使用済み" badge)
+- **Session Persistence**: Used Pokemon list is automatically saved to and loaded from sessionStorage, persisting data during the browser session but clearing when the session ends
 
 #### UI Components
 - **Footer Input Section**: Text input with "追加" button for adding used Pokemon
