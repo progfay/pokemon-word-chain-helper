@@ -3,6 +3,13 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "npm run typecheck && biome check .",
+    "lint:fix": "npm run typecheck && biome check --write .",
     "generate:pokemon_database": "node scripts/generate_pokemon_database.js"
   },
   "keywords": [],
@@ -11,7 +18,22 @@
   "description": "",
   "devDependencies": {
     "@biomejs/biome": "2.0.0",
+    "@tailwindcss/postcss": "4.1.10",
+    "@testing-library/dom": "10.4.0",
+    "@testing-library/react": "16.3.0",
+    "@types/node": "24.0.3",
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "@vitejs/plugin-react": "4.5.2",
+    "jsdom": "26.1.0",
+    "tailwindcss": "4.1.10",
     "typescript": "5.8.3",
+    "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.3"
+  },
+  "dependencies": {
+    "next": "15.3.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   }
 }
