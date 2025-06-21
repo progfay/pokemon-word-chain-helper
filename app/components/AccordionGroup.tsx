@@ -32,20 +32,20 @@ export function AccordionGroup({
 	const activeCharacterPokemon = getPokemonForCharacter(group.activeCharacter);
 
 	return (
-		<div className="bg-white border-b border-gray-300">
+		<div className="bg-card border-b border-border">
 			{/* Accordion Header */}
 			<button
 				type="button"
 				onClick={() => onToggleExpanded(group.id)}
-				className="w-full flex justify-between items-center py-5 px-6 hover:bg-gray-50"
+				className="w-full flex justify-between items-center py-5 px-6 hover:bg-accent"
 			>
 				<div className="flex items-center gap-3">
-					<span className="text-base font-bold text-gray-900">
+					<span className="text-base font-bold text-card-foreground">
 						{group.name}
 					</span>
 				</div>
 				<svg
-					className={`w-5 h-5 stroke-gray-600 transition-transform ${
+					className={`w-5 h-5 stroke-muted-foreground transition-transform ${
 						group.isExpanded ? "rotate-180" : "rotate-90"
 					}`}
 					fill="none"
@@ -67,7 +67,7 @@ export function AccordionGroup({
 
 			{/* Accordion Content */}
 			{group.isExpanded && (
-				<div className="bg-gray-50 border-t border-gray-300 py-5 px-6 flex flex-col gap-5">
+				<div className="bg-muted border-t border-border py-5 px-6 flex flex-col gap-5">
 					{/* Tab Navigation */}
 					<div className="flex">
 						{group.characters.map((character, index) => {
@@ -93,14 +93,16 @@ export function AccordionGroup({
 									onClick={() => onSetActiveCharacter(group.id, character)}
 									className={`w-15 h-11 flex flex-col justify-center items-center text-sm font-bold border ${borderRadius} ${
 										isActive
-											? "bg-blue-600 text-white border-blue-600"
-											: "bg-gray-200 text-gray-600 border-gray-300 hover:bg-gray-300"
+											? "bg-primary text-primary-foreground border-primary"
+											: "bg-secondary text-secondary-foreground border-border hover:bg-accent"
 									} ${!isFirst ? "border-l-0" : ""}`}
 								>
 									<span>{character}</span>
 									<span
 										className={`text-xs font-medium ${
-											isActive ? "text-blue-100" : "text-gray-500"
+											isActive
+												? "text-primary-foreground/80"
+												: "text-muted-foreground"
 										}`}
 									>
 										{characterPokemonCount}
@@ -122,7 +124,7 @@ export function AccordionGroup({
 								/>
 							))
 						) : (
-							<div className="text-center py-8 text-gray-500">
+							<div className="text-center py-8 text-muted-foreground">
 								「{group.activeCharacter}」で始まるポケモンはありません
 							</div>
 						)}

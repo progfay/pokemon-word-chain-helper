@@ -145,8 +145,11 @@ describe("AccordionGroup", () => {
 		const activeTab = screen.getByText("ア").closest("button");
 		const inactiveTab = screen.getByText("イ").closest("button");
 
-		expect(activeTab).toHaveClass("bg-blue-600", "text-white");
-		expect(inactiveTab).toHaveClass("bg-gray-200", "text-gray-600");
+		expect(activeTab).toHaveClass("bg-primary", "text-primary-foreground");
+		expect(inactiveTab).toHaveClass(
+			"bg-secondary",
+			"text-secondary-foreground",
+		);
 	});
 
 	it("should show empty state when no Pokemon exist for character", () => {

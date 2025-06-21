@@ -89,8 +89,8 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 	};
 
 	return (
-		<main className="min-h-screen bg-slate-50">
-			<div className="max-w-md mx-auto bg-white min-h-screen flex flex-col">
+		<main className="min-h-screen bg-background">
+			<div className="max-w-4xl mx-auto bg-card min-h-screen flex flex-col">
 				{/* Usage History Section */}
 				<UsageHistory
 					usedPokemon={usedPokemon}
@@ -114,7 +114,7 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 				</div>
 
 				{/* Footer Input */}
-				<div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md">
+				<div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
 					<FooterInput
 						pokemonDatabase={pokemonDatabase}
 						onAddUsed={handleAddUsed}

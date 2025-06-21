@@ -45,17 +45,19 @@ export function FooterInput({ pokemonDatabase, onAddUsed }: FooterInputProps) {
 	};
 
 	return (
-		<div className="bg-white border-t border-gray-300 flex flex-col gap-4 py-5 px-6">
-			<h3 className="text-base font-bold text-gray-900">ポケモンを使用する</h3>
+		<div className="bg-card border-t border-border flex flex-col gap-4 py-5 px-6">
+			<h3 className="text-base font-bold text-card-foreground">
+				ポケモンを使用する
+			</h3>
 
 			<form onSubmit={handleSubmit} className="flex items-center gap-3">
-				<div className="flex-1 bg-gray-50 border border-gray-300 rounded-lg px-4 h-12 flex items-center">
+				<div className="flex-1 bg-muted border border-border rounded-lg px-4 h-12 flex items-center">
 					<input
 						type="text"
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
 						placeholder="ポケモン名を入力..."
-						className="flex-1 bg-transparent text-base text-gray-900 placeholder-gray-500 outline-none"
+						className="flex-1 bg-transparent text-base text-card-foreground placeholder-muted-foreground outline-none"
 					/>
 				</div>
 				<button

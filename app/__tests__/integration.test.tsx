@@ -116,7 +116,7 @@ describe("Home Integration Tests", () => {
 
 		// Should show active styling for イ tab
 		const iButton = iTab.closest("button");
-		expect(iButton).toHaveClass("bg-blue-600", "text-white");
+		expect(iButton).toHaveClass("bg-primary", "text-primary-foreground");
 	});
 
 	it("should allow clearing all used Pokemon", async () => {

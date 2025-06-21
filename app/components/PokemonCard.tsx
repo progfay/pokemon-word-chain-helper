@@ -80,32 +80,32 @@ export function PokemonCard({
 	return (
 		<>
 			<div
-				className={`bg-white border rounded-xl p-5 gap-4 flex flex-col ${isUsed ? "border-gray-400 border-2" : "border-gray-300"}`}
+				className={`bg-card border rounded-xl p-5 gap-4 flex flex-col ${isUsed ? "border-muted-foreground border-2" : "border-border"}`}
 			>
 				{/* Card Header */}
 				<div className="flex justify-between items-center">
 					{isAnswerRevealed ? (
 						<div className="flex items-center gap-3">
 							<span
-								className={`text-lg font-bold ${isUsed ? "text-gray-600" : "text-gray-900"}`}
+								className={`text-lg font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
 							>
 								#{paddedNumber}
 							</span>
 							{isUsed && (
-								<span className="bg-gray-600 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+								<span className="bg-muted-foreground text-background text-xs font-bold px-3 py-1.5 rounded-full">
 									使用済み
 								</span>
 							)}
 						</div>
 					) : (
-						<span className="text-lg font-bold text-gray-900">
+						<span className="text-lg font-bold text-card-foreground">
 							#{paddedNumber}
 						</span>
 					)}
 
 					{isAnswerRevealed ? (
 						<span
-							className={`text-base font-bold ${isUsed ? "text-gray-600" : "text-gray-900"}`}
+							className={`text-base font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
 						>
 							{name}
 						</span>
@@ -124,7 +124,7 @@ export function PokemonCard({
 				<div className="flex flex-col gap-2">
 					{/* Generation Hint */}
 					<div
-						className={`border rounded-lg ${expandedHints.has("generation") ? "border-blue-200" : "border-gray-200"}`}
+						className={`border rounded-lg ${expandedHints.has("generation") ? "border-blue-200" : "border-border"}`}
 					>
 						<button
 							type="button"
@@ -133,7 +133,7 @@ export function PokemonCard({
 						>
 							<div className="flex items-center gap-3">
 								<svg
-									className={`w-4.5 h-4.5 ${expandedHints.has("generation") ? "stroke-blue-600" : "stroke-gray-600"}`}
+									className={`w-4.5 h-4.5 ${expandedHints.has("generation") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
 									fill="none"
 									viewBox="0 0 18 18"
 								>
@@ -146,13 +146,13 @@ export function PokemonCard({
 									/>
 								</svg>
 								<span
-									className={`text-sm font-medium ${expandedHints.has("generation") && !isUsed ? "text-blue-600" : isUsed ? "text-gray-600" : "text-gray-600"}`}
+									className={`text-sm font-medium ${expandedHints.has("generation") && !isUsed ? "text-blue-600" : isUsed ? "text-muted-foreground" : "text-muted-foreground"}`}
 								>
 									世代
 								</span>
 							</div>
 							<svg
-								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("generation") ? "rotate-180" : ""} ${expandedHints.has("generation") ? "stroke-blue-600" : "stroke-gray-500"}`}
+								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("generation") ? "rotate-180" : ""} ${expandedHints.has("generation") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
 								fill="none"
 								viewBox="0 0 18 18"
 							>
@@ -168,7 +168,7 @@ export function PokemonCard({
 						{expandedHints.has("generation") && (
 							<div className="px-4 pb-3">
 								<span
-									className={`text-sm font-bold ${isUsed ? "text-gray-600" : "text-gray-900"}`}
+									className={`text-sm font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
 								>
 									第{generation}世代
 								</span>
@@ -178,7 +178,7 @@ export function PokemonCard({
 
 					{/* Type Hint */}
 					<div
-						className={`border rounded-lg ${expandedHints.has("type") ? "border-blue-200" : "border-gray-200"}`}
+						className={`border rounded-lg ${expandedHints.has("type") ? "border-blue-200" : "border-border"}`}
 					>
 						<button
 							type="button"
@@ -187,7 +187,7 @@ export function PokemonCard({
 						>
 							<div className="flex items-center gap-3">
 								<svg
-									className={`w-4.5 h-4.5 ${expandedHints.has("type") ? "stroke-blue-600" : "stroke-gray-600"}`}
+									className={`w-4.5 h-4.5 ${expandedHints.has("type") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
 									fill="none"
 									viewBox="0 0 18 18"
 								>
@@ -201,13 +201,13 @@ export function PokemonCard({
 									<circle cx="5.25" cy="5.25" r="0.75" fill="currentColor" />
 								</svg>
 								<span
-									className={`text-sm font-medium ${expandedHints.has("type") && !isUsed ? "text-blue-600" : isUsed ? "text-gray-600" : "text-gray-600"}`}
+									className={`text-sm font-medium ${expandedHints.has("type") && !isUsed ? "text-blue-600" : isUsed ? "text-muted-foreground" : "text-muted-foreground"}`}
 								>
 									タイプ
 								</span>
 							</div>
 							<svg
-								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("type") ? "rotate-180" : ""} ${expandedHints.has("type") ? "stroke-blue-600" : "stroke-gray-500"}`}
+								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("type") ? "rotate-180" : ""} ${expandedHints.has("type") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
 								fill="none"
 								viewBox="0 0 18 18"
 							>
@@ -239,7 +239,7 @@ export function PokemonCard({
 
 					{/* Image Hint */}
 					<div
-						className={`border rounded-lg ${expandedHints.has("image") ? "border-blue-200" : "border-gray-200"}`}
+						className={`border rounded-lg ${expandedHints.has("image") ? "border-blue-200" : "border-border"}`}
 					>
 						<button
 							type="button"
@@ -248,7 +248,7 @@ export function PokemonCard({
 						>
 							<div className="flex items-center gap-3">
 								<svg
-									className={`w-4.5 h-4.5 ${expandedHints.has("image") ? "stroke-blue-600" : "stroke-gray-600"}`}
+									className={`w-4.5 h-4.5 ${expandedHints.has("image") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
 									fill="none"
 									viewBox="0 0 18 18"
 								>
@@ -261,13 +261,13 @@ export function PokemonCard({
 									/>
 								</svg>
 								<span
-									className={`text-sm font-medium ${expandedHints.has("image") && !isUsed ? "text-blue-600" : isUsed ? "text-gray-600" : "text-gray-600"}`}
+									className={`text-sm font-medium ${expandedHints.has("image") && !isUsed ? "text-blue-600" : isUsed ? "text-muted-foreground" : "text-muted-foreground"}`}
 								>
 									画像
 								</span>
 							</div>
 							<svg
-								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("image") ? "rotate-180" : ""} ${expandedHints.has("image") ? "stroke-blue-600" : "stroke-gray-500"}`}
+								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("image") ? "rotate-180" : ""} ${expandedHints.has("image") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
 								fill="none"
 								viewBox="0 0 18 18"
 							>
@@ -290,7 +290,7 @@ export function PokemonCard({
 										className={`px-3 py-2 text-xs font-medium rounded-lg ${
 											imageVisibility === "silhouette"
 												? "bg-blue-600 text-white"
-												: "bg-gray-200 text-gray-600 border border-gray-300"
+												: "bg-muted text-muted-foreground border border-border"
 										}`}
 									>
 										シルエット
@@ -301,7 +301,7 @@ export function PokemonCard({
 										className={`px-3 py-2 text-xs font-medium rounded-lg ${
 											imageVisibility === "blurred"
 												? "bg-blue-600 text-white"
-												: "bg-gray-200 text-gray-600 border border-gray-300"
+												: "bg-muted text-muted-foreground border border-border"
 										}`}
 									>
 										ぼかし
@@ -312,14 +312,14 @@ export function PokemonCard({
 										className={`px-3 py-2 text-xs font-medium rounded-lg ${
 											imageVisibility === "full"
 												? "bg-blue-600 text-white"
-												: "bg-gray-200 text-gray-600 border border-gray-300"
+												: "bg-muted text-muted-foreground border border-border"
 										}`}
 									>
 										フルカラー
 									</button>
 								</div>
 								{/* Image Container */}
-								<div className="bg-gray-200 h-30 rounded-xl flex justify-center items-center">
+								<div className="bg-muted h-30 rounded-xl flex justify-center items-center">
 									<img
 										src={imageUrl}
 										alt={isAnswerRevealed ? name : "Pokemon"}
@@ -336,16 +336,18 @@ export function PokemonCard({
 			{/* Confirmation Modal */}
 			{showConfirmModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg p-6 max-w-sm mx-4">
-						<h3 className="text-lg font-bold text-gray-900 mb-2">答えを確認</h3>
-						<p className="text-gray-600 mb-4">
+					<div className="bg-card rounded-lg p-6 max-w-sm mx-4">
+						<h3 className="text-lg font-bold text-card-foreground mb-2">
+							答えを確認
+						</h3>
+						<p className="text-muted-foreground mb-4">
 							答えを見ると、このポケモンは使用済みとしてマークされます。よろしいですか？
 						</p>
 						<div className="flex gap-3">
 							<button
 								type="button"
 								onClick={cancelAnswer}
-								className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg font-medium"
+								className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-lg font-medium"
 							>
 								キャンセル
 							</button>
