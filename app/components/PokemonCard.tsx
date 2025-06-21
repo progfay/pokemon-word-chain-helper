@@ -15,6 +15,18 @@ interface PokemonCardProps {
 	onMarkAsUsed: (usedPokemon: UsedPokemon) => void;
 }
 
+const GENERATION_NAME_MAP: Record<number, string> = {
+	1: "赤・緑",
+	2: "金・銀",
+	3: "ルビーサファイア・エメラルド",
+	4: "ダイアモンド・パール・プラチナ",
+	5: "ブラック・ホワイト",
+	6: "X・Y",
+	7: "サン・ムーン",
+	8: "ソード・シールド",
+	9: "スカーレット・バイオレット",
+};
+
 export function PokemonCard({
 	pokemon,
 	isUsed,
@@ -169,7 +181,7 @@ export function PokemonCard({
 								<span
 									className={`text-sm font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
 								>
-									第{generation}世代
+									{GENERATION_NAME_MAP[generation] || `第${generation}世代`}
 								</span>
 							</div>
 						)}
