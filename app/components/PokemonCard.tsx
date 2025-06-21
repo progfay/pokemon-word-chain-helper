@@ -28,8 +28,7 @@ export function PokemonCard({
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 
 	const typeInfos = getTypesInfo(types);
-	const paddedNumber = pokedexNumber.toString().padStart(3, "0");
-	const imageUrl = `https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${paddedNumber}.png`;
+	const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokedexNumber}.png`;
 
 	const toggleHint = (hintType: HintType) => {
 		setExpandedHints((prev) => {
@@ -89,7 +88,7 @@ export function PokemonCard({
 							<span
 								className={`text-lg font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
 							>
-								#{paddedNumber}
+								#{pokedexNumber}
 							</span>
 							{isUsed && (
 								<span className="bg-muted-foreground text-background text-xs font-bold px-3 py-1.5 rounded-full">
@@ -99,7 +98,7 @@ export function PokemonCard({
 						</div>
 					) : (
 						<span className="text-lg font-bold text-card-foreground">
-							#{paddedNumber}
+							#{pokedexNumber}
 						</span>
 					)}
 
