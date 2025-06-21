@@ -8,10 +8,10 @@ import { AccordionGroup } from "../AccordionGroup";
 
 const mockGroup: AccordionGroupType = {
 	id: "a",
-	name: "あ行",
-	characters: ["あ", "い", "う", "え", "お"],
+	name: "ア行",
+	characters: ["ア", "イ", "ウ", "エ", "オ"],
 	isExpanded: false,
-	activeCharacter: "あ",
+	activeCharacter: "ア",
 };
 
 const mockExpandedGroup: AccordionGroupType = {
@@ -49,8 +49,8 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		expect(screen.getByText("あ行")).toBeInTheDocument();
-		expect(screen.queryByText("あ")).not.toBeInTheDocument(); // Tab should not be visible when collapsed
+		expect(screen.getByText("ア行")).toBeInTheDocument();
+		expect(screen.queryByText("ア")).not.toBeInTheDocument(); // Tab should not be visible when collapsed
 	});
 
 	it("should render expanded accordion group with tabs", () => {
@@ -65,17 +65,17 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		expect(screen.getByText("あ行")).toBeInTheDocument();
+		expect(screen.getByText("ア行")).toBeInTheDocument();
 
 		// All character tabs should be visible
-		expect(screen.getByText("あ")).toBeInTheDocument();
-		expect(screen.getByText("い")).toBeInTheDocument();
-		expect(screen.getByText("う")).toBeInTheDocument();
-		expect(screen.getByText("え")).toBeInTheDocument();
-		expect(screen.getByText("お")).toBeInTheDocument();
+		expect(screen.getByText("ア")).toBeInTheDocument();
+		expect(screen.getByText("イ")).toBeInTheDocument();
+		expect(screen.getByText("ウ")).toBeInTheDocument();
+		expect(screen.getByText("エ")).toBeInTheDocument();
+		expect(screen.getByText("オ")).toBeInTheDocument();
 
 		// Individual character counts should be visible (in tab badges)
-		expect(screen.getAllByText("1")).toHaveLength(4); // Count for あ, い, う, お (each has 1 Pokemon)
+		expect(screen.getAllByText("1")).toHaveLength(4); // Count for ア, イ, ウ, オ (each has 1 Pokemon)
 	});
 
 	it("should call onToggleExpanded when header is clicked", () => {
@@ -90,7 +90,7 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		const header = screen.getByText("あ行").closest("button");
+		const header = screen.getByText("ア行").closest("button");
 		if (header) fireEvent.click(header);
 
 		expect(mockOnToggleExpanded).toHaveBeenCalledWith("a");
@@ -108,10 +108,10 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		const iTab = screen.getByText("い");
+		const iTab = screen.getByText("イ");
 		fireEvent.click(iTab);
 
-		expect(mockOnSetActiveCharacter).toHaveBeenCalledWith("a", "い");
+		expect(mockOnSetActiveCharacter).toHaveBeenCalledWith("a", "イ");
 	});
 
 	it("should show Pokemon cards for active character", () => {
@@ -126,7 +126,7 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		// Should show Pokemon for 'あ' character (アーボ)
+		// Should show Pokemon for 'ア' character (アーボ)
 		expect(screen.getByText("#023")).toBeInTheDocument();
 	});
 
@@ -142,8 +142,8 @@ describe("AccordionGroup", () => {
 			/>,
 		);
 
-		const activeTab = screen.getByText("あ").closest("button");
-		const inactiveTab = screen.getByText("い").closest("button");
+		const activeTab = screen.getByText("ア").closest("button");
+		const inactiveTab = screen.getByText("イ").closest("button");
 
 		expect(activeTab).toHaveClass("bg-blue-600", "text-white");
 		expect(inactiveTab).toHaveClass("bg-gray-200", "text-gray-600");
@@ -152,7 +152,7 @@ describe("AccordionGroup", () => {
 	it("should show empty state when no Pokemon exist for character", () => {
 		const groupWithEmptyCharacter: AccordionGroupType = {
 			...mockExpandedGroup,
-			activeCharacter: "え", // エ has no Pokemon in mock data
+			activeCharacter: "エ", // エ has no Pokemon in mock data
 		};
 
 		render(
@@ -167,7 +167,7 @@ describe("AccordionGroup", () => {
 		);
 
 		expect(
-			screen.getByText("「え」で始まるポケモンはありません"),
+			screen.getByText("「エ」で始まるポケモンはありません"),
 		).toBeInTheDocument();
 	});
 
@@ -185,7 +185,7 @@ describe("AccordionGroup", () => {
 
 		// Character counts should be visible in tabs: ア: 1, イ: 1, ウ: 1, エ: 0, オ: 1
 		expect(screen.getAllByText("1")).toHaveLength(4); // 4 tabs with count 1
-		expect(screen.getByText("0")).toBeInTheDocument(); // え tab with count 0
+		expect(screen.getByText("0")).toBeInTheDocument(); // エ tab with count 0
 	});
 
 	it("should show different chevron direction when expanded/collapsed", () => {

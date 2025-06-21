@@ -25,8 +25,8 @@ describe("Home Integration Tests", () => {
 		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
 
 		// Should show accordion groups
-		expect(screen.getByText("あ行")).toBeInTheDocument();
-		expect(screen.getByText("か行")).toBeInTheDocument();
+		expect(screen.getByText("ア行")).toBeInTheDocument();
+		expect(screen.getByText("カ行")).toBeInTheDocument();
 
 		// Should show footer input
 		expect(screen.getByText("ポケモンを使用する")).toBeInTheDocument();
@@ -62,15 +62,15 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should show accordion groups immediately
-		expect(screen.getByText("あ行")).toBeInTheDocument();
+		expect(screen.getByText("ア行")).toBeInTheDocument();
 
-		// Expand あ行 accordion
-		const aGroupButton = screen.getByText("あ行").closest("button");
+		// Expand ア行 accordion
+		const aGroupButton = screen.getByText("ア行").closest("button");
 		if (aGroupButton) fireEvent.click(aGroupButton);
 
 		// Should show character tabs
 		await waitFor(() => {
-			expect(screen.getByText("あ")).toBeInTheDocument();
+			expect(screen.getByText("ア")).toBeInTheDocument();
 		});
 
 		// Should show Pokemon card with answer button
@@ -100,21 +100,21 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should show accordion groups immediately
-		expect(screen.getByText("あ行")).toBeInTheDocument();
+		expect(screen.getByText("ア行")).toBeInTheDocument();
 
-		// Expand あ行 accordion
-		const aGroupButton = screen.getByText("あ行").closest("button");
+		// Expand ア行 accordion
+		const aGroupButton = screen.getByText("ア行").closest("button");
 		if (aGroupButton) fireEvent.click(aGroupButton);
 
 		await waitFor(() => {
-			expect(screen.getByText("あ")).toBeInTheDocument();
+			expect(screen.getByText("ア")).toBeInTheDocument();
 		});
 
 		// Click different character tab
-		const iTab = screen.getByText("い");
+		const iTab = screen.getByText("イ");
 		fireEvent.click(iTab);
 
-		// Should show active styling for い tab
+		// Should show active styling for イ tab
 		const iButton = iTab.closest("button");
 		expect(iButton).toHaveClass("bg-blue-600", "text-white");
 	});

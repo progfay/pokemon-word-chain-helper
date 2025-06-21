@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/complexity/useLiteralKeys: for readability */
 import { describe, expect, it } from "vitest";
-import { ACCORDION_GROUPS, HIRAGANA_TO_KATAKANA } from "../accordion-groups";
+import { ACCORDION_GROUPS } from "../accordion-groups";
 
 describe("accordion-groups", () => {
 	describe("ACCORDION_GROUPS", () => {
@@ -11,32 +11,32 @@ describe("accordion-groups", () => {
 		it("should have correct group names", () => {
 			const groupNames = ACCORDION_GROUPS.map((group) => group.name);
 			expect(groupNames).toEqual([
-				"あ行",
-				"か行",
-				"が行",
-				"さ行",
-				"ざ行",
-				"た行",
-				"だ行",
-				"な行",
-				"は行",
-				"ば行",
-				"ぱ行",
-				"ま行",
-				"や行",
-				"ら行",
-				"わ行",
+				"ア行",
+				"カ行",
+				"ガ行",
+				"サ行",
+				"ザ行",
+				"タ行",
+				"ダ行",
+				"ナ行",
+				"ハ行",
+				"バ行",
+				"パ行",
+				"マ行",
+				"ヤ行",
+				"ラ行",
+				"ワ行",
 			]);
 		});
 
-		it("should have correct characters for あ行", () => {
+		it("should have correct characters for ア行", () => {
 			const aGroup = ACCORDION_GROUPS.find((group) => group.id === "a");
-			expect(aGroup?.characters).toEqual(["あ", "い", "う", "え", "お"]);
+			expect(aGroup?.characters).toEqual(["ア", "イ", "ウ", "エ", "オ"]);
 		});
 
-		it("should have correct characters for や行", () => {
+		it("should have correct characters for ヤ行", () => {
 			const yaGroup = ACCORDION_GROUPS.find((group) => group.id === "ya");
-			expect(yaGroup?.characters).toEqual(["や", "ゆ", "よ"]);
+			expect(yaGroup?.characters).toEqual(["ヤ", "ユ", "ヨ"]);
 		});
 
 		it("should have all groups collapsed by default", () => {
@@ -49,35 +49,6 @@ describe("accordion-groups", () => {
 			ACCORDION_GROUPS.forEach((group) => {
 				expect(group.activeCharacter).toBe(group.characters[0]);
 			});
-		});
-	});
-
-	describe("HIRAGANA_TO_KATAKANA", () => {
-		it("should convert basic hiragana to katakana", () => {
-			expect(HIRAGANA_TO_KATAKANA["あ"]).toBe("ア");
-			expect(HIRAGANA_TO_KATAKANA["か"]).toBe("カ");
-			expect(HIRAGANA_TO_KATAKANA["さ"]).toBe("サ");
-		});
-
-		it("should convert voiced sounds correctly", () => {
-			expect(HIRAGANA_TO_KATAKANA["が"]).toBe("ガ");
-			expect(HIRAGANA_TO_KATAKANA["ざ"]).toBe("ザ");
-			expect(HIRAGANA_TO_KATAKANA["だ"]).toBe("ダ");
-		});
-
-		it("should convert semi-voiced sounds correctly", () => {
-			expect(HIRAGANA_TO_KATAKANA["ぱ"]).toBe("パ");
-			expect(HIRAGANA_TO_KATAKANA["ぴ"]).toBe("ピ");
-			expect(HIRAGANA_TO_KATAKANA["ぽ"]).toBe("ポ");
-		});
-
-		it("should have mappings for all hiragana characters", () => {
-			const expectedCount = 71; // Includes all variants (voiced, semi-voiced, etc.)
-			expect(Object.keys(HIRAGANA_TO_KATAKANA).length).toBe(expectedCount);
-		});
-
-		it("should map ん correctly", () => {
-			expect(HIRAGANA_TO_KATAKANA["ん"]).toBe("ン");
 		});
 	});
 });

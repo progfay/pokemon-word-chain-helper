@@ -1,6 +1,5 @@
 "use client";
 
-import { HIRAGANA_TO_KATAKANA } from "../lib/accordion-groups";
 import type {
 	AccordionGroup as AccordionGroupType,
 	Pokemon,
@@ -27,18 +26,10 @@ export function AccordionGroup({
 	onMarkAsUsed,
 }: AccordionGroupProps) {
 	const getPokemonForCharacter = (character: string): Pokemon[] => {
-		const katakana = HIRAGANA_TO_KATAKANA[character];
-		return pokemonDatabase[katakana] || [];
-	};
-
-	const getTotalPokemonCount = (): number => {
-		return group.characters.reduce((total, char) => {
-			return total + getPokemonForCharacter(char).length;
-		}, 0);
+		return pokemonDatabase[character] || [];
 	};
 
 	const activeCharacterPokemon = getPokemonForCharacter(group.activeCharacter);
-	const totalCount = getTotalPokemonCount();
 
 	return (
 		<div className="bg-white border-b border-gray-300">
