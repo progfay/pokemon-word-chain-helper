@@ -331,7 +331,7 @@ export function PokemonCard({
 									</button>
 								</div>
 								{/* Image Container */}
-								<div className="bg-muted h-30 rounded-xl flex justify-center items-center">
+								<div className="bg-muted h-30 rounded-xl flex justify-center items-center overflow-hidden">
 									<img
 										src={imageUrl}
 										alt={isAnswerRevealed ? name : "Pokemon"}
