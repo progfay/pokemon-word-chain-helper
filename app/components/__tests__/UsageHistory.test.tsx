@@ -72,7 +72,7 @@ describe("UsageHistory", () => {
 		expect(mockOnClearAll).toHaveBeenCalledTimes(1);
 	});
 
-	it("should call onRemoveUsed when Pokemon is clicked", () => {
+	it("should call onRemoveUsed when remove button is clicked", () => {
 		render(
 			<UsageHistory
 				usedPokemon={mockUsedPokemon}
@@ -81,8 +81,9 @@ describe("UsageHistory", () => {
 			/>,
 		);
 
-		fireEvent.click(screen.getByText("ピカチュウ"));
-		expect(mockOnRemoveUsed).toHaveBeenCalledWith("ピカチュウ");
+		const removeButtons = screen.getAllByLabelText(/を履歴から削除/);
+		fireEvent.click(removeButtons[0]); // Click first remove button (should be リザードン due to sorting)
+		expect(mockOnRemoveUsed).toHaveBeenCalledWith("リザードン");
 	});
 
 	it("should sort Pokemon by newest first (descending timestamp)", () => {
@@ -100,17 +101,13 @@ describe("UsageHistory", () => {
 			/>,
 		);
 
-		const pokemonButtons = screen
-			.getAllByRole("button")
-			.filter(
-				(button) =>
-					button.textContent && !button.textContent.includes("クリア"),
-			);
+		const pokemonNames =
+			screen.getAllByText(/ピカチュウ|リザードン|フシギダネ/);
 
 		// Should be sorted by timestamp descending (newest first)
-		expect(pokemonButtons[0]).toHaveTextContent("リザードン"); // timestamp: 3000
-		expect(pokemonButtons[1]).toHaveTextContent("フシギダネ"); // timestamp: 2000
-		expect(pokemonButtons[2]).toHaveTextContent("ピカチュウ"); // timestamp: 1000
+		expect(pokemonNames[0]).toHaveTextContent("リザードン"); // timestamp: 3000
+		expect(pokemonNames[1]).toHaveTextContent("フシギダネ"); // timestamp: 2000
+		expect(pokemonNames[2]).toHaveTextContent("ピカチュウ"); // timestamp: 1000
 	});
 
 	it("should handle single used Pokemon correctly", () => {

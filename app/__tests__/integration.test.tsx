@@ -167,11 +167,14 @@ describe("Home Integration Tests", () => {
 			expect(screen.getByText("使用履歴 (2件)")).toBeInTheDocument();
 		});
 
-		// Remove one Pokemon by clicking on it
-		const pokemonButtons = screen
-			.getAllByRole("button")
-			.filter((button) => button.textContent === "ピカチュウ");
-		fireEvent.click(pokemonButtons[0]);
+		// Remove one Pokemon by clicking its remove button
+		const removeButtons = screen.getAllByLabelText(/を履歴から削除/);
+		const pikachuRemoveButton = removeButtons.find((button) =>
+			button.getAttribute("aria-label")?.includes("ピカチュウ"),
+		);
+		if (pikachuRemoveButton) {
+			fireEvent.click(pikachuRemoveButton);
+		}
 
 		// Should have one less Pokemon
 		await waitFor(() => {
