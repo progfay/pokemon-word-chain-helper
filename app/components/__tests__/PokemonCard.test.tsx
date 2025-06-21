@@ -84,11 +84,7 @@ describe("PokemonCard", () => {
 		// Confirm the answer
 		fireEvent.click(screen.getByText("確認"));
 
-		expect(mockOnMarkAsUsed).toHaveBeenCalledWith({
-			name: "ピカチュウ",
-			pokedexNumber: 25,
-			timestamp: expect.any(Number),
-		});
+		expect(mockOnMarkAsUsed).toHaveBeenCalledWith([25, "ピカチュウ"]);
 	});
 
 	it("should close modal when cancelled", () => {

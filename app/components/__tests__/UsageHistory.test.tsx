@@ -8,9 +8,9 @@ describe("UsageHistory", () => {
 	const mockOnRemoveUsed = vi.fn();
 
 	const mockUsedPokemon: UsedPokemon[] = [
-		{ name: "ピカチュウ", pokedexNumber: 25, timestamp: 1000 },
-		{ name: "フシギダネ", pokedexNumber: 1, timestamp: 2000 },
-		{ name: "リザードン", pokedexNumber: 6, timestamp: 3000 },
+		[25, "ピカチュウ"],
+		[1, "フシギダネ"],
+		[6, "リザードン"],
 	];
 
 	beforeEach(() => {
@@ -82,20 +82,20 @@ describe("UsageHistory", () => {
 		);
 
 		const removeButtons = screen.getAllByLabelText(/を履歴から削除/);
-		fireEvent.click(removeButtons[0]); // Click first remove button (should be リザードン due to sorting)
-		expect(mockOnRemoveUsed).toHaveBeenCalledWith("リザードン");
+		fireEvent.click(removeButtons[0]); // Click first remove button
+		expect(mockOnRemoveUsed).toHaveBeenCalledWith("ピカチュウ");
 	});
 
-	it("should sort Pokemon by newest first (descending timestamp)", () => {
-		const unsortedPokemon: UsedPokemon[] = [
-			{ name: "ピカチュウ", pokedexNumber: 25, timestamp: 1000 },
-			{ name: "リザードン", pokedexNumber: 6, timestamp: 3000 },
-			{ name: "フシギダネ", pokedexNumber: 1, timestamp: 2000 },
+	it("should display Pokemon in order they are provided", () => {
+		const orderedPokemon: UsedPokemon[] = [
+			[25, "ピカチュウ"],
+			[6, "リザードン"],
+			[1, "フシギダネ"],
 		];
 
 		render(
 			<UsageHistory
-				usedPokemon={unsortedPokemon}
+				usedPokemon={orderedPokemon}
 				onClearAll={mockOnClearAll}
 				onRemoveUsed={mockOnRemoveUsed}
 			/>,
@@ -104,16 +104,14 @@ describe("UsageHistory", () => {
 		const pokemonNames =
 			screen.getAllByText(/ピカチュウ|リザードン|フシギダネ/);
 
-		// Should be sorted by timestamp descending (newest first)
-		expect(pokemonNames[0]).toHaveTextContent("リザードン"); // timestamp: 3000
-		expect(pokemonNames[1]).toHaveTextContent("フシギダネ"); // timestamp: 2000
-		expect(pokemonNames[2]).toHaveTextContent("ピカチュウ"); // timestamp: 1000
+		// Should display Pokemon in the order they are provided
+		expect(pokemonNames[0]).toHaveTextContent("ピカチュウ");
+		expect(pokemonNames[1]).toHaveTextContent("リザードン");
+		expect(pokemonNames[2]).toHaveTextContent("フシギダネ");
 	});
 
 	it("should handle single used Pokemon correctly", () => {
-		const singlePokemon: UsedPokemon[] = [
-			{ name: "ピカチュウ", pokedexNumber: 25, timestamp: 1000 },
-		];
+		const singlePokemon: UsedPokemon[] = [[25, "ピカチュウ"]];
 
 		render(
 			<UsageHistory

@@ -48,11 +48,7 @@ describe("FooterInput", () => {
 		fireEvent.change(input, { target: { value: "ピカチュウ" } });
 		fireEvent.click(submitButton);
 
-		expect(mockOnAddUsed).toHaveBeenCalledWith({
-			name: "ピカチュウ",
-			pokedexNumber: 25,
-			timestamp: expect.any(Number),
-		});
+		expect(mockOnAddUsed).toHaveBeenCalledWith([25, "ピカチュウ"]);
 
 		// Input should be cleared after successful submission
 		await waitFor(() => {
@@ -74,11 +70,7 @@ describe("FooterInput", () => {
 		const form = input.closest("form");
 		if (form) fireEvent.submit(form);
 
-		expect(mockOnAddUsed).toHaveBeenCalledWith({
-			name: "フシギダネ",
-			pokedexNumber: 1,
-			timestamp: expect.any(Number),
-		});
+		expect(mockOnAddUsed).toHaveBeenCalledWith([1, "フシギダネ"]);
 	});
 
 	it("should show alert for invalid Pokemon name", () => {
@@ -133,11 +125,7 @@ describe("FooterInput", () => {
 		fireEvent.change(input, { target: { value: "  ピカチュウ  " } });
 		fireEvent.click(submitButton);
 
-		expect(mockOnAddUsed).toHaveBeenCalledWith({
-			name: "ピカチュウ",
-			pokedexNumber: 25,
-			timestamp: expect.any(Number),
-		});
+		expect(mockOnAddUsed).toHaveBeenCalledWith([25, "ピカチュウ"]);
 	});
 
 	it("should handle case where Pokemon database is empty", () => {

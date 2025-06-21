@@ -42,7 +42,7 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 	);
 
 	// Create a Set for faster lookup of used Pokemon names
-	const usedPokemonSet = new Set(usedPokemon.map((p) => p.name));
+	const usedPokemonSet = new Set(usedPokemon.map((p) => p[1]));
 
 	const handleToggleExpanded = (groupId: string) => {
 		setAccordionGroups((groups) =>
@@ -65,7 +65,7 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 	const handleMarkAsUsed = (pokemon: UsedPokemon) => {
 		setUsedPokemon((prev) => {
 			// Check if already exists to avoid duplicates
-			const exists = prev.some((p) => p.name === pokemon.name);
+			const exists = prev.some((p) => p[1] === pokemon[1]);
 			if (exists) return prev;
 			return [...prev, pokemon];
 		});
@@ -74,14 +74,14 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 	const handleAddUsed = (pokemon: UsedPokemon) => {
 		setUsedPokemon((prev) => {
 			// Check if already exists to avoid duplicates
-			const exists = prev.some((p) => p.name === pokemon.name);
+			const exists = prev.some((p) => p[1] === pokemon[1]);
 			if (exists) return prev;
 			return [...prev, pokemon];
 		});
 	};
 
 	const handleRemoveUsed = (pokemonName: string) => {
-		setUsedPokemon((prev) => prev.filter((p) => p.name !== pokemonName));
+		setUsedPokemon((prev) => prev.filter((p) => p[1] !== pokemonName));
 	};
 
 	const handleClearAll = () => {

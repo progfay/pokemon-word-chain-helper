@@ -33,40 +33,38 @@ export function UsageHistory({
 			<div className="bg-muted rounded-xl p-4 max-h-60 overflow-y-auto">
 				<div className="flex flex-col gap-3">
 					{usedPokemon.length > 0 ? (
-						usedPokemon
-							.sort((a, b) => b.timestamp - a.timestamp) // Sort by newest first
-							.map((pokemon) => (
-								<div
-									key={`${pokemon.name}-${pokemon.timestamp}`}
-									className="bg-card border border-border rounded-lg p-4 hover:bg-secondary flex justify-between items-center"
+						usedPokemon.map((pokemon, index) => (
+							<div
+								key={`${pokemon[1]}-${index}`}
+								className="bg-card border border-border rounded-lg p-4 hover:bg-secondary flex justify-between items-center"
+							>
+								<span className="text-base font-bold text-card-foreground">
+									{pokemon[1]}
+								</span>
+								<button
+									type="button"
+									onClick={() => onRemoveUsed(pokemon[1])}
+									className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full p-1 transition-colors"
+									aria-label={`${pokemon[1]}を履歴から削除`}
 								>
-									<span className="text-base font-bold text-card-foreground">
-										{pokemon.name}
-									</span>
-									<button
-										type="button"
-										onClick={() => onRemoveUsed(pokemon.name)}
-										className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full p-1 transition-colors"
-										aria-label={`${pokemon.name}を履歴から削除`}
+									<svg
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										role="img"
 									>
-										<svg
-											width="16"
-											height="16"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="2"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											role="img"
-										>
-											<title>削除</title>
-											<path d="M18 6 6 18" />
-											<path d="m6 6 12 12" />
-										</svg>
-									</button>
-								</div>
-							))
+										<title>削除</title>
+										<path d="M18 6 6 18" />
+										<path d="m6 6 12 12" />
+									</svg>
+								</button>
+							</div>
+						))
 					) : (
 						<div className="text-center py-6 text-muted-foreground">
 							まだ使用したポケモンはありません

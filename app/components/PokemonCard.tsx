@@ -63,11 +63,7 @@ export function PokemonCard({
 	const confirmAnswer = () => {
 		setIsAnswerRevealed(true);
 		setShowConfirmModal(false);
-		onMarkAsUsed({
-			name,
-			pokedexNumber,
-			timestamp: Date.now(),
-		});
+		onMarkAsUsed([pokedexNumber, name]);
 	};
 
 	const cancelAnswer = () => {

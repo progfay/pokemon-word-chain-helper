@@ -90,10 +90,7 @@ export interface AccordionGroup {
 }
 
 /**
- * Used Pokemon tracking
+ * Used Pokemon tracking - compact tuple format for efficient JSON storage
+ * [pokedexNumber, name]
  */
-export interface UsedPokemon {
-	name: string;
-	pokedexNumber: number;
-	timestamp: number;
-}
+export type UsedPokemon = [pokedexNumber: number, name: string];

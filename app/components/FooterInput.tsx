@@ -31,11 +31,7 @@ export function FooterInput({ pokemonDatabase, onAddUsed }: FooterInputProps) {
 		const pokemon = findPokemonByName(inputValue);
 		if (pokemon) {
 			const [name, , , pokedexNumber] = pokemon;
-			onAddUsed({
-				name,
-				pokedexNumber,
-				timestamp: Date.now(),
-			});
+			onAddUsed([pokedexNumber, name]);
 			setInputValue("");
 		} else {
 			alert(

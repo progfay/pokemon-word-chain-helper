@@ -245,9 +245,7 @@ describe("Home Integration Tests", () => {
 
 	it("should load used Pokemon from sessionStorage on mount", async () => {
 		// Mock sessionStorage with existing data
-		const existingUsedPokemon = [
-			{ name: "ピカチュウ", pokedexNumber: 25, timestamp: Date.now() },
-		];
+		const existingUsedPokemon = [[25, "ピカチュウ"]];
 		const sessionStorageMock = {
 			getItem: vi.fn((key) => {
 				if (key === "usedPokemon") {
