@@ -74,8 +74,10 @@ export function AccordionGroup({
 							const isActive = character === group.activeCharacter;
 							const isFirst = index === 0;
 							const isLast = index === group.characters.length - 1;
-							const characterPokemonCount =
-								getPokemonForCharacter(character).length;
+							const allCharacterPokemon = getPokemonForCharacter(character);
+							const unusedPokemonCount = allCharacterPokemon.filter(
+								(pokemon) => !usedPokemonSet.has(pokemon[0]),
+							).length;
 
 							let borderRadius = "";
 							if (isFirst && isLast) {
@@ -105,7 +107,7 @@ export function AccordionGroup({
 												: "text-muted-foreground"
 										}`}
 									>
-										{characterPokemonCount}
+										{unusedPokemonCount}
 									</span>
 								</button>
 							);

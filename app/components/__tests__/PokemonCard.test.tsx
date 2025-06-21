@@ -123,15 +123,15 @@ describe("PokemonCard", () => {
 		expect(generationButton).toBeInTheDocument();
 
 		// Initially collapsed
-		expect(screen.queryByText("第1世代")).not.toBeInTheDocument();
+		expect(screen.queryByText("赤・緑")).not.toBeInTheDocument();
 
 		// Click to expand
 		if (generationButton) fireEvent.click(generationButton);
-		expect(screen.getByText("第1世代")).toBeInTheDocument();
+		expect(screen.getByText("赤・緑")).toBeInTheDocument();
 
 		// Click to collapse
 		if (generationButton) fireEvent.click(generationButton);
-		expect(screen.queryByText("第1世代")).not.toBeInTheDocument();
+		expect(screen.queryByText("赤・緑")).not.toBeInTheDocument();
 	});
 
 	it("should expand and show type information", () => {
