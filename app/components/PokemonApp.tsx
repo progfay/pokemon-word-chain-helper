@@ -40,7 +40,7 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 				/>
 
 				{/* Accordion Section */}
-				<section className="flex-1 pt-8 pb-32 md:pb-24 px-2 md:px-0">
+				<section className="flex-1 pt-8 pb-24 px-0">
 					{accordionGroups.map((group) => (
 						<AccordionGroup
 							key={group.id}

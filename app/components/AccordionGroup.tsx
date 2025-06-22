@@ -34,7 +34,7 @@ export function AccordionGroup({
 		<details
 			name="accordion-group"
 			open={group.isExpanded}
-			className="bg-card border-b border-border mx-2 md:mx-0 mb-2 md:mb-0 rounded-lg md:rounded-none shadow-sm md:shadow-none"
+			className="bg-card border-b border-border mx-0 mb-0 rounded-none shadow-none"
 		>
 			<summary className="w-full flex justify-between items-center py-5 px-6 hover:bg-accent cursor-pointer list-none [&::-webkit-details-marker]:hidden">
 				<div className="flex items-center gap-3">
