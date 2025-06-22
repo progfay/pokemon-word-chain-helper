@@ -82,26 +82,20 @@ export function PokemonCard({
 			>
 				{/* Card Header */}
 				<div className="flex justify-between items-center">
-					{isAnswerRevealed ? (
-						<div className="flex items-center gap-3">
-							<span
-								className={`text-lg font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
-							>
-								#{paddedNumber}
-							</span>
-							{isUsed && (
-								<div className="bg-muted-foreground text-background text-xs font-bold px-3 py-1.5 rounded-full">
-									使用済み
-								</div>
-							)}
-						</div>
-					) : (
-						<span className="text-lg font-bold text-card-foreground">
+					<div className="flex items-center gap-3">
+						<span
+							className={`text-lg font-bold ${isAnswerRevealed || isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
+						>
 							#{paddedNumber}
 						</span>
-					)}
+						{isUsed && (
+							<div className="bg-muted-foreground text-background text-xs font-bold px-3 py-1.5 rounded-full">
+								使用済み
+							</div>
+						)}
+					</div>
 
-					{isAnswerRevealed ? (
+					{isAnswerRevealed || isUsed ? (
 						<span
 							className={`text-base font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
 						>
