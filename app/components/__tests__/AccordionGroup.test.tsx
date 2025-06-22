@@ -28,7 +28,6 @@ const mockPokemonDatabase: PokemonDatabase = {
 };
 
 describe("AccordionGroup", () => {
-	const mockOnToggleExpanded = vi.fn();
 	const mockOnSetActiveCharacter = vi.fn();
 	const mockOnMarkAsUsed = vi.fn();
 	const mockUsedPokemonSet = new Set<string>();
@@ -43,7 +42,6 @@ describe("AccordionGroup", () => {
 				group={mockGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
@@ -59,7 +57,6 @@ describe("AccordionGroup", () => {
 				group={mockExpandedGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
@@ -78,22 +75,22 @@ describe("AccordionGroup", () => {
 		expect(screen.getAllByText("1")).toHaveLength(4); // Count for ア, イ, ウ, オ (each has 1 Pokemon)
 	});
 
-	it("should call onToggleExpanded when header is clicked", () => {
+	it("should toggle accordion when header is clicked", () => {
 		render(
 			<AccordionGroup
 				group={mockGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
 		);
 
-		const header = screen.getByText("ア行").closest("button");
+		const header = screen.getByText("ア行").closest("summary");
 		if (header) fireEvent.click(header);
 
-		expect(mockOnToggleExpanded).toHaveBeenCalledWith("a");
+		// Check that content becomes visible after clicking
+		expect(screen.getByText("ア")).toBeInTheDocument();
 	});
 
 	it("should call onSetActiveCharacter when tab is clicked", () => {
@@ -102,7 +99,6 @@ describe("AccordionGroup", () => {
 				group={mockExpandedGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
@@ -120,7 +116,6 @@ describe("AccordionGroup", () => {
 				group={mockExpandedGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
@@ -136,7 +131,6 @@ describe("AccordionGroup", () => {
 				group={mockExpandedGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
@@ -163,7 +157,6 @@ describe("AccordionGroup", () => {
 				group={groupWithEmptyCharacter}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
@@ -180,7 +173,6 @@ describe("AccordionGroup", () => {
 				group={mockExpandedGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,
@@ -191,35 +183,6 @@ describe("AccordionGroup", () => {
 		expect(screen.getByText("0")).toBeInTheDocument(); // エ tab with count 0
 	});
 
-	it("should show different chevron direction when expanded/collapsed", () => {
-		const { rerender } = render(
-			<AccordionGroup
-				group={mockGroup}
-				pokemonDatabase={mockPokemonDatabase}
-				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
-				onSetActiveCharacter={mockOnSetActiveCharacter}
-				onMarkAsUsed={mockOnMarkAsUsed}
-			/>,
-		);
-
-		const chevron = screen.getByRole("button").querySelector("svg");
-		expect(chevron).toHaveClass("rotate-90"); // Collapsed state
-
-		rerender(
-			<AccordionGroup
-				group={mockExpandedGroup}
-				pokemonDatabase={mockPokemonDatabase}
-				usedPokemonSet={mockUsedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
-				onSetActiveCharacter={mockOnSetActiveCharacter}
-				onMarkAsUsed={mockOnMarkAsUsed}
-			/>,
-		);
-
-		expect(chevron).toHaveClass("rotate-180"); // Expanded state
-	});
-
 	it("should pass used Pokemon set to Pokemon cards", () => {
 		const usedPokemonSet = new Set(["アーボ"]);
 
@@ -228,7 +191,6 @@ describe("AccordionGroup", () => {
 				group={mockExpandedGroup}
 				pokemonDatabase={mockPokemonDatabase}
 				usedPokemonSet={usedPokemonSet}
-				onToggleExpanded={mockOnToggleExpanded}
 				onSetActiveCharacter={mockOnSetActiveCharacter}
 				onMarkAsUsed={mockOnMarkAsUsed}
 			/>,

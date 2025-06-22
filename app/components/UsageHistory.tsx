@@ -1,6 +1,8 @@
 "use client";
 
 import type { UsedPokemon } from "../types/pokemon";
+import { ClockIcon } from "./icons/ClockIcon";
+import { CloseIcon } from "./icons/CloseIcon";
 
 interface UsageHistoryProps {
 	usedPokemon: UsedPokemon[];
@@ -24,20 +26,7 @@ export function UsageHistory({
 					id="usage-history-heading"
 					className="text-xl font-bold text-accent-foreground flex items-center gap-2"
 				>
-					<svg
-						className="w-6 h-6"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<title>履歴アイコン</title>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
+					<ClockIcon className="w-6 h-6" />
 					使用履歴
 					<span aria-live="polite">({usedPokemon.length}件)</span>
 				</h2>
@@ -72,21 +61,7 @@ export function UsageHistory({
 									className="text-card-foreground hover:bg-red-50 rounded-full p-1 transition-colors"
 									aria-label={`${pokemon[1]}を履歴から削除`}
 								>
-									<svg
-										width="16"
-										height="16"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										role="img"
-									>
-										<title>削除</title>
-										<path d="M18 6 6 18" />
-										<path d="m6 6 12 12" />
-									</svg>
+									<CloseIcon width="16" height="16" role="img" />
 								</button>
 							</li>
 						))

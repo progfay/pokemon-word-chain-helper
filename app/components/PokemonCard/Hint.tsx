@@ -1,3 +1,5 @@
+import { ChevronIcon } from "../icons/ChevronIcon";
+
 interface HintProps {
 	icon: React.ReactNode;
 	label: string;
@@ -14,19 +16,7 @@ export function Hint({ icon, label, children }: HintProps) {
 						{label}
 					</span>
 				</div>
-				<svg
-					className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180"
-					fill="none"
-					viewBox="0 0 18 18"
-				>
-					<title>展開アイコン</title>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth="1.5"
-						d="M4.5 6.75L9 11.25l4.5-4.5"
-					/>
-				</svg>
+				<ChevronIcon className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180" />
 			</summary>
 			{children}
 		</details>

@@ -6,6 +6,7 @@ import type {
 	PokemonDatabase,
 	UsedPokemon,
 } from "../types/pokemon";
+import { ChevronIcon } from "./icons/ChevronIcon";
 import { PokemonCard } from "./PokemonCard";
 
 interface AccordionGroupProps {
@@ -41,25 +42,9 @@ export function AccordionGroup({
 						{group.name}
 					</span>
 				</div>
-				<svg
-					className={`w-5 h-5 stroke-muted-foreground transition-transform ${
-						group.isExpanded ? "rotate-180" : "rotate-90"
-					}`}
-					fill="none"
-					viewBox="0 0 20 20"
-				>
-					<title>展開アイコン</title>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth="1.67"
-						d={
-							group.isExpanded
-								? "M5 7.5L10 12.5L15 7.5"
-								: "M7.5 5L12.5 10L7.5 15"
-						}
-					/>
-				</svg>
+				<ChevronIcon
+					className="w-5 h-5 stroke-muted-foreground transition-transform [details[open]_&]:rotate-180"
+				/>
 			</summary>
 
 			{/* Accordion Content */}

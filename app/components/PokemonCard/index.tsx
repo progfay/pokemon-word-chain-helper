@@ -7,6 +7,9 @@ import type {
 	Pokemon,
 	UsedPokemon,
 } from "../../types/pokemon";
+import { GenerationIcon } from "../icons/GenerationIcon";
+import { ImageIcon } from "../icons/ImageIcon";
+import { TypeIcon } from "../icons/TypeIcon";
 import { Hint } from "./Hint";
 
 interface PokemonCardProps {
@@ -120,19 +123,7 @@ export function PokemonCard({
 					{/* Generation Hint */}
 					<Hint
 						icon={
-							<svg
-								className="w-4.5 h-4.5 stroke-muted-foreground"
-								fill="none"
-								viewBox="0 0 18 18"
-							>
-								<title>世代アイコン</title>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="1.5"
-									d="M6 1.5v3M12 1.5v3M2.25 3h13.5v13.5H2.25V3zM2.25 7.5h13.5"
-								/>
-							</svg>
+							<GenerationIcon className="w-4.5 h-4.5 stroke-muted-foreground" />
 						}
 						label="世代"
 					>
@@ -145,22 +136,7 @@ export function PokemonCard({
 
 					{/* Type Hint */}
 					<Hint
-						icon={
-							<svg
-								className="w-4.5 h-4.5 stroke-muted-foreground"
-								fill="none"
-								viewBox="0 0 18 18"
-							>
-								<title>タイプアイコン</title>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="1.5"
-									d="M5.25 5.25h7.5v7.5h-7.5v-7.5z"
-								/>
-								<circle cx="5.25" cy="5.25" r="0.75" fill="currentColor" />
-							</svg>
-						}
+						icon={<TypeIcon className="w-4.5 h-4.5 stroke-muted-foreground" />}
 						label="タイプ"
 					>
 						<div className="px-4 pb-2">
@@ -180,21 +156,7 @@ export function PokemonCard({
 
 					{/* Image Hint */}
 					<Hint
-						icon={
-							<svg
-								className="w-4.5 h-4.5 stroke-muted-foreground"
-								fill="none"
-								viewBox="0 0 18 18"
-							>
-								<title>画像アイコン</title>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="1.5"
-									d="M2.25 2.25h13.5v13.5H2.25V2.25zM5.25 5.25h3v3h-3v-3zM4.5 8.5l11.25 7.25"
-								/>
-							</svg>
-						}
+						icon={<ImageIcon className="w-4.5 h-4.5 stroke-muted-foreground" />}
 						label="画像"
 					>
 						<div className="flex flex-col gap-3 px-4 pb-4">
