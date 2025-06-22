@@ -14,23 +14,37 @@ export function UsageHistory({
 	onRemoveUsed,
 }: UsageHistoryProps) {
 	return (
-		<div className="bg-card border-b border-border flex flex-col gap-4 py-6 px-6">
+		<div className="border-b-2 border-border flex flex-col gap-4 py-6 px-6 shadow-sm">
 			{/* History Header */}
 			<div className="flex justify-between items-center">
-				<h2 className="text-lg font-bold text-card-foreground">
+				<h2 className="text-xl font-bold text-accent-foreground flex items-center gap-2">
+					<svg
+						className="w-6 h-6"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<title>履歴アイコン</title>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
 					使用履歴 ({usedPokemon.length}件)
 				</h2>
 				<button
 					type="button"
 					onClick={onClearAll}
-					className="bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-700"
+					className="bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-700 shadow-sm transition-all hover:shadow-md"
 				>
 					クリア
 				</button>
 			</div>
 
 			{/* History List */}
-			<div className="bg-muted rounded-xl p-4 max-h-60 overflow-y-auto">
+			<div className="bg-card rounded-xl p-4 max-h-60 overflow-y-auto border border-border shadow-sm">
 				<div className="flex flex-col gap-3">
 					{usedPokemon.length > 0 ? (
 						usedPokemon.map((pokemon, index) => (

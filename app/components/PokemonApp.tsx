@@ -99,7 +99,7 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 				/>
 
 				{/* Accordion Section */}
-				<div className="flex-1 pb-32">
+				<div className="flex-1 pt-8 pb-32 md:pb-24 px-2 md:px-0">
 					{accordionGroups.map((group) => (
 						<AccordionGroup
 							key={group.id}
@@ -114,7 +114,7 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 				</div>
 
 				{/* Footer Input */}
-				<div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
+				<div className="fixed bottom-0 left-0 right-0 z-10 max-w-4xl mx-auto">
 					<FooterInput
 						pokemonDatabase={pokemonDatabase}
 						onAddUsed={handleAddUsed}

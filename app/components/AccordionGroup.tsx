@@ -32,7 +32,7 @@ export function AccordionGroup({
 	const activeCharacterPokemon = getPokemonForCharacter(group.activeCharacter);
 
 	return (
-		<div className="bg-card border-b border-border">
+		<div className="bg-card border-b border-border mx-2 md:mx-0 mb-2 md:mb-0 rounded-lg md:rounded-none shadow-sm md:shadow-none">
 			{/* Accordion Header */}
 			<button
 				type="button"
@@ -69,7 +69,7 @@ export function AccordionGroup({
 			{group.isExpanded && (
 				<div className="bg-muted border-t border-border py-5 px-6 flex flex-col gap-5">
 					{/* Tab Navigation */}
-					<div className="flex">
+					<div className="flex overflow-x-auto scrollbar-hide gap-0 pb-2">
 						{group.characters.map((character, index) => {
 							const isActive = character === group.activeCharacter;
 							const isFirst = index === 0;
@@ -93,7 +93,7 @@ export function AccordionGroup({
 									type="button"
 									key={character}
 									onClick={() => onSetActiveCharacter(group.id, character)}
-									className={`w-15 h-11 flex flex-col justify-center items-center text-sm font-bold border ${borderRadius} ${
+									className={`min-w-[60px] h-11 flex flex-col justify-center items-center text-sm font-bold border ${borderRadius} ${
 										isActive
 											? "bg-primary text-primary-foreground border-primary"
 											: "bg-secondary text-secondary-foreground border-border hover:bg-accent"
