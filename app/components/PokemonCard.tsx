@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 import { getTypesInfo } from "../lib/pokemon-types";
-import type {
-	HintType,
-	ImageVisibility,
-	Pokemon,
-	UsedPokemon,
-} from "../types/pokemon";
+import type { ImageVisibility, Pokemon, UsedPokemon } from "../types/pokemon";
 
 interface PokemonCardProps {
 	pokemon: Pokemon;
@@ -33,7 +28,6 @@ export function PokemonCard({
 	onMarkAsUsed,
 }: PokemonCardProps) {
 	const [name, _genus, generation, pokedexNumber, types] = pokemon;
-	const [expandedHints, setExpandedHints] = useState<Set<HintType>>(new Set());
 	const [imageVisibility, setImageVisibility] =
 		useState<ImageVisibility>("hidden");
 	const [isAnswerRevealed, setIsAnswerRevealed] = useState(isUsed);
@@ -42,18 +36,6 @@ export function PokemonCard({
 	const typeInfos = getTypesInfo(types);
 	const paddedNumber = pokedexNumber.toString().padStart(3, "0");
 	const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokedexNumber}.png`;
-
-	const toggleHint = (hintType: HintType) => {
-		setExpandedHints((prev) => {
-			const newSet = new Set(prev);
-			if (newSet.has(hintType)) {
-				newSet.delete(hintType);
-			} else {
-				newSet.add(hintType);
-			}
-			return newSet;
-		});
-	};
 
 	const handleAnswerClick = () => {
 		if (isAnswerRevealed) return;
@@ -131,20 +113,11 @@ export function PokemonCard({
 				{/* Hints List */}
 				<div className="flex flex-col gap-2">
 					{/* Generation Hint */}
-					<div
-						className={`border rounded-lg ${expandedHints.has("generation") ? "border-blue-200" : "border-border"}`}
-					>
-						<button
-							id="generation-hint-toggle"
-							type="button"
-							onClick={() => toggleHint("generation")}
-							aria-expanded={expandedHints.has("generation")}
-							aria-controls="generation-hint-content"
-							className="w-full flex justify-between items-center p-3"
-						>
+					<details className="hint border rounded-lg border-border">
+						<summary className="w-full flex justify-between items-center p-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
 							<div className="flex items-center gap-3">
 								<svg
-									className={`w-4.5 h-4.5 ${expandedHints.has("generation") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
+									className="w-4.5 h-4.5 stroke-muted-foreground"
 									fill="none"
 									viewBox="0 0 18 18"
 								>
@@ -156,14 +129,12 @@ export function PokemonCard({
 										d="M6 1.5v3M12 1.5v3M2.25 3h13.5v13.5H2.25V3zM2.25 7.5h13.5"
 									/>
 								</svg>
-								<span
-									className={`text-sm font-medium ${expandedHints.has("generation") && !isUsed ? "text-blue-600" : isUsed ? "text-muted-foreground" : "text-muted-foreground"}`}
-								>
+								<span className="text-sm font-medium text-muted-foreground">
 									世代
 								</span>
 							</div>
 							<svg
-								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("generation") ? "rotate-180" : ""} ${expandedHints.has("generation") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
+								className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180"
 								fill="none"
 								viewBox="0 0 18 18"
 							>
@@ -175,37 +146,20 @@ export function PokemonCard({
 									d="M4.5 6.75L9 11.25l4.5-4.5"
 								/>
 							</svg>
-						</button>
-						{expandedHints.has("generation") && (
-							<section
-								id="generation-hint-content"
-								aria-labelledby="generation-hint-toggle"
-								className="px-4 pb-3"
-							>
-								<span
-									className={`text-sm font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
-								>
-									{GENERATION_NAME_MAP[generation] || `第${generation}世代`}
-								</span>
-							</section>
-						)}
-					</div>
+						</summary>
+						<div className="px-4 pb-3">
+							<span className="text-sm font-bold text-muted-foreground">
+								{GENERATION_NAME_MAP[generation] || `第${generation}世代`}
+							</span>
+						</div>
+					</details>
 
 					{/* Type Hint */}
-					<div
-						className={`border rounded-lg ${expandedHints.has("type") ? "border-blue-200" : "border-border"}`}
-					>
-						<button
-							id="type-hint-toggle"
-							type="button"
-							onClick={() => toggleHint("type")}
-							aria-expanded={expandedHints.has("type")}
-							aria-controls="type-hint-content"
-							className="w-full flex justify-between items-center p-3"
-						>
+					<details className="hint border rounded-lg border-border">
+						<summary className="w-full flex justify-between items-center p-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
 							<div className="flex items-center gap-3">
 								<svg
-									className={`w-4.5 h-4.5 ${expandedHints.has("type") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
+									className="w-4.5 h-4.5 stroke-muted-foreground"
 									fill="none"
 									viewBox="0 0 18 18"
 								>
@@ -218,14 +172,12 @@ export function PokemonCard({
 									/>
 									<circle cx="5.25" cy="5.25" r="0.75" fill="currentColor" />
 								</svg>
-								<span
-									className={`text-sm font-medium ${expandedHints.has("type") && !isUsed ? "text-blue-600" : isUsed ? "text-muted-foreground" : "text-muted-foreground"}`}
-								>
+								<span className="text-sm font-medium text-muted-foreground">
 									タイプ
 								</span>
 							</div>
 							<svg
-								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("type") ? "rotate-180" : ""} ${expandedHints.has("type") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
+								className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180"
 								fill="none"
 								viewBox="0 0 18 18"
 							>
@@ -237,43 +189,28 @@ export function PokemonCard({
 									d="M4.5 6.75L9 11.25l4.5-4.5"
 								/>
 							</svg>
-						</button>
-						{expandedHints.has("type") && (
-							<section
-								id="type-hint-content"
-								aria-labelledby="type-hint-toggle"
-								className="px-4 pb-2"
-							>
-								<div className="flex items-center gap-2">
-									{typeInfos.map((typeInfo) => (
-										<span
-											key={typeInfo.id}
-											className="text-white text-xs font-bold px-3 py-1.5 rounded-full"
-											style={{ backgroundColor: typeInfo.color }}
-										>
-											{typeInfo.name}
-										</span>
-									))}
-								</div>
-							</section>
-						)}
-					</div>
+						</summary>
+						<div className="px-4 pb-2">
+							<div className="flex items-center gap-2">
+								{typeInfos.map((typeInfo) => (
+									<span
+										key={typeInfo.id}
+										className="text-white text-xs font-bold px-3 py-1.5 rounded-full"
+										style={{ backgroundColor: typeInfo.color }}
+									>
+										{typeInfo.name}
+									</span>
+								))}
+							</div>
+						</div>
+					</details>
 
 					{/* Image Hint */}
-					<div
-						className={`border rounded-lg ${expandedHints.has("image") ? "border-blue-200" : "border-border"}`}
-					>
-						<button
-							id="image-hint-toggle"
-							type="button"
-							onClick={() => toggleHint("image")}
-							aria-expanded={expandedHints.has("image")}
-							aria-controls="image-hint-content"
-							className="w-full flex justify-between items-center p-3"
-						>
+					<details className="hint border rounded-lg border-border">
+						<summary className="w-full flex justify-between items-center p-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
 							<div className="flex items-center gap-3">
 								<svg
-									className={`w-4.5 h-4.5 ${expandedHints.has("image") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
+									className="w-4.5 h-4.5 stroke-muted-foreground"
 									fill="none"
 									viewBox="0 0 18 18"
 								>
@@ -285,14 +222,12 @@ export function PokemonCard({
 										d="M2.25 2.25h13.5v13.5H2.25V2.25zM5.25 5.25h3v3h-3v-3zM4.5 8.5l11.25 7.25"
 									/>
 								</svg>
-								<span
-									className={`text-sm font-medium ${expandedHints.has("image") && !isUsed ? "text-blue-600" : isUsed ? "text-muted-foreground" : "text-muted-foreground"}`}
-								>
+								<span className="text-sm font-medium text-muted-foreground">
 									画像
 								</span>
 							</div>
 							<svg
-								className={`w-4.5 h-4.5 transition-transform ${expandedHints.has("image") ? "rotate-180" : ""} ${expandedHints.has("image") ? "stroke-blue-600" : "stroke-muted-foreground"}`}
+								className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180"
 								fill="none"
 								viewBox="0 0 18 18"
 							>
@@ -304,65 +239,60 @@ export function PokemonCard({
 									d="M4.5 6.75L9 11.25l4.5-4.5"
 								/>
 							</svg>
-						</button>
-						{expandedHints.has("image") && (
-							<section
-								id="image-hint-content"
-								aria-labelledby="image-hint-toggle"
-								className="flex flex-col gap-3 px-4 pb-4"
+						</summary>
+						<div className="flex flex-col gap-3 px-4 pb-4">
+							{/* Image Type Selector */}
+							<div
+								className="flex items-center gap-2"
+								role="radiogroup"
+								aria-label="画像の表示方法"
 							>
-								{/* Image Type Selector */}
-								<div
-									className="flex items-center gap-2"
-									role="radiogroup"
-									aria-label="画像の表示方法"
+								<button
+									type="button"
+									onClick={() => setImageVisibility("silhouette")}
+									className={`px-3 py-2 text-xs font-medium rounded-lg ${
+										imageVisibility === "silhouette"
+											? "bg-blue-600 text-white"
+											: "bg-muted text-muted-foreground border border-border"
+									}`}
 								>
-									<button
-										type="button"
-										onClick={() => setImageVisibility("silhouette")}
-										className={`px-3 py-2 text-xs font-medium rounded-lg ${
-											imageVisibility === "silhouette"
-												? "bg-blue-600 text-white"
-												: "bg-muted text-muted-foreground border border-border"
-										}`}
-									>
-										シルエット
-									</button>
-									<button
-										type="button"
-										onClick={() => setImageVisibility("blurred")}
-										className={`px-3 py-2 text-xs font-medium rounded-lg ${
-											imageVisibility === "blurred"
-												? "bg-blue-600 text-white"
-												: "bg-muted text-muted-foreground border border-border"
-										}`}
-									>
-										ぼかし
-									</button>
-									<button
-										type="button"
-										onClick={() => setImageVisibility("full")}
-										className={`px-3 py-2 text-xs font-medium rounded-lg ${
-											imageVisibility === "full"
-												? "bg-blue-600 text-white"
-												: "bg-muted text-muted-foreground border border-border"
-										}`}
-									>
-										フルカラー
-									</button>
-								</div>
-								{/* Image Container */}
-								<div className="bg-muted h-30 rounded-xl flex justify-center items-center overflow-hidden">
-									<img
-										src={imageUrl}
-										alt={isAnswerRevealed ? name : "Pokemon"}
-										className="max-h-full max-w-full"
-										style={getImageStyle()}
-									/>
-								</div>
-							</section>
-						)}
-					</div>
+									シルエット
+								</button>
+								<button
+									type="button"
+									onClick={() => setImageVisibility("blurred")}
+									className={`px-3 py-2 text-xs font-medium rounded-lg ${
+										imageVisibility === "blurred"
+											? "bg-blue-600 text-white"
+											: "bg-muted text-muted-foreground border border-border"
+									}`}
+								>
+									ぼかし
+								</button>
+								<button
+									type="button"
+									onClick={() => setImageVisibility("full")}
+									className={`px-3 py-2 text-xs font-medium rounded-lg ${
+										imageVisibility === "full"
+											? "bg-blue-600 text-white"
+											: "bg-muted text-muted-foreground border border-border"
+									}`}
+								>
+									フルカラー
+								</button>
+							</div>
+							{/* Image Container */}
+							<div className="bg-muted h-30 rounded-xl flex justify-center items-center overflow-hidden">
+								<img
+									loading="lazy"
+									src={imageUrl}
+									alt={isAnswerRevealed ? name : "Pokemon"}
+									className="max-h-full max-w-full"
+									style={getImageStyle()}
+								/>
+							</div>
+						</div>
+					</details>
 				</div>
 			</div>
 

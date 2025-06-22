@@ -52,10 +52,9 @@ export function UsageHistory({
 			</div>
 
 			{/* History List */}
-			<div
+			<section
 				className="bg-card rounded-xl p-4 max-h-60 overflow-y-auto border border-border shadow-sm"
 				aria-label="使用済みポケモンのリスト"
-				role="region"
 			>
 				<ul className="flex flex-col gap-3">
 					{usedPokemon.length > 0 ? (
@@ -70,7 +69,7 @@ export function UsageHistory({
 								<button
 									type="button"
 									onClick={() => onRemoveUsed(pokemon[1])}
-									className="text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full p-1 transition-colors"
+									className="text-card-foreground hover:bg-red-50 rounded-full p-1 transition-colors"
 									aria-label={`${pokemon[1]}を履歴から削除`}
 								>
 									<svg
@@ -92,15 +91,12 @@ export function UsageHistory({
 							</li>
 						))
 					) : (
-						<li
-							className="text-center py-6 text-muted-foreground"
-							role="status"
-						>
+						<li className="text-center py-6 text-muted-foreground">
 							まだ使用したポケモンはありません
 						</li>
 					)}
 				</ul>
-			</div>
+			</section>
 		</section>
 	);
 }

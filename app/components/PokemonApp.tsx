@@ -44,16 +44,6 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 	// Create a Set for faster lookup of used Pokemon names
 	const usedPokemonSet = new Set(usedPokemon.map((p) => p[1]));
 
-	const handleToggleExpanded = (groupId: string) => {
-		setAccordionGroups((groups) =>
-			groups.map((group) =>
-				group.id === groupId
-					? { ...group, isExpanded: !group.isExpanded }
-					: group,
-			),
-		);
-	};
-
 	const handleSetActiveCharacter = (groupId: string, character: string) => {
 		setAccordionGroups((groups) =>
 			groups.map((group) =>
@@ -99,19 +89,18 @@ export function PokemonApp({ pokemonDatabase }: PokemonAppProps) {
 				/>
 
 				{/* Accordion Section */}
-				<div className="flex-1 pt-8 pb-32 md:pb-24 px-2 md:px-0">
+				<section className="flex-1 pt-8 pb-32 md:pb-24 px-2 md:px-0">
 					{accordionGroups.map((group) => (
 						<AccordionGroup
 							key={group.id}
 							group={group}
 							pokemonDatabase={pokemonDatabase}
 							usedPokemonSet={usedPokemonSet}
-							onToggleExpanded={handleToggleExpanded}
 							onSetActiveCharacter={handleSetActiveCharacter}
 							onMarkAsUsed={handleMarkAsUsed}
 						/>
 					))}
-				</div>
+				</section>
 
 				{/* Footer Input */}
 				<div className="fixed bottom-0 left-0 right-0 z-10 max-w-4xl mx-auto">
