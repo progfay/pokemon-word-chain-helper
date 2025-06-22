@@ -1,7 +1,7 @@
 schema: 'https://graphql.pokeapi.co/v1beta2'
 documents: 'app/lib/pokemon-database-loader.ts'
 generates:
-  app/lib/pokemon-database-loader.graphql.ts:
+  app/lib/__generated__/pokemon-database-loader.ts:
     plugins:
       - 'typescript'
       - 'typescript-operations'

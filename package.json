@@ -10,7 +10,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "npm run typecheck && biome check .",
     "lint:fix": "npm run typecheck && biome check --write .",
-    "generate:types": "graphql-codegen --config codegen.yml"
+    "generate:types": "graphql-codegen --config codegen.yml",
+    "knip": "knip"
   },
   "keywords": [],
   "author": "progfay",
@@ -29,6 +30,7 @@
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react": "4.5.2",
+    "knip": "5.61.2",
     "tailwindcss": "4.1.10",
     "typescript": "5.8.3",
     "vite-tsconfig-paths": "5.1.4",

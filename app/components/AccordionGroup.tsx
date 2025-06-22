@@ -42,9 +42,7 @@ export function AccordionGroup({
 						{group.name}
 					</span>
 				</div>
-				<ChevronIcon
-					className="w-5 h-5 stroke-muted-foreground transition-transform [details[open]_&]:rotate-180"
-				/>
+				<ChevronIcon className="w-5 h-5 stroke-muted-foreground transition-transform [details[open]_&]:rotate-180" />
 			</summary>
 
 			{/* Accordion Content */}

@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { IReactiveStorage } from "../../lib/storage/storage-interface";
 import { useSessionStorage } from "../useSessionStorage";
 
 // Mock sessionStorage
@@ -193,98 +194,86 @@ describe("useSessionStorage", () => {
 		}
 	});
 
-	it("should set up event listeners for cross-hook synchronization", () => {
-		// Mock window with event handling capabilities
-		const mockWindow = {
-			...window,
-			addEventListener: vi.fn(),
-			removeEventListener: vi.fn(),
-			dispatchEvent: vi.fn(),
-			sessionStorage: sessionStorageMock,
+	it("should work with custom storage implementations", () => {
+		// Create a mock storage implementation
+		const mockStorage: IReactiveStorage = {
+			getItem: vi.fn(() => "custom-value"),
+			setItem: vi.fn(),
+			removeItem: vi.fn(),
+			clear: vi.fn(),
+			subscribe: vi.fn(() => () => {}),
 		};
-		const originalWindow = global.window;
-		global.window = mockWindow as unknown as typeof global.window;
 
-		try {
-			const { result } = renderHook(() => useSessionStorage("shared-key"));
+		const { result } = renderHook(() =>
+			useSessionStorage("test-key", mockStorage),
+		);
 
-			// Verify that event listeners are set up
-			expect(mockWindow.addEventListener).toHaveBeenCalledWith(
-				"storage",
-				expect.any(Function),
-			);
-			expect(mockWindow.addEventListener).toHaveBeenCalledWith(
-				"sessionStorage-change",
-				expect.any(Function),
-			);
-
-			// Verify hook works normally (returns null when no value)
-			expect(result.current[0]).toBeNull();
-		} finally {
-			global.window = originalWindow;
-		}
+		// Verify the hook uses the custom storage
+		expect(result.current[0]).toBe("custom-value");
+		expect(mockStorage.getItem).toHaveBeenCalledWith("test-key");
+		expect(mockStorage.subscribe).toHaveBeenCalledWith(
+			"test-key",
+			expect.any(Function),
+		);
 	});
 
-	it("should register storage event listeners for cross-tab synchronization", () => {
-		// Mock window with event handling capabilities
-		const mockWindow = {
-			...window,
-			addEventListener: vi.fn(),
-			removeEventListener: vi.fn(),
-			dispatchEvent: vi.fn(),
-			sessionStorage: sessionStorageMock,
+	it("should subscribe to storage changes through the storage abstraction", () => {
+		// Create a mock storage with subscription capability
+		let subscriptionCallback: (() => void) | null = null;
+		const mockStorage: IReactiveStorage = {
+			getItem: vi.fn(() => "initial-value"),
+			setItem: vi.fn(),
+			removeItem: vi.fn(),
+			clear: vi.fn(),
+			subscribe: vi.fn((_key: string, callback: () => void) => {
+				subscriptionCallback = callback;
+				return () => {
+					subscriptionCallback = null;
+				};
+			}),
 		};
-		const originalWindow = global.window;
-		global.window = mockWindow as unknown as typeof global.window;
 
-		try {
-			renderHook(() => useSessionStorage("test-key"));
+		const { result } = renderHook(() =>
+			useSessionStorage("test-key", mockStorage),
+		);
 
-			// Verify that storage event listeners are registered for cross-tab sync
-			expect(mockWindow.addEventListener).toHaveBeenCalledWith(
-				"storage",
-				expect.any(Function),
-			);
-			expect(mockWindow.addEventListener).toHaveBeenCalledWith(
-				"sessionStorage-change",
-				expect.any(Function),
-			);
-		} finally {
-			global.window = originalWindow;
-		}
+		// Verify subscription was set up
+		expect(mockStorage.subscribe).toHaveBeenCalledWith(
+			"test-key",
+			expect.any(Function),
+		);
+		expect(result.current[0]).toBe("initial-value");
+
+		// Simulate a storage change
+		vi.mocked(mockStorage.getItem).mockReturnValue("updated-value");
+		expect(subscriptionCallback).not.toBeNull();
+		act(() => {
+			subscriptionCallback?.();
+		});
+
+		// The component should re-render with the updated value
+		expect(result.current[0]).toBe("updated-value");
 	});
 
-	it("should dispatch custom events when setting values", () => {
-		// Mock window with event handling capabilities
-		const eventListener = vi.fn();
-		const mockWindow = {
-			...window,
-			addEventListener: vi.fn(),
-			removeEventListener: vi.fn(),
-			dispatchEvent: vi.fn(),
-			sessionStorage: sessionStorageMock,
+	it("should call setItem on the storage when setting values", () => {
+		// Create a mock storage to verify interaction
+		const mockStorage: IReactiveStorage = {
+			getItem: vi.fn(() => null),
+			setItem: vi.fn(),
+			removeItem: vi.fn(),
+			clear: vi.fn(),
+			subscribe: vi.fn(() => () => {}),
 		};
-		const originalWindow = global.window;
-		global.window = mockWindow as unknown as typeof global.window;
 
-		try {
-			mockWindow.addEventListener("sessionStorage-change", eventListener);
+		const { result } = renderHook(() =>
+			useSessionStorage("test-key", mockStorage),
+		);
 
-			const { result } = renderHook(() => useSessionStorage("test-key"));
+		act(() => {
+			result.current[1]("new-value");
+		});
 
-			act(() => {
-				result.current[1]("new-value");
-			});
-
-			expect(mockWindow.dispatchEvent).toHaveBeenCalledWith(
-				expect.objectContaining({
-					detail: { key: "test-key", value: "new-value" },
-				}),
-			);
-
-			mockWindow.removeEventListener("sessionStorage-change", eventListener);
-		} finally {
-			global.window = originalWindow;
-		}
+		// Verify that setItem was called on the storage abstraction
+		expect(mockStorage.setItem).toHaveBeenCalledWith("test-key", "new-value");
 	});
 });

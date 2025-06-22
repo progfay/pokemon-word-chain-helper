@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { findPokemonByName } from "../lib/pokemon";
 import type { PokemonDatabase, UsedPokemon } from "../types/pokemon";
 
 interface FooterInputProps {
@@ -12,24 +13,10 @@ export function FooterInput({ pokemonDatabase, onAddUsed }: FooterInputProps) {
 	const [inputValue, setInputValue] = useState("");
 	// const [errorMessage, setErrorMessage] = useState("");
 
-	const findPokemonByName = (name: string) => {
-		const trimmedName = name.trim();
-		if (!trimmedName) return null;
-
-		// Search through all Pokemon in the database
-		for (const [_firstChar, pokemonList] of Object.entries(pokemonDatabase)) {
-			const found = pokemonList.find((pokemon) => pokemon[0] === trimmedName);
-			if (found) {
-				return found;
-			}
-		}
-		return null;
-	};
-
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		const pokemon = findPokemonByName(inputValue);
+		const pokemon = findPokemonByName(pokemonDatabase, inputValue);
 		if (pokemon) {
 			const [name, , , pokedexNumber] = pokemon;
 			onAddUsed([pokedexNumber, name]);

@@ -1,12 +1,17 @@
 import { useCallback, useSyncExternalStore } from "react";
+import { getDefaultStorage } from "../lib/storage/storage-factory";
+import type { IReactiveStorage } from "../lib/storage/storage-interface";
 
 /**
- * Custom hook for managing state with sessionStorage persistence using useSyncExternalStore
- * @param key - The sessionStorage key to use
+ * Custom hook for managing state with storage persistence using useSyncExternalStore
+ * Now uses the storage abstraction layer following Dependency Inversion Principle
+ * @param key - The storage key to use
+ * @param storage - Optional storage instance (defaults to SessionStorage)
  * @returns [value, setValue] - Tuple of current value (null if not set) and setter function
  */
 export function useSessionStorage(
 	key: string,
+	storage: IReactiveStorage = getDefaultStorage(),
 ): [
 	string | null,
 	(value: string | ((prev: string | null) => string)) => void,
@@ -14,51 +19,15 @@ export function useSessionStorage(
 	// Subscribe function for useSyncExternalStore
 	const subscribe = useCallback(
 		(callback: () => void) => {
-			const handleStorageChange = (event: StorageEvent) => {
-				if (event.key === key) {
-					callback();
-				}
-			};
-
-			const handleCustomStorageChange = (event: CustomEvent) => {
-				if (event.detail.key === key) {
-					callback();
-				}
-			};
-
-			if (typeof window !== "undefined") {
-				window.addEventListener("storage", handleStorageChange);
-				window.addEventListener(
-					"sessionStorage-change",
-					handleCustomStorageChange as EventListener,
-				);
-
-				return () => {
-					window.removeEventListener("storage", handleStorageChange);
-					window.removeEventListener(
-						"sessionStorage-change",
-						handleCustomStorageChange as EventListener,
-					);
-				};
-			}
-
-			return () => {};
+			return storage.subscribe(key, callback);
 		},
-		[key],
+		[key, storage],
 	);
 
-	// Get snapshot function - simply returns what's in sessionStorage
+	// Get snapshot function - reads from the storage abstraction
 	const getSnapshot = useCallback(() => {
-		try {
-			if (typeof window !== "undefined") {
-				return window.sessionStorage.getItem(key);
-			}
-			return null;
-		} catch (error) {
-			console.warn(`Error reading sessionStorage key "${key}":`, error);
-			return null;
-		}
-	}, [key]);
+		return storage.getItem(key);
+	}, [key, storage]);
 
 	// Server snapshot function for useSyncExternalStore (SSR)
 	const getServerSnapshot = useCallback(() => null, []);
@@ -70,7 +39,7 @@ export function useSessionStorage(
 		getServerSnapshot,
 	);
 
-	// Update sessionStorage when state changes
+	// Update storage when state changes
 	const setValue = useCallback(
 		(value: string | ((prev: string | null) => string)) => {
 			// Get current value for function updates
@@ -80,23 +49,10 @@ export function useSessionStorage(
 			const valueToStore =
 				value instanceof Function ? value(currentValue) : value;
 
-			try {
-				// Save to sessionStorage
-				if (typeof window !== "undefined") {
-					window.sessionStorage.setItem(key, valueToStore);
-
-					// Dispatch custom event to notify other components in the same tab
-					window.dispatchEvent(
-						new CustomEvent("sessionStorage-change", {
-							detail: { key, value: valueToStore },
-						}),
-					);
-				}
-			} catch (error) {
-				console.warn(`Error setting sessionStorage key "${key}":`, error);
-			}
+			// Save to storage using the abstraction
+			storage.setItem(key, valueToStore);
 		},
-		[key, getSnapshot],
+		[key, storage, getSnapshot],
 	);
 
 	return [storedValue, setValue];

@@ -232,7 +232,12 @@ app/
 ├── layout.tsx           # Root layout
 ├── page.tsx             # Main page component
 ├── components/          # React components
+├── hooks/               # Custom React hooks
 ├── lib/                 # Utility functions
+│   ├── used-pokemon/    # Used Pokemon management
+│   │   ├── used-pokemon-manager.ts      # Business logic
+│   │   └── used-pokemon-serializer.ts   # Data serialization
+│   └── storage/         # Storage abstraction layer
 └── types/               # TypeScript type definitions
 ```
 
@@ -241,6 +246,10 @@ app/
 - **Client Components**: Only when interactivity is needed
 - **Atomic Design**: Break down UI into reusable components
 - **Props Interface**: Clear TypeScript interfaces for all props
+- **SOLID Principles**:
+  - **Single Responsibility**: Separate business logic, data persistence, and UI concerns
+  - **Custom Hooks**: Encapsulate state management logic
+  - **Service Classes**: Handle specific domain operations (Pokemon management, serialization)
 
 ## Future Enhancements
 

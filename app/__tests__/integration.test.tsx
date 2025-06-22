@@ -127,7 +127,8 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should start with empty usage history
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 
 		// Add Pokemon first
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
@@ -135,14 +136,16 @@ describe("Home Integration Tests", () => {
 		fireEvent.click(screen.getByText("追加"));
 
 		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+			expect(screen.getByText("使用履歴")).toBeInTheDocument();
+			expect(screen.getByText("(1件)")).toBeInTheDocument();
 		});
 
 		// Clear all
 		fireEvent.click(screen.getByText("クリア"));
 
 		// Should be empty again
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 		expect(
 			screen.getByText("まだ使用したポケモンはありません"),
 		).toBeInTheDocument();
@@ -152,7 +155,8 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should start with empty usage history
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 
 		// Add multiple Pokemon
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
@@ -161,14 +165,16 @@ describe("Home Integration Tests", () => {
 		fireEvent.click(screen.getByText("追加"));
 
 		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+			expect(screen.getByText("使用履歴")).toBeInTheDocument();
+			expect(screen.getByText("(1件)")).toBeInTheDocument();
 		});
 
 		fireEvent.change(input, { target: { value: "フシギダネ" } });
 		fireEvent.click(screen.getByText("追加"));
 
 		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (2件)")).toBeInTheDocument();
+			expect(screen.getByText("使用履歴")).toBeInTheDocument();
+			expect(screen.getByText("(2件)")).toBeInTheDocument();
 		});
 
 		// Remove one Pokemon by clicking its remove button
@@ -182,7 +188,8 @@ describe("Home Integration Tests", () => {
 
 		// Should have one less Pokemon
 		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+			expect(screen.getByText("使用履歴")).toBeInTheDocument();
+			expect(screen.getByText("(1件)")).toBeInTheDocument();
 			expect(screen.queryByText("ピカチュウ")).not.toBeInTheDocument();
 			expect(screen.getByText("フシギダネ")).toBeInTheDocument();
 		});
@@ -192,7 +199,8 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should start with empty usage history
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
 		fireEvent.change(input, { target: { value: "InvalidPokemon" } });
@@ -204,7 +212,8 @@ describe("Home Integration Tests", () => {
 		);
 
 		// Usage history should remain unchanged
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 	});
 
 	it("should persist used Pokemon in sessionStorage", async () => {
@@ -229,7 +238,8 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should start with empty usage history
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 
 		// Add a Pokemon
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
@@ -237,7 +247,8 @@ describe("Home Integration Tests", () => {
 		fireEvent.click(screen.getByText("追加"));
 
 		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+			expect(screen.getByText("使用履歴")).toBeInTheDocument();
+			expect(screen.getByText("(1件)")).toBeInTheDocument();
 		});
 
 		// Check that sessionStorage.setItem was called
@@ -269,7 +280,8 @@ describe("Home Integration Tests", () => {
 
 		// Should show pre-loaded Pokemon
 		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+			expect(screen.getByText("使用履歴")).toBeInTheDocument();
+			expect(screen.getByText("(1件)")).toBeInTheDocument();
 			expect(screen.getByText("ピカチュウ")).toBeInTheDocument();
 		});
 

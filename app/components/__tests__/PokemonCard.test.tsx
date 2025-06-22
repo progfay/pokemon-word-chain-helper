@@ -115,19 +115,20 @@ describe("PokemonCard", () => {
 			/>,
 		);
 
-		const generationButton = screen.getByText("世代").closest("button");
-		expect(generationButton).toBeInTheDocument();
+		const generationSummary = screen.getByText("世代").closest("summary");
+		expect(generationSummary).toBeInTheDocument();
 
-		// Initially collapsed
-		expect(screen.queryByText("赤・緑")).not.toBeInTheDocument();
+		// Initially collapsed - check that the details element is not open
+		const detailsElement = generationSummary?.closest("details");
+		expect(detailsElement).not.toHaveAttribute("open");
 
 		// Click to expand
-		if (generationButton) fireEvent.click(generationButton);
+		if (generationSummary) fireEvent.click(generationSummary);
 		expect(screen.getByText("赤・緑")).toBeInTheDocument();
 
 		// Click to collapse
-		if (generationButton) fireEvent.click(generationButton);
-		expect(screen.queryByText("赤・緑")).not.toBeInTheDocument();
+		if (generationSummary) fireEvent.click(generationSummary);
+		expect(detailsElement).not.toHaveAttribute("open");
 	});
 
 	it("should expand and show type information", () => {

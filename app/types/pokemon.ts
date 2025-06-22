@@ -60,23 +60,9 @@ export interface PokemonTypeInfo {
 }
 
 /**
- * Pokemon hint visibility states
- */
-export type HintType = "generation" | "type" | "image";
-
-/**
  * Image visibility states
  */
 export type ImageVisibility = "hidden" | "silhouette" | "blurred" | "full";
-
-/**
- * Pokemon card state for managing hints and interactions
- */
-export interface PokemonCardState {
-	expandedHints: Set<HintType>;
-	imageVisibility: ImageVisibility;
-	isAnswerRevealed: boolean;
-}
 
 /**
  * Accordion group information

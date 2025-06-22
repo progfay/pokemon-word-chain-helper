@@ -1,0 +1,6 @@
+{
+  "entry": ["app/page.tsx", "app/layout.tsx"],
+  "project": ["**/*.ts"],
+  "ignore": ["app/lib/pokemon-database-loader.graphql.ts"],
+  "ignoreDependencies": ["tailwindcss"]
+}
