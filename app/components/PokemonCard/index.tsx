@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { getTypesInfo } from "../lib/pokemon-types";
-import type { ImageVisibility, Pokemon, UsedPokemon } from "../types/pokemon";
+import { getTypesInfo } from "../../lib/pokemon-types";
+import type {
+	ImageVisibility,
+	Pokemon,
+	UsedPokemon,
+} from "../../types/pokemon";
+import { Hint } from "./Hint";
 
 interface PokemonCardProps {
 	pokemon: Pokemon;
@@ -111,85 +116,53 @@ export function PokemonCard({
 				</div>
 
 				{/* Hints List */}
-				<div className="flex flex-col gap-2">
+				<section className="flex flex-col gap-2">
 					{/* Generation Hint */}
-					<details className="hint border rounded-lg border-border">
-						<summary className="w-full flex justify-between items-center p-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-							<div className="flex items-center gap-3">
-								<svg
-									className="w-4.5 h-4.5 stroke-muted-foreground"
-									fill="none"
-									viewBox="0 0 18 18"
-								>
-									<title>世代アイコン</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="1.5"
-										d="M6 1.5v3M12 1.5v3M2.25 3h13.5v13.5H2.25V3zM2.25 7.5h13.5"
-									/>
-								</svg>
-								<span className="text-sm font-medium text-muted-foreground">
-									世代
-								</span>
-							</div>
+					<Hint
+						icon={
 							<svg
-								className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180"
+								className="w-4.5 h-4.5 stroke-muted-foreground"
 								fill="none"
 								viewBox="0 0 18 18"
 							>
-								<title>展開アイコン</title>
+								<title>世代アイコン</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
 									strokeWidth="1.5"
-									d="M4.5 6.75L9 11.25l4.5-4.5"
+									d="M6 1.5v3M12 1.5v3M2.25 3h13.5v13.5H2.25V3zM2.25 7.5h13.5"
 								/>
 							</svg>
-						</summary>
+						}
+						label="世代"
+					>
 						<div className="px-4 pb-3">
 							<span className="text-sm font-bold text-muted-foreground">
 								{GENERATION_NAME_MAP[generation] || `第${generation}世代`}
 							</span>
 						</div>
-					</details>
+					</Hint>
 
 					{/* Type Hint */}
-					<details className="hint border rounded-lg border-border">
-						<summary className="w-full flex justify-between items-center p-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-							<div className="flex items-center gap-3">
-								<svg
-									className="w-4.5 h-4.5 stroke-muted-foreground"
-									fill="none"
-									viewBox="0 0 18 18"
-								>
-									<title>タイプアイコン</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="1.5"
-										d="M5.25 5.25h7.5v7.5h-7.5v-7.5z"
-									/>
-									<circle cx="5.25" cy="5.25" r="0.75" fill="currentColor" />
-								</svg>
-								<span className="text-sm font-medium text-muted-foreground">
-									タイプ
-								</span>
-							</div>
+					<Hint
+						icon={
 							<svg
-								className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180"
+								className="w-4.5 h-4.5 stroke-muted-foreground"
 								fill="none"
 								viewBox="0 0 18 18"
 							>
-								<title>展開アイコン</title>
+								<title>タイプアイコン</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
 									strokeWidth="1.5"
-									d="M4.5 6.75L9 11.25l4.5-4.5"
+									d="M5.25 5.25h7.5v7.5h-7.5v-7.5z"
 								/>
+								<circle cx="5.25" cy="5.25" r="0.75" fill="currentColor" />
 							</svg>
-						</summary>
+						}
+						label="タイプ"
+					>
 						<div className="px-4 pb-2">
 							<div className="flex items-center gap-2">
 								{typeInfos.map((typeInfo) => (
@@ -203,43 +176,27 @@ export function PokemonCard({
 								))}
 							</div>
 						</div>
-					</details>
+					</Hint>
 
 					{/* Image Hint */}
-					<details className="hint border rounded-lg border-border">
-						<summary className="w-full flex justify-between items-center p-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-							<div className="flex items-center gap-3">
-								<svg
-									className="w-4.5 h-4.5 stroke-muted-foreground"
-									fill="none"
-									viewBox="0 0 18 18"
-								>
-									<title>画像アイコン</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth="1.5"
-										d="M2.25 2.25h13.5v13.5H2.25V2.25zM5.25 5.25h3v3h-3v-3zM4.5 8.5l11.25 7.25"
-									/>
-								</svg>
-								<span className="text-sm font-medium text-muted-foreground">
-									画像
-								</span>
-							</div>
+					<Hint
+						icon={
 							<svg
-								className="w-4.5 h-4.5 stroke-muted-foreground transition-transform [details.hint[open]_&]:rotate-180"
+								className="w-4.5 h-4.5 stroke-muted-foreground"
 								fill="none"
 								viewBox="0 0 18 18"
 							>
-								<title>展開アイコン</title>
+								<title>画像アイコン</title>
 								<path
 									strokeLinecap="round"
 									strokeLinejoin="round"
 									strokeWidth="1.5"
-									d="M4.5 6.75L9 11.25l4.5-4.5"
+									d="M2.25 2.25h13.5v13.5H2.25V2.25zM5.25 5.25h3v3h-3v-3zM4.5 8.5l11.25 7.25"
 								/>
 							</svg>
-						</summary>
+						}
+						label="画像"
+					>
 						<div className="flex flex-col gap-3 px-4 pb-4">
 							{/* Image Type Selector */}
 							<div
@@ -292,8 +249,8 @@ export function PokemonCard({
 								/>
 							</div>
 						</div>
-					</details>
-				</div>
+					</Hint>
+				</section>
 			</div>
 
 			{/* Confirmation Modal */}
