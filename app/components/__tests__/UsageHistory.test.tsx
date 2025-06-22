@@ -26,7 +26,8 @@ describe("UsageHistory", () => {
 			/>,
 		);
 
-		expect(screen.getByText("使用履歴 (3件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(3件)")).toBeInTheDocument();
 		expect(screen.getByText("クリア")).toBeInTheDocument();
 	});
 
@@ -53,7 +54,8 @@ describe("UsageHistory", () => {
 			/>,
 		);
 
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 		expect(
 			screen.getByText("まだ使用したポケモンはありません"),
 		).toBeInTheDocument();
@@ -121,7 +123,8 @@ describe("UsageHistory", () => {
 			/>,
 		);
 
-		expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(1件)")).toBeInTheDocument();
 		expect(screen.getByText("ピカチュウ")).toBeInTheDocument();
 	});
 });

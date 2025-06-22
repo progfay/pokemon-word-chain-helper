@@ -126,7 +126,10 @@ export function AccordionGroup({
 								/>
 							))
 						) : (
-							<div className="text-center py-8 text-muted-foreground">
+							<div
+								className="text-center py-8 text-muted-foreground"
+								role="status"
+							>
 								「{group.activeCharacter}」で始まるポケモンはありません
 							</div>
 						)}

@@ -22,7 +22,8 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should show usage history
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 
 		// Should show accordion groups
 		expect(screen.getByText("ア行")).toBeInTheDocument();
@@ -39,7 +40,8 @@ describe("Home Integration Tests", () => {
 		render(<PokemonApp pokemonDatabase={mockPokemonDatabase} />);
 
 		// Should start with empty usage history
-		expect(screen.getByText("使用履歴 (0件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(0件)")).toBeInTheDocument();
 
 		// Add Pokemon via footer input
 		const input = screen.getByPlaceholderText("ポケモン名を入力...");
@@ -50,7 +52,8 @@ describe("Home Integration Tests", () => {
 
 		// Should update usage history
 		await waitFor(() => {
-			expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+			expect(screen.getByText("使用履歴")).toBeInTheDocument();
+			expect(screen.getByText("(1件)")).toBeInTheDocument();
 			expect(screen.getByText("ピカチュウ")).toBeInTheDocument();
 		});
 
@@ -93,7 +96,8 @@ describe("Home Integration Tests", () => {
 		});
 
 		// Should update usage history
-		expect(screen.getByText("使用履歴 (1件)")).toBeInTheDocument();
+		expect(screen.getByText("使用履歴")).toBeInTheDocument();
+		expect(screen.getByText("(1件)")).toBeInTheDocument();
 	});
 
 	it("should allow switching between character tabs", async () => {

@@ -10,6 +10,7 @@ interface FooterInputProps {
 
 export function FooterInput({ pokemonDatabase, onAddUsed }: FooterInputProps) {
 	const [inputValue, setInputValue] = useState("");
+	// const [errorMessage, setErrorMessage] = useState("");
 
 	const findPokemonByName = (name: string) => {
 		const trimmedName = name.trim();
@@ -41,8 +42,14 @@ export function FooterInput({ pokemonDatabase, onAddUsed }: FooterInputProps) {
 	};
 
 	return (
-		<div className="bg-card border-t border-border flex flex-col gap-4 py-5 px-6">
-			<h3 className="text-base font-bold text-card-foreground">
+		<section
+			className="bg-card border-t border-border flex flex-col gap-4 py-5 px-6"
+			aria-labelledby="pokemon-input-heading"
+		>
+			<h3
+				id="pokemon-input-heading"
+				className="text-base font-bold text-card-foreground"
+			>
 				ポケモンを使用する
 			</h3>
 
@@ -53,16 +60,21 @@ export function FooterInput({ pokemonDatabase, onAddUsed }: FooterInputProps) {
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
 						placeholder="ポケモン名を入力..."
+						aria-labelledby="pokemon-input-heading"
 						className="flex-1 bg-transparent text-base text-card-foreground placeholder-muted-foreground outline-none"
 					/>
 				</div>
 				<button
 					type="submit"
+					aria-describedby="pokemon-input-description"
 					className="bg-blue-600 text-white text-base font-bold px-5 h-12 rounded-lg hover:bg-blue-700"
 				>
 					追加
 				</button>
 			</form>
-		</div>
+			<div id="pokemon-input-description" className="sr-only">
+				ポケモンの正確な名前を入力して追加ボタンを押してください
+			</div>
+		</section>
 	);
 }

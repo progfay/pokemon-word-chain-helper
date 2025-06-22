@@ -100,9 +100,9 @@ export function PokemonCard({
 								#{paddedNumber}
 							</span>
 							{isUsed && (
-								<span className="bg-muted-foreground text-background text-xs font-bold px-3 py-1.5 rounded-full">
+								<div className="bg-muted-foreground text-background text-xs font-bold px-3 py-1.5 rounded-full">
 									使用済み
-								</span>
+								</div>
 							)}
 						</div>
 					) : (
@@ -135,8 +135,11 @@ export function PokemonCard({
 						className={`border rounded-lg ${expandedHints.has("generation") ? "border-blue-200" : "border-border"}`}
 					>
 						<button
+							id="generation-hint-toggle"
 							type="button"
 							onClick={() => toggleHint("generation")}
+							aria-expanded={expandedHints.has("generation")}
+							aria-controls="generation-hint-content"
 							className="w-full flex justify-between items-center p-3"
 						>
 							<div className="flex items-center gap-3">
@@ -174,13 +177,17 @@ export function PokemonCard({
 							</svg>
 						</button>
 						{expandedHints.has("generation") && (
-							<div className="px-4 pb-3">
+							<section
+								id="generation-hint-content"
+								aria-labelledby="generation-hint-toggle"
+								className="px-4 pb-3"
+							>
 								<span
 									className={`text-sm font-bold ${isUsed ? "text-muted-foreground" : "text-card-foreground"}`}
 								>
 									{GENERATION_NAME_MAP[generation] || `第${generation}世代`}
 								</span>
-							</div>
+							</section>
 						)}
 					</div>
 
@@ -189,8 +196,11 @@ export function PokemonCard({
 						className={`border rounded-lg ${expandedHints.has("type") ? "border-blue-200" : "border-border"}`}
 					>
 						<button
+							id="type-hint-toggle"
 							type="button"
 							onClick={() => toggleHint("type")}
+							aria-expanded={expandedHints.has("type")}
+							aria-controls="type-hint-content"
 							className="w-full flex justify-between items-center p-3"
 						>
 							<div className="flex items-center gap-3">
@@ -229,7 +239,11 @@ export function PokemonCard({
 							</svg>
 						</button>
 						{expandedHints.has("type") && (
-							<div className="px-4 pb-2">
+							<section
+								id="type-hint-content"
+								aria-labelledby="type-hint-toggle"
+								className="px-4 pb-2"
+							>
 								<div className="flex items-center gap-2">
 									{typeInfos.map((typeInfo) => (
 										<span
@@ -241,7 +255,7 @@ export function PokemonCard({
 										</span>
 									))}
 								</div>
-							</div>
+							</section>
 						)}
 					</div>
 
@@ -250,8 +264,11 @@ export function PokemonCard({
 						className={`border rounded-lg ${expandedHints.has("image") ? "border-blue-200" : "border-border"}`}
 					>
 						<button
+							id="image-hint-toggle"
 							type="button"
 							onClick={() => toggleHint("image")}
+							aria-expanded={expandedHints.has("image")}
+							aria-controls="image-hint-content"
 							className="w-full flex justify-between items-center p-3"
 						>
 							<div className="flex items-center gap-3">
@@ -289,9 +306,17 @@ export function PokemonCard({
 							</svg>
 						</button>
 						{expandedHints.has("image") && (
-							<div className="flex flex-col gap-3 px-4 pb-4">
+							<section
+								id="image-hint-content"
+								aria-labelledby="image-hint-toggle"
+								className="flex flex-col gap-3 px-4 pb-4"
+							>
 								{/* Image Type Selector */}
-								<div className="flex items-center gap-2">
+								<div
+									className="flex items-center gap-2"
+									role="radiogroup"
+									aria-label="画像の表示方法"
+								>
 									<button
 										type="button"
 										onClick={() => setImageVisibility("silhouette")}
@@ -335,7 +360,7 @@ export function PokemonCard({
 										style={getImageStyle()}
 									/>
 								</div>
-							</div>
+							</section>
 						)}
 					</div>
 				</div>
@@ -343,12 +368,21 @@ export function PokemonCard({
 
 			{/* Confirmation Modal */}
 			{showConfirmModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+				<div
+					className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="modal-title"
+					aria-describedby="modal-description"
+				>
 					<div className="bg-card rounded-lg p-6 max-w-sm mx-4">
-						<h3 className="text-lg font-bold text-card-foreground mb-2">
+						<h3
+							id="modal-title"
+							className="text-lg font-bold text-card-foreground mb-2"
+						>
 							答えを確認
 						</h3>
-						<p className="text-muted-foreground mb-4">
+						<p id="modal-description" className="text-muted-foreground mb-4">
 							答えを見ると、このポケモンは使用済みとしてマークされます。よろしいですか？
 						</p>
 						<div className="flex gap-3">
