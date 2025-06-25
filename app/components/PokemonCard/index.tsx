@@ -8,6 +8,7 @@ import type {
 	UsedPokemon,
 } from "../../types/pokemon";
 import { GenerationIcon } from "../icons/GenerationIcon";
+import { GenusIcon } from "../icons/GenusIcon";
 import { ImageIcon } from "../icons/ImageIcon";
 import { TypeIcon } from "../icons/TypeIcon";
 import { Hint } from "./Hint";
@@ -35,7 +36,7 @@ export function PokemonCard({
 	isUsed,
 	onMarkAsUsed,
 }: PokemonCardProps) {
-	const [name, _genus, generation, pokedexNumber, types] = pokemon;
+	const [name, genus, generation, pokedexNumber, types] = pokemon;
 	const [imageVisibility, setImageVisibility] =
 		useState<ImageVisibility>("hidden");
 	const [isAnswerRevealed, setIsAnswerRevealed] = useState(isUsed);
@@ -124,6 +125,18 @@ export function PokemonCard({
 						<div className="px-4 pb-3">
 							<span className="text-sm font-bold text-muted-foreground">
 								{GENERATION_NAME_MAP[generation] || `第${generation}世代`}
+							</span>
+						</div>
+					</Hint>
+
+					{/* Genus Hint */}
+					<Hint
+						icon={<GenusIcon className="w-4.5 h-4.5 stroke-muted-foreground" />}
+						label="分類"
+					>
+						<div className="px-4 pb-3">
+							<span className="text-sm font-bold text-muted-foreground">
+								{genus}ポケモン
 							</span>
 						</div>
 					</Hint>

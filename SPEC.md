@@ -65,14 +65,20 @@ Pokemon cards contain multiple hint categories that can be revealed individually
 - **Content**: Shows generation (e.g., "第1世代")
 - **Purpose**: Helps narrow down Pokemon by release generation
 
-##### 2. Type (タイプ)
+##### 2. Classification (分類)
+- **Icon**: Genus icon
+- **Expandable**: Collapsed by default
+- **Content**: Shows Pokemon genus (e.g., "でんきねずみポケモン")
+- **Purpose**: Provides species classification as additional hint
+
+##### 3. Type (タイプ)
 - **Icon**: Tag icon
 - **Expandable**: Can be expanded/collapsed
 - **Content**: Shows Pokemon type(s) as colored badges
 - **Examples**: "どく" (Poison), "エスパー" (Psychic)
 - **Colors**: Each type has specific color coding
 
-##### 3. Image (画像)
+##### 4. Image (画像)
 - **Icon**: Image icon
 - **Expandable**: Can be expanded/collapsed
 - **Content**: Pokemon image with visibility controls
